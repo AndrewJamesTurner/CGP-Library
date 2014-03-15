@@ -13,6 +13,6 @@ This file is part of CGP-Library, Andrew James Turner 2014.
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 
 */
