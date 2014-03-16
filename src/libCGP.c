@@ -32,6 +32,8 @@ struct parameters{
 	int numNodes;
 	int numOutputs;
 	int arity;
+	
+	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 };
 
 struct chromosome{
@@ -50,7 +52,7 @@ struct node{
 };
 
 
-/* Prototypes of fuctions used interally to CGP-Library */
+/* Prototypes of functions used internally to CGP-Library */
 struct node *initialiseNode(struct parameters *params, int nodePosition);
 
 float getRandomConnectionWeight(struct parameters *params);
@@ -61,12 +63,14 @@ int getRandomChromosomeOutput(struct parameters *params);
 void setActiveNodes(struct parameters *params, struct chromosome *chromo);
 void recursivelySetActiveNodes(struct parameters *params, struct chromosome *chromo, int nodeIndex);
 
+void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
+
 float randFloat(void);
 void bubbleSortInt(int *array, const int length);
 
 /*
-	Initialises a parameter structs with default values. These
-	values can be indevidually chaged via set fuctions.
+	Initialises a parameter struct with default values. These
+	values can be individually changed via set functions.
 */
 struct parameters *initialiseParameters(void){
 		
@@ -78,7 +82,7 @@ struct parameters *initialiseParameters(void){
 	/* Set default values*/	
 	params->mu = 1;
 	params->lambda = 4;
-	params->mutationRate = 0.03;	
+	params->mutationRate = 0.5;	
 	params->randSeed = 123456789;
 	params->connectionsWeightRange = 1;
 	params->arity = 2;
@@ -86,6 +90,9 @@ struct parameters *initialiseParameters(void){
 	params->numNodes = 10;
 	params->numOutputs = 1;
 	params->numFuctions = 4;
+	
+	params->mutationType = probabilisticMutation;
+	
 	
 	/* Seed the random number generator */
 	srand(params->randSeed);
@@ -115,7 +122,7 @@ void setMu(struct parameters *params, int mu){
 }
 
 /*
-	Initialises a chromosome with values given in parameters.
+	Returns a pointer to an initialised chromosome with values obeying the given parameters.
 */
 struct chromosome *initialiseChromosome(struct parameters *params){
 	
@@ -128,10 +135,10 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	/* allocate memory for nodes */
 	chromo->nodes = malloc(params->numNodes * sizeof(struct node *));
 	
-	/* allocate memory for aoutputNodes matrix */
+	/* allocate memory for outputNodes matrix */
 	chromo->outputNodes = malloc(params->numOutputs * sizeof(int));
 	
-	/* allocate memory for acitve nodes matrix */
+	/* allocate memory for active nodes matrix */
 	chromo->activeNodes = malloc(params->arity * sizeof(int));
 
 	/* Initialise each of the chromosomes nodes */
@@ -149,7 +156,7 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 
 
 /*
-	returns a pointer to an initilised node. Initilised means that nessassary
+	returns a pointer to an initialised node. Initialised means that necessary
 	memory has been allocated and values set.
 */
 struct node *initialiseNode(struct parameters *params, int nodePosition){
@@ -164,10 +171,10 @@ struct node *initialiseNode(struct parameters *params, int nodePosition){
 	n->inputs = malloc(params->arity * sizeof(int));
 	n->weights = malloc(params->arity * sizeof(float));	
 
-	/* set the node's fuction */
+	/* set the node's function */
 	n->function = getRandomFunction(params);
 
-	/* set the nodes inputs and connnection weights */
+	/* set the nodes inputs and connection weights */
 	for(i=0; i<params->arity; i++){
 		n->inputs[i] = getRandomNodeInput(params,nodePosition);
 		n->weights[i] = getRandomConnectionWeight(params);
@@ -184,7 +191,7 @@ float getRandomConnectionWeight(struct parameters *params){
 }
 
 /*
-	returns a random fuction index
+	returns a random function index
 */
 int getRandomFunction(struct parameters *params){
 	return rand() % (params->numFuctions);
@@ -209,7 +216,7 @@ void setActiveNodes(struct parameters *params, struct chromosome *chromo){
 	
 	int i;	
 	
-	/* reset num active nodes */
+	/* set the number of active nodes to zero */
 	chromo->numActiveNodes = 0;
 	
 	/* reset the active nodes */
@@ -225,7 +232,7 @@ void setActiveNodes(struct parameters *params, struct chromosome *chromo){
 			continue; 
 		}
 
-		/* begine a recursive search for active nodes */
+		/* begin a recursive search for active nodes */
 		recursivelySetActiveNodes(params, chromo, chromo->outputNodes[i]);
 	}
 	
@@ -255,7 +262,7 @@ void recursivelySetActiveNodes(struct parameters *params, struct chromosome *chr
 	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - params->numInputs;
 	chromo->numActiveNodes++;			
 					
-	/* recursively log all the nodes to which the cuurent nodes connect as active */
+	/* recursively log all the nodes to which the current nodes connect as active */
 	for(i=0; i < params->arity; i++){
 		recursivelySetActiveNodes(params, chromo, chromo->nodes[nodeIndex - params->numInputs]->inputs[i]);
 	}
@@ -283,9 +290,7 @@ void printChromosome(struct parameters *params, struct chromosome *chromo){
 				
 	/* set the active nodes in the given chromosome */
 	setActiveNodes(params, chromo);
-							
-	printf("\n");
-	
+								
 	/* for all the chromo inputs*/
 	for(i=0; i<params->numInputs; i++){
 		printf("(%d):\tinput\n", i);
@@ -297,10 +302,10 @@ void printChromosome(struct parameters *params, struct chromosome *chromo){
 		/* print the node function */
 		printf("(%d):\t%d ", params->numInputs + i, chromo->nodes[i]->function);
 		
-		/* for the arity of the node*/
+		/* for the arity of the node */
 		for(j = 0; j < params->arity; j++){
 
-			/* print the node input infomation */
+			/* print the node input information */
 			printf("%d,%+.1f  ", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
 		}
 		
@@ -323,9 +328,59 @@ void printChromosome(struct parameters *params, struct chromosome *chromo){
 	printf("\n");
 }	
 
+/*
+	Mutates the given chromosome using the mutation method described in parameters
+*/
+void mutateChromosome(struct parameters *params, struct chromosome *chromo){
+	
+	params->mutationType(params, chromo);
+}
+
+/*
+	Conductions probabilistic mutation on the give chromosome. Each chromosome
+	gene is changed to a random valid allele with a probability specified in
+	parameters.
+*/
+void probabilisticMutation(struct parameters *params, struct chromosome *chromo){
+	
+	int i,j;
+	
+	/* for every nodes in the chromosome */
+	for(i=0; i<params->numNodes; i++){
+		
+		/* mutate the function gene */
+		if(randFloat() <= params->mutationRate){
+			chromo->nodes[i]->function = getRandomFunction(params);
+		}
+		
+		/* for every input to each chromosome */
+		for(j=0; j<params->arity; j++){
+			
+			/* mutate the node input */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(params, i);
+			}
+			
+			/* mutate the node connection weight */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params);
+			}
+		}
+	}
+	
+	/* for every chromosome output */ 
+	for(i=0; i<params->numOutputs; i++){
+		
+		/* mutate the chromosome output */
+		if(randFloat() <= params->mutationRate){
+			chromo->outputNodes[i] = getRandomChromosomeOutput(params);
+		}
+	}
+}
+ 
 	
 /* 
-	returns a random flaot between [0,1]
+	returns a random float between [0,1]
 */
 float randFloat(void){
 	return (float)rand()/(float)RAND_MAX;

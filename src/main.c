@@ -11,9 +11,13 @@ int main(void){
 
 	printChromosome(params, chromo);
 	
+	mutateChromosome(params, chromo);
+	
+	printChromosome(params, chromo);
+	/*
 	setMu(params, 1);
 	printf("\nmu: %d\n", getMu(params));
-	
+	*/
 	
 	return 1;
 }
