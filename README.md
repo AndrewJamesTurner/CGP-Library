@@ -13,7 +13,7 @@ License: Lesser General Public License (LGPL)
 
 The simplest method is to add cgp.c and cgp.h to your build path and compile them along with your own files.
 
-For instance #include cgp.h and then compile your program simular too:
+For instance #include cgp.h and then compile your program similar too:
 
     $ gcc yourFiles.c cgp.c cgp.h
 
