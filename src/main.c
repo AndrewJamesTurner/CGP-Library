@@ -4,10 +4,15 @@
 int main(void){
 
 	struct parameters *params;
+	struct chromosome *chromo;
 
 	params = initialiseParameters();
+	chromo = initialiseChromosome(params);
+
+	printChromosome(params, chromo);
 	
-	printf("%d\n", getMu(params));
+	setMu(params, 1);
+	printf("\nmu: %d\n", getMu(params));
 	
 	
 	return 1;

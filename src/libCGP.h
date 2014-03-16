@@ -30,8 +30,19 @@
 	struct parameters *initialiseParameters(void);
 	
 	/*
-		getters and setters for the parameters.
+		getters and setters for the parameters. Getters return the current values
+		stored in parameters. Setter set the values in parameters to new values. If
+		invalid values are passed to the setters and warning is given and the parameters
+		value remains unchanged.
 	*/
 	int getMu(struct parameters *params);
+	void setMu(struct parameters *params, int mu);
+	
+	
+	/* */
+	struct chromosome *initialiseChromosome(struct parameters *params);
+	
+	
+	void printChromosome(struct parameters *params, struct chromosome *chromo);
 	
 #endif 

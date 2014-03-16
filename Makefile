@@ -2,7 +2,6 @@
 CC=gcc
 
 # GCC complier options
-	# -std=gnu99	use C99 standards
 	# -pedantic		Issue all the warnings demanded by strict ISO C
 	# -Wall			Turns on all optional warnings which are desirable for normal code.
 	# -O3			turns on all optimizations
@@ -18,4 +17,4 @@ so:
 	@gcc -shared -o libGCP.so libCGP.o
 
 clean:
-	rm -f $(PROG)
+	rm -f libCGP.o libGCP.so test
