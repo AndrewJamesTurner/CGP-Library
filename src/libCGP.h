@@ -1,6 +1,5 @@
 /*
-
-This file is part of CGP-Library, Andrew James Turner 2014.
+	This file is part of CGP-Library, Andrew James Turner 2014.
 
     CGP-Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published 
@@ -14,7 +13,6 @@ This file is part of CGP-Library, Andrew James Turner 2014.
 
     You should have received a copy of the GNU Lesser General Public License
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
 #ifndef CGPLIB
