@@ -16,3 +16,7 @@ This file is part of CGP-Library, Andrew James Turner 2014.
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+void foo(void){
+
+}

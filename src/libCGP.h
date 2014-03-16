@@ -17,4 +17,7 @@ This file is part of CGP-Library, Andrew James Turner 2014.
 
 */
 
- 
+#ifndef CGPLIB
+#define CGPLIB
+	struct rtx_def;
+#endif 
