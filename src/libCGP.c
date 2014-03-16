@@ -17,6 +17,33 @@ This file is part of CGP-Library, Andrew James Turner 2014.
 
 */
 
-void foo(void){
+#include <stdio.h>
+#include <stdlib.h> 
+#include "libCGP.h"
 
+struct parameters{
+		int mu;
+		int lambda;
+	};
+
+/*
+	Initialises a parameter structs with default values. These
+	values can be indevidually chaged via set fuctions.
+*/
+struct parameters *initialiseParameters(void){
+		
+	struct parameters *params;
+	
+	params = malloc(sizeof(struct parameters));
+		
+	params->mu = 1;
+	params->lambda = 4;
+	
+	return params;
 }
+
+
+int getMu(struct parameters *params){
+	return params -> mu;
+}
+

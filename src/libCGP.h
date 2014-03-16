@@ -19,5 +19,21 @@ This file is part of CGP-Library, Andrew James Turner 2014.
 
 #ifndef CGPLIB
 #define CGPLIB
-	struct rtx_def;
+
+	/* Structure definitions given via opaque pointers */
+	struct parameters;
+	struct population;
+	struct chromosome;
+	struct node;
+	
+	
+	
+	/* */
+	struct parameters *initialiseParameters(void);
+	
+	/*
+		getters and setters for the parameters.
+	*/
+	int getMu(struct parameters *params);
+	
 #endif 
