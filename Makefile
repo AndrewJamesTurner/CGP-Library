@@ -9,12 +9,12 @@ CC=gcc
 	
 CFLAGS= -pedantic -Wall -O3 
 
-all: src/main.c src/libCGP.c src/libCGP.h
-	@$(CC) -o test src/main.c src/libCGP.c src/libCGP.h $(CFLAGS) 
+all: src/main.c src/cgp.c src/cgp.h
+	@$(CC) -o test src/main.c src/cgp.c src/cgp.h $(CFLAGS) 
 
 so:
-	@$(CC) -c -fpic src/libCGP.c $(CFLAGS) 
-	@gcc -shared -o libGCP.so libCGP.o
+	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
+	@gcc -shared -o libcgp.so cgp.o
 
 clean:
-	rm -f libCGP.o libGCP.so test
+	rm -f cgp.o libcgp.so test
