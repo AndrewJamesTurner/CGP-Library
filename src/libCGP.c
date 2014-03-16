@@ -43,7 +43,7 @@ struct chromosome{
 };
 
 struct node{
-	int fuction;
+	int function;
 	int *inputs;
 	float *weights;	
 	int active;
@@ -55,7 +55,7 @@ struct node *initialiseNode(struct parameters *params, int nodePosition);
 
 float getRandomConnectionWeight(struct parameters *params);
 int getRandomNodeInput(struct parameters *params, int nodePosition);
-int getRandomFuction(struct parameters *params);
+int getRandomFunction(struct parameters *params);
 int getRandomChromosomeOutput(struct parameters *params);
 
 void setActiveNodes(struct parameters *params, struct chromosome *chromo);
@@ -165,7 +165,7 @@ struct node *initialiseNode(struct parameters *params, int nodePosition){
 	n->weights = malloc(params->arity * sizeof(float));	
 
 	/* set the node's fuction */
-	n->fuction = getRandomFuction(params);
+	n->function = getRandomFunction(params);
 
 	/* set the nodes inputs and connnection weights */
 	for(i=0; i<params->arity; i++){
@@ -186,7 +186,7 @@ float getRandomConnectionWeight(struct parameters *params){
 /*
 	returns a random fuction index
 */
-int getRandomFuction(struct parameters *params){
+int getRandomFunction(struct parameters *params){
 	return rand() % (params->numFuctions);
 }
 
@@ -295,7 +295,7 @@ void printChromosome(struct parameters *params, struct chromosome *chromo){
 	for(i = 0; i < params->numNodes; i++){ 
 	
 		/* print the node function */
-		printf("(%d):\t%d ", params->numInputs + i, chromo->nodes[i]->fuction);
+		printf("(%d):\t%d ", params->numInputs + i, chromo->nodes[i]->function);
 		
 		/* for the arity of the node*/
 		for(j = 0; j < params->arity; j++){
