@@ -21,7 +21,7 @@ For instance #include cgp.h and then compile your program simular too:
 
 Compile source into a shared library and install system wide.
 
-####Debian
+####Ubuntu
 
 To generate the shared object (.so) open a terminal in the CGP-Library directory and run:
 
