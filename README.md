@@ -11,7 +11,7 @@ License: Lesser General Public License (LGPL)
 
 ###Simplest
 
-The simplest method is to add libCGP.c and libCGP.h to your build path and compile them along side your own files.
+The simplest method is to add cgp.c and cgp.h to your build path and compile them along side your own files.
 
 ###Standard
 
@@ -23,21 +23,23 @@ To generate the shared object (.so) open a terminal in the CGP-Library directory
 
     $ make so
     
-Then copy the generated libCGP.so to /usr/lib by running:
+Then copy the generated libcgp.so to /usr/lib by running:
 
-    $ sudo mv libGP.so /usr/lib
+    $ sudo cp libcgp.so /usr/lib
     
-Give libCGP.so the necessary permissions by running:
+Give libcgp.so the necessary permissions by running:
 
-    $ sudo chmod 0755 /usr/lib/libGCP.so
+    $ sudo chmod 0755 /usr/lib/libcgp.so
 
-Then copy libCGP.h to /usr/include by running:
+Then copy cgp.h to /usr/include by running:
 
-    $ sudo mv ./src/libCGP.h /usr/include
+    $ sudo cp ./src/cgp.h /usr/include
     
-Finally update they system so it knows about libCGP.so
+Finally update the system so it knows about libcgp.so
 
     $ sudo ldconfig
+    
+Once CGP-Library has been installed it can be accessed by including cgp.h in your project and linking using the -lcgp flag.
 
 ####Windows
 
