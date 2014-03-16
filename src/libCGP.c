@@ -94,10 +94,10 @@ struct parameters *initialiseParameters(void){
 }
 
 /*
-	returns mu value current set in given parameters.
+	returns mu value currently set in given parameters.
 */
 int getMu(struct parameters *params){
-	return params -> mu;
+	return params->mu;
 }
 
 /*
