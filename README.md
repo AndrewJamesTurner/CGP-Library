@@ -15,9 +15,13 @@ The simplest method is to add libCGP.c and libCGP.h to your build path and compl
 
 ###Standard
 
-Compile source into a shared library.
+Compile source into a shared library and install system wide.
 
 ####Debian
+
+To generate the shared object (.so) run
+
+  $ make so
 
 ####Windows
 
