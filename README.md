@@ -25,7 +25,7 @@ To generate the shared object (.so) open a terminal in the CGP-Library directory
     
 Then copy the generated libCGP.so to /usr/lib by running:
 
-    $ sudo cp libGP.so /usr/lib
+    $ sudo mv libGP.so /usr/lib
     
 Give libCGP.so the necessary permissions by running:
 
@@ -33,7 +33,7 @@ Give libCGP.so the necessary permissions by running:
 
 Then copy libCGP.h to /usr/include by running:
 
-    $ sudo cp /src/libCGP.h /user/include
+    $ sudo mv ./src/libCGP.h /usr/include
     
 Finally update they system so it knows about libCGP.so
 
