@@ -8,9 +8,7 @@ CC=gcc
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
 	
-	
 CFLAGS=  -pedantic -Wall -O3 
-
 
 all: src/main.c src/libCGP.c src/libCGP.h
 	@$(CC) -o test src/main.c src/libCGP.c src/libCGP.h $(CFLAGS) 
@@ -18,7 +16,6 @@ all: src/main.c src/libCGP.c src/libCGP.h
 so:
 	@$(CC) -c -fpic src/libCGP.c $(CFLAGS) 
 	@gcc -shared -o libGCP.so libCGP.o
-
 
 clean:
 	rm -f $(PROG)
