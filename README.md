@@ -7,6 +7,10 @@ Author: Andrew James Turner
 Email: andrew.turner@york.ac.uk  
 License: Lesser General Public License (LGPL)  
 
+##Status
+
+Under initial development
+
 ##How To Use
 
 ###Simplest
