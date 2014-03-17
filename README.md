@@ -35,15 +35,13 @@ Give libcgp.so the necessary permissions by running:
 
     $ sudo chmod 0755 /usr/lib/libcgp.so
 
-// Then copy cgp.h to /usr/include by running:
-
-//    $ sudo cp ./src/cgp.h /usr/include
-    
 Finally update the system so it knows about libcgp.so
 
     $ sudo ldconfig
     
-Once CGP-Library has been installed it can be accessed by including cgp.h in your project and linking using the -lcgp flag.
+Once CGP-Library has been installed it can be accessed by including cgp.h in your project and linking using the -lcgp flag. Similar too:
+
+    $ gcc yourFiles.c -lcgp
 
 ####Windows
 
