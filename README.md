@@ -35,7 +35,7 @@ Give libcgp.so the necessary permissions by running:
 
     $ sudo chmod 0755 /usr/lib/libcgp.so
 
-//Then copy cgp.h to /usr/include by running:
+// Then copy cgp.h to /usr/include by running:
 
 //    $ sudo cp ./src/cgp.h /usr/include
     
