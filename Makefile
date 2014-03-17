@@ -16,5 +16,9 @@ so:
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
 	@gcc -shared -o libcgp.so cgp.o
 
+dll:
+	@$(CC) -c -o cgp.o src/cgp.c $(CFLAGS) 
+	@gcc -o cgp.dll -s -shared cgp.o
+
 clean:
-	rm -f cgp.o libcgp.so test
+	@rm -f cgp.o libcgp.so cgp.dll test
