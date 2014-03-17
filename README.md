@@ -11,7 +11,7 @@ License: Lesser General Public License (LGPL)
 
 Under initial development
 
-##How To Use
+##Installation
 
 ###Simplest
 
