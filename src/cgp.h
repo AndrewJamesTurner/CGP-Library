@@ -22,8 +22,8 @@
 	struct parameters;
 	struct population;
 	struct chromosome;
-	struct node;
 	struct fuctionSet;
+	struct data;
 	
 	
 	/* */
@@ -50,6 +50,9 @@
 	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
 	
 	
+	struct data *initialiseDataFromFile(char *file);
+	void freeData(struct data *dat);
+	void printData(struct data *dat);
 	/*
 	
 	*/
@@ -57,6 +60,7 @@
 	void printFuctionSet(struct parameters *params);
 	
 	struct population *initialisePopulation(struct parameters *params);
+	void freePopulation(struct parameters *params, struct population *pop);
 	
 	/* */
 	struct chromosome *initialiseChromosome(struct parameters *params);
@@ -65,7 +69,7 @@
 	void printChromosome(struct parameters *params, struct chromosome *chromo);
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
 	
-	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo));
+	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat));
 	
 	
 #endif 

@@ -8,31 +8,22 @@
 int main(void){
 
 	struct parameters *params;
-	struct chromosome *chromo;
 	struct population *pop;
+	struct data *dat;
 		
-	
-	
-	float inputs[3] = {0,1,2};
-	float outputs[2];
-	
 	params = initialiseParameters(3,6,2, 2);
+	setFuctionSet(params, "add");
 	
-	
-	setFuctionSet(params, "add,add");
-	printFuctionSet(params);
-	
+	dat = initialiseDataFromFile("./example/fullAdder");
+		
 	pop = initialisePopulation(params);
 	
-	setFitnessFuction(params, fullAdder);
+	
+	/*setFitnessFuction(params, fullAdder);*/
 	
 	
-	chromo = initialiseChromosome(params);
-	
-	
-	printf("%f, %f, %f\n", inputs[0], inputs[1], inputs[2]   );
 		
-	printChromosome(params, chromo);
+	/*printChromosome(params, chromo);*/
 	/*
 	mutateChromosome(params, chromo);
 	printChromosome(params, chromo);
@@ -44,16 +35,17 @@ int main(void){
 	*/
 	
 	
-	executeChromosome(params, chromo, inputs, outputs);
+	/*executeChromosome(params, chromo, inputs, outputs);*/
 	
-	printf("%f %f\n", outputs[0], outputs[1] );
-	
-	
-	
-	freeChromosome(params, chromo);
+	/*printf("%f %f\n", outputs[0], outputs[1] );*/
 	
 	
 	
+	/*freeChromosome(params, chromo);*/
+	
+	
+	freePopulation(params, pop);
+	freeData(dat);
 	freeParameters(params);
 	
 	return 1;

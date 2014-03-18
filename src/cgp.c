@@ -32,6 +32,7 @@ struct parameters{
 	float mutationRate;
 	float connectionsWeightRange;
 	unsigned int randSeed;
+	int generations;
 	
 	/* need to be set by user */
 	int numInputs;
@@ -44,13 +45,17 @@ struct parameters{
 	struct fuctionSet *funcSet;
 	
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
-	float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo);
+	float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat);
+	
+	/* supervised learning fitnessFuction */
+	float *inputs;
+	float *outputs;
+	float *chromoOutputs;
+	
 };
 
 struct population{
-	
 	struct chromosome **chromosomes;
-	
 };
 
 struct fuctionSet{
@@ -73,6 +78,15 @@ struct node{
 	float *weights;	
 	int active;
 	float output;
+};
+
+struct data{
+	int numSamples;
+	int numInputs;
+	int numOutputs;
+	
+	float **inputData;
+	float **outputData;
 };
 
 
@@ -109,6 +123,132 @@ void bubbleSortInt(int *array, const int length);
 
 
 /*
+	Initialises data structure and assigns values of given file
+*/
+struct data *initialiseDataFromFile(char *file){
+	
+	int i;
+	struct data *dat;
+	FILE *fp; 
+	char *line, *record;
+	char buffer[1024];
+	int lineNum = -1;
+	int col;
+	
+	/* attempt to open the given file */
+	fp = fopen(file, "r");
+	
+	/* if the file cannot be found */
+	if(fp == NULL){
+		printf("Error: file '%s' cannot be found.\nTerminating CGP-Library.\n", file);
+		exit(0);
+	}
+	
+	/* initialise memory for data structure */
+	dat = malloc(sizeof(struct data));
+	
+	/* for every line in the given file */
+	while( (line=fgets(buffer, sizeof(buffer), fp)) != NULL){
+	
+		/* deal with the first line containing meta data */
+		if(lineNum == -1){
+						
+			sscanf(line, "%d,%d,%d", &(dat->numInputs), &(dat->numOutputs), &(dat->numSamples));
+						
+			dat->inputData = malloc(dat->numSamples * sizeof(float**));
+			dat->outputData = malloc(dat->numSamples * sizeof(float**));
+		
+			for(i=0; i<dat->numSamples; i++){
+				dat->inputData[i] = malloc(dat->numInputs * sizeof(float));
+				dat->outputData[i] = malloc(dat->numOutputs * sizeof(float));
+			}			
+		}
+		/* the other lines contain input output pairs */
+		else{
+			
+			/* get the first value on the given line */
+			record = strtok(line,",");
+			col = 0;
+		
+			/* until end of line */
+			while(record != NULL){
+							
+				/* if its an input value */				
+				if(col < dat->numInputs){
+					dat->inputData[lineNum][col] = atof(record);
+				}
+				
+				/* if its an output value */
+				else{
+					dat->outputData[lineNum][col - dat->numInputs] = atof(record);
+				}
+				
+				/* get the next value on the given line */
+				record = strtok(NULL,",");
+		
+				/* increment the current col index */
+				col++;
+			}
+		}	
+		
+		/* increment the current line index */
+		lineNum++;
+	}
+
+	fclose(fp);
+
+	return dat;
+}
+
+
+/*
+
+*/
+void freeData(struct data *dat){
+	
+	int i;
+	
+	for(i=0; i<dat->numSamples; i++){
+		free(dat->inputData[i]);
+		free(dat->outputData[i]);
+	}
+	
+	free(dat->inputData);
+	free(dat->outputData);
+	free(dat);
+}
+
+
+/*
+	prints the given data structure to the screen
+*/
+void printData(struct data *dat){
+	
+	int i,j;
+	
+	printf("DATA SET\n");
+	printf("Inputs: %d, ", dat->numInputs);
+	printf("Outputs: %d, ", dat->numOutputs);
+	printf("Samples: %d\n", dat->numSamples);
+	
+	for(i=0; i<dat->numSamples; i++){
+		
+		for(j=0; j<dat->numInputs; j++){
+			printf("%f ", dat->inputData[i][j]);
+		}
+		
+		printf(" : ");
+		
+		for(j=0; j<dat->numOutputs; j++){
+			printf("%f ", dat->outputData[i][j]);
+		}
+		
+		printf("\n");
+	}
+}
+
+
+/*
 	Initialises a parameter struct with default values. These 
 	values can be individually changed via set functions.
 */
@@ -126,6 +266,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->mutationRate = 0.5;	
 	params->randSeed = 123456789;
 	params->connectionsWeightRange = 1;
+	params->generations = 1000;
+	
 	
 	params->arity = arity;
 	params->numInputs = numInputs;
@@ -139,6 +281,9 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->nodeInputsHold = malloc(params->arity * sizeof(float));
 	
 	params->fitnessFuction = NULL;
+	params->inputs = NULL;
+	params->outputs = NULL;
+	
 	
 	/* Seed the random number generator */
 	srand(params->randSeed);
@@ -153,6 +298,15 @@ void freeParameters(struct parameters *params){
 	
 	free(params->nodeInputsHold);
 	free(params->funcSet);
+	
+	if(params->inputs != NULL){
+		free(params->inputs);
+	}
+	
+	if(params->outputs != NULL){
+		free(params->outputs);
+	}
+		
 	free(params);
 }
 
@@ -169,7 +323,7 @@ struct population *initialisePopulation(struct parameters *params){
 	
 	pop = malloc(sizeof(struct population));
 	
-	pop->chromosomes = malloc( (params->mu + params->lambda) * sizeof(struct chromosome *) );
+	pop->chromosomes = malloc( (params->mu + params->lambda) * sizeof(struct chromosome) );
 	
 	for(i=0; i < params->mu + params->lambda; i++){
 		pop->chromosomes[i] = initialiseChromosome(params);
@@ -178,6 +332,20 @@ struct population *initialisePopulation(struct parameters *params){
 	return pop;
 }
 
+/*
+
+*/
+void freePopulation(struct parameters *params, struct population *pop){
+	
+	int i;
+	
+	for(i=0; i < params->mu + params->lambda; i++){
+		freeChromosome(params, pop->chromosomes[i]);
+	}
+	
+	free(pop->chromosomes);
+	free(pop);
+}
 
 /*
 	returns mu value currently set in given parameters.
@@ -215,7 +383,7 @@ int getNumOutputs(struct parameters *params){
 
 /*
 */
-void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo)){
+void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat)){
 	params->fitnessFuction = fitnessFuction;
 }
 
@@ -302,7 +470,7 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	chromo = malloc(sizeof(struct chromosome));
 		
 	/* allocate memory for nodes */
-	chromo->nodes = malloc(params->numNodes * sizeof(struct node *));
+	chromo->nodes = malloc(params->numNodes * sizeof(struct node));
 	
 	/* allocate memory for outputNodes matrix */
 	chromo->outputNodes = malloc(params->numOutputs * sizeof(int));
@@ -349,6 +517,14 @@ void freeChromosome(struct parameters *params, struct chromosome *chromo){
 	free(chromo);
 }
 
+
+
+/*
+
+*/
+float evolvePopulation(struct parameters *params, struct population *pop, int numSamples, float *inputs, float *outputs){
+	return 1;
+}
 
 /*
 	Executes the given chromosome with the given outputs and placed the outputs in 'outputs'.
@@ -674,9 +850,12 @@ float sub(const int numInputs, float *inputs, float *weights){
 	return sum;
 }	
 	
+/*
+*/
+float supervisdLearning(struct parameters *params, struct chromosome *chromo){
 
-	
-	
+	return 1;
+}
 /* 
 	returns a random float between [0,1]
 */

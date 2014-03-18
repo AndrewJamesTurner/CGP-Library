@@ -1,5 +1,5 @@
 
-float fullAdder(struct parameters *params, struct chromosome *chromo){
+float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
 	
 	int i;
 	float error = 0;
