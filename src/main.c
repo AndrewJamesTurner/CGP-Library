@@ -19,6 +19,7 @@ int main(void){
 	pop = initialisePopulation(params);
 	
 	
+	
 	/*setFitnessFuction(params, fullAdder);*/
 	
 	

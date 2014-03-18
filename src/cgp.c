@@ -121,7 +121,7 @@ float sub(const int numInputs, float *inputs, float *weights);
 /* other */
 float randFloat(void);
 void bubbleSortInt(int *array, const int length);
-
+void sortPopulation(struct parameters *params, struct population *pop);
 
 /*
 	Initialises data structure and assigns values of given file
@@ -559,6 +559,31 @@ float evolvePopulation(struct parameters *params, struct population *pop, struct
 	return pop->chromosomes[0]->fitness;
 }
 
+/* */
+void sortPopulation(struct parameters *params, struct population *pop){
+	
+	struct chromosome *chromoTmp;
+	int i;
+	int finished = 0;
+		
+	while(finished == 0){
+		
+		finished = 1;
+		
+		for(i=0; i < params->mu + params->lambda -1; i++){
+			
+			if(pop->chromosomes[i]->fitness > pop->chromosomes[i+1]->fitness){
+				
+				finished = 0;
+				chromoTmp = pop->chromosomes[i];
+				pop->chromosomes[i] = pop->chromosomes[i+1];
+				pop->chromosomes[i+1] = chromoTmp;
+			}
+		}
+	}
+}
+
+
 /*
 	Executes the given chromosome with the given outputs and placed the outputs in 'outputs'.
 */
@@ -887,8 +912,9 @@ float sub(const int numInputs, float *inputs, float *weights){
 */
 float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat){
 
-	int i;
+	int i,j;
 	float error = 0;
+	
 
 	/* error checking */
 	if(chromo->numInputs != dat->numInputs){
@@ -910,6 +936,11 @@ float supervisedLearning(struct parameters *params, struct chromosome *chromo, s
 		/* calculate the chromosome outputs for the set of inputs  */
 		executeChromosome(params, chromo, dat->inputData[i], chromo->outputValues);
 	
+		/* for each chromosome output */
+		for(j=0; j<chromo->numOutputs; j++){
+			
+			error += chromo->outputValues[j] - dat->outputData[i][j];
+		}	
 	}
 
 	return error;
