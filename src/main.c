@@ -10,15 +10,20 @@ int main(void){
 	struct parameters *params;
 	struct population *pop;
 	struct data *dat;
+	float bestFit;
 		
-	params = initialiseParameters(3,6,2, 2);
-	setFuctionSet(params, "add");
+	params = initialiseParameters(3,10,2, 2);
+	setFuctionSet(params, "and");
 	
 	dat = initialiseDataFromFile("./example/fullAdder");
 		
 	pop = initialisePopulation(params);
 	
 	
+	
+	bestFit =  evolvePopulation(params, pop, dat);
+	
+	printf("bestFit: %f\n", bestFit);
 	
 	/*setFitnessFuction(params, fullAdder);*/
 	

@@ -117,6 +117,7 @@ float supervisedLearning(struct parameters *params, struct chromosome *chromo, s
 /* node functions defines in CGP-Library */
 float add(const int numInputs, float *inputs, float *weights);
 float sub(const int numInputs, float *inputs, float *weights);
+float and(const int numInputs, float *inputs, float *weights);
 
 /* other */
 float randFloat(void);
@@ -265,9 +266,9 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->lambda = 4;
 	params->stratergy = '+';
 	params->mutationRate = 0.5;	
-	params->randSeed = 123456789;
+	params->randSeed = 1;
 	params->connectionsWeightRange = 1;
-	params->generations = 1000;
+	params->generations = 10000;
 	
 	
 	params->arity = arity;
@@ -421,6 +422,10 @@ void addFuctionToFunctionSet(struct fuctionSet *funcSet, char *functionName){
 		strcpy(funcSet->functionNames[funcSet->numFunctions-1], "sub");
 		funcSet->functions[funcSet->numFunctions-1] = sub;
 	}
+	else if(strcmp(functionName, "and") == 0){
+		strcpy(funcSet->functionNames[funcSet->numFunctions-1], "and");
+		funcSet->functions[funcSet->numFunctions-1] = and;
+	}	
 	else{
 		printf("Warning: function '%s' is not known and was not added.\n", functionName);
 		funcSet->numFunctions--;
@@ -543,18 +548,23 @@ float evolvePopulation(struct parameters *params, struct population *pop, struct
 	for(gen=0; gen<params->generations; gen++){
 		
 		/* set fitness of the lambda members of the population */
-		for(i=params->mu; i<params->lambda; i++){
+		for(i=params->mu; i< params->mu + params->lambda; i++){
 			pop->chromosomes[i]->fitness = params->fitnessFuction(params, pop->chromosomes[i], dat);
 		}
 		
 		/* sort the population into fitness order */
+		sortPopulation(params, pop);
 		
 		/* check termination conditions */
+		if(pop->chromosomes[0]->fitness == 0){
+			break;
+		}
 		
 		/* generate the next generation */
 		
 	}
 	
+	printf("Gen: %d\n", gen);
 	
 	return pop->chromosomes[0]->fitness;
 }
@@ -907,13 +917,35 @@ float sub(const int numInputs, float *inputs, float *weights){
 	
 	return sum;
 }	
+
+
+/*
+	Node function and. logical AND, returns '1' if all inputs are '1'
+	else, '0'
+*/ 	
+float and(const int numInputs, float *inputs, float *weights){
+		
+	int i;
+	float out = 1;
 	
+	for(i=1; i<numInputs; i++){
+		
+		if(inputs[i] != 1){
+			out = 0;
+			break;
+		}
+	}
+	
+	return out;
+}	
+
 /*
 */
 float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat){
 
 	int i,j;
 	float error = 0;
+	float temp;
 	
 
 	/* error checking */
@@ -938,8 +970,15 @@ float supervisedLearning(struct parameters *params, struct chromosome *chromo, s
 	
 		/* for each chromosome output */
 		for(j=0; j<chromo->numOutputs; j++){
+						
+			temp = (chromo->outputValues[j] - dat->outputData[i][j]);
 			
-			error += chromo->outputValues[j] - dat->outputData[i][j];
+			if(temp >= 0){
+				error += temp;
+			}
+			else{
+				error -= temp;
+			}
 		}	
 	}
 

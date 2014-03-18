@@ -26,6 +26,8 @@
 	struct data;
 	
 	
+	float evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
+	
 	/* */
 	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
 	
