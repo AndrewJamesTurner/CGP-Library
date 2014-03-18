@@ -45,13 +45,7 @@ struct parameters{
 	struct fuctionSet *funcSet;
 	
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
-	float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat);
-	
-	/* supervised learning fitnessFuction */
-	float *inputs;
-	float *outputs;
-	float *chromoOutputs;
-	
+	float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
 };
 
 struct population{
@@ -65,11 +59,17 @@ struct fuctionSet{
 };
 
 struct chromosome{
+	
+	int numInputs;
+	int numOutputs;
+	
 	struct node **nodes;
 	int *outputNodes;
 	int numActiveNodes;
 	int *activeNodes;
-	int fitness;
+	float fitness;
+	
+	float *outputValues;
 };
 
 struct node{
@@ -112,6 +112,7 @@ void probabilisticMutation(struct parameters *params, struct chromosome *chromo)
 /* function set functions */
 void addFuctionToFunctionSet(struct fuctionSet *funcSet, char *functionName);
 void freeFuctionSet(struct fuctionSet *fs);
+float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat);
 
 /* node functions defines in CGP-Library */
 float add(const int numInputs, float *inputs, float *weights);
@@ -280,9 +281,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	
 	params->nodeInputsHold = malloc(params->arity * sizeof(float));
 	
-	params->fitnessFuction = NULL;
-	params->inputs = NULL;
-	params->outputs = NULL;
+	params->fitnessFuction = supervisedLearning;
+	
 	
 	
 	/* Seed the random number generator */
@@ -298,15 +298,7 @@ void freeParameters(struct parameters *params){
 	
 	free(params->nodeInputsHold);
 	free(params->funcSet);
-	
-	if(params->inputs != NULL){
-		free(params->inputs);
-	}
-	
-	if(params->outputs != NULL){
-		free(params->outputs);
-	}
-		
+			
 	free(params);
 }
 
@@ -478,6 +470,9 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	/* allocate memory for active nodes matrix */
 	chromo->activeNodes = malloc(params->numNodes * sizeof(int));
 
+	/* allocate memory for chromosome outputValues */
+	chromo->outputValues = malloc(params->numOutputs * sizeof(float));
+
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<params->numNodes; i++){
 		chromo->nodes[i] = initialiseNode(params, i);
@@ -492,6 +487,10 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	for(i=0; i<params->numNodes; i++){
 		chromo->activeNodes[i] = i;
 	}
+	
+	/* set the number of inputs and outputs */
+	chromo->numInputs = params->numInputs;
+	chromo->numOutputs = params->numOutputs;
 	
 	/* set the number of active node to the number of nodes (all active) */
 	chromo->numActiveNodes = params->numNodes;
@@ -511,6 +510,7 @@ void freeChromosome(struct parameters *params, struct chromosome *chromo){
 		freeNode(params, chromo->nodes[i]);
 	}
 	
+	free(chromo->outputValues);
 	free(chromo->nodes);
 	free(chromo->outputNodes);
 	free(chromo->activeNodes);	
@@ -520,10 +520,43 @@ void freeChromosome(struct parameters *params, struct chromosome *chromo){
 
 
 /*
-
+	Evolves the given population using the parameters specified in the given parameters. The data 
+	structure can be used by the fitness function if required, otherwise set as NULL. If the data
+	structure is set as NULL the fitness function will be reset to the default fitness function - 
+	one suited to supervised learning. 
 */
-float evolvePopulation(struct parameters *params, struct population *pop, int numSamples, float *inputs, float *outputs){
-	return 1;
+float evolvePopulation(struct parameters *params, struct population *pop, struct data *dat){
+	
+	int i;
+	int gen;
+	
+	if(dat != NULL){
+		
+	}
+	
+	/* set fitness of the mu members of the population */
+	for(i=0; i<params->mu; i++){
+		pop->chromosomes[i]->fitness = params->fitnessFuction(params, pop->chromosomes[i], dat);
+	}
+	
+	/* for each generation */
+	for(gen=0; gen<params->generations; gen++){
+		
+		/* set fitness of the lambda members of the population */
+		for(i=params->mu; i<params->lambda; i++){
+			pop->chromosomes[i]->fitness = params->fitnessFuction(params, pop->chromosomes[i], dat);
+		}
+		
+		/* sort the population into fitness order */
+		
+		/* check termination conditions */
+		
+		/* generate the next generation */
+		
+	}
+	
+	
+	return pop->chromosomes[0]->fitness;
 }
 
 /*
@@ -852,9 +885,34 @@ float sub(const int numInputs, float *inputs, float *weights){
 	
 /*
 */
-float supervisdLearning(struct parameters *params, struct chromosome *chromo){
+float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat){
 
-	return 1;
+	int i;
+	float error = 0;
+
+	/* error checking */
+	if(chromo->numInputs != dat->numInputs){
+		printf("Error: the number of chromosome inputs specified in the chromosome must match the number of required inputs specified in the data.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	if(chromo->numOutputs != dat->numOutputs){
+		printf("Error: the number of chromosome outputs specified in the chromosome must match the number of required outputs specified in the data.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	
+	/* for each sample in data */
+	for(i=0 ; i<dat->numSamples; i++){
+	
+		/* calculate the chromosome outputs for the set of inputs  */
+		executeChromosome(params, chromo, dat->inputData[i], chromo->outputValues);
+	
+	}
+
+	return error;
 }
 /* 
 	returns a random float between [0,1]
