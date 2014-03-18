@@ -1,21 +1,31 @@
 #include <stdio.h>
+#include <stdlib.h> 
 #include "cgp.h"
+
+#include "fullAdder.c"
+
 
 int main(void){
 
 	struct parameters *params;
 	struct chromosome *chromo;
+	struct population *pop;
+		
+	
 	
 	float inputs[3] = {0,1,2};
 	float outputs[2];
 	
 	params = initialiseParameters(3,6,2, 2);
 	
+	
 	setFuctionSet(params, "add,add");
 	printFuctionSet(params);
 	
-	setFuctionSet(params, "add");
-	printFuctionSet(params);
+	pop = initialisePopulation(params);
+	
+	setFitnessFuction(params, fullAdder);
+	
 	
 	chromo = initialiseChromosome(params);
 	

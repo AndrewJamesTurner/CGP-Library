@@ -41,6 +41,8 @@
 	int getMu(struct parameters *params);
 	void setMu(struct parameters *params, int mu);
 	
+	int getNumInputs(struct parameters *params);
+	int getNumOutputs(struct parameters *params);
 	
 	/*
 	
@@ -54,12 +56,16 @@
 	void setFuctionSet(struct parameters *params, char *functionNames);
 	void printFuctionSet(struct parameters *params);
 	
+	struct population *initialisePopulation(struct parameters *params);
+	
 	/* */
 	struct chromosome *initialiseChromosome(struct parameters *params);
 	void freeChromosome(struct parameters *params, struct chromosome * chromo);
 	
 	void printChromosome(struct parameters *params, struct chromosome *chromo);
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
+	
+	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo));
 	
 	
 #endif 

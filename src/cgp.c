@@ -28,6 +28,7 @@ struct parameters{
 	/* can use default values*/
 	int mu;
 	int lambda;
+	char stratergy;
 	float mutationRate;
 	float connectionsWeightRange;
 	unsigned int randSeed;
@@ -43,10 +44,13 @@ struct parameters{
 	struct fuctionSet *funcSet;
 	
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
+	float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo);
 };
 
 struct population{
-	int averageFitness;
+	
+	struct chromosome **chromosomes;
+	
 };
 
 struct fuctionSet{
@@ -118,6 +122,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	/* Set default values */	
 	params->mu = 1;
 	params->lambda = 4;
+	params->stratergy = '+';
 	params->mutationRate = 0.5;	
 	params->randSeed = 123456789;
 	params->connectionsWeightRange = 1;
@@ -132,6 +137,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->funcSet = malloc(sizeof(struct fuctionSet));
 	
 	params->nodeInputsHold = malloc(params->arity * sizeof(float));
+	
+	params->fitnessFuction = NULL;
 	
 	/* Seed the random number generator */
 	srand(params->randSeed);
@@ -148,6 +155,29 @@ void freeParameters(struct parameters *params){
 	free(params->funcSet);
 	free(params);
 }
+
+
+
+/*
+
+*/
+struct population *initialisePopulation(struct parameters *params){
+	
+	int i;
+	
+	struct population *pop;
+	
+	pop = malloc(sizeof(struct population));
+	
+	pop->chromosomes = malloc( (params->mu + params->lambda) * sizeof(struct chromosome *) );
+	
+	for(i=0; i < params->mu + params->lambda; i++){
+		pop->chromosomes[i] = initialiseChromosome(params);
+	}
+	
+	return pop;
+}
+
 
 /*
 	returns mu value currently set in given parameters.
@@ -170,6 +200,24 @@ void setMu(struct parameters *params, int mu){
 	}
 }
 
+
+/*
+*/
+int getNumInputs(struct parameters *params){
+	return params->numInputs;
+}
+
+/*
+*/
+int getNumOutputs(struct parameters *params){
+	return params->numOutputs;
+}
+
+/*
+*/
+void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo)){
+	params->fitnessFuction = fitnessFuction;
+}
 
 /*
 	
@@ -303,7 +351,7 @@ void freeChromosome(struct parameters *params, struct chromosome *chromo){
 
 
 /*
-
+	Executes the given chromosome with the given outputs and placed the outputs in 'outputs'.
 */
 void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs){
 	
@@ -349,7 +397,6 @@ void executeChromosome(struct parameters *params, struct chromosome *chromo, flo
 			outputs[i] = chromo->nodes[chromo->outputNodes[i] - params->numInputs]->output;
 		}
 	}
-
 }
 
 
@@ -626,6 +673,9 @@ float sub(const int numInputs, float *inputs, float *weights){
 	
 	return sum;
 }	
+	
+
+	
 	
 /* 
 	returns a random float between [0,1]
