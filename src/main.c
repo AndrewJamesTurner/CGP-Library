@@ -2,7 +2,7 @@
 #include <stdlib.h> 
 #include "cgp.h"
 
-#include "fullAdder.c"
+
 
 
 int main(void){
