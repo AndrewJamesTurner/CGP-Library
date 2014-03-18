@@ -45,6 +45,12 @@
 	/*
 	
 	*/
+	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
+	
+	
+	/*
+	
+	*/
 	void setFuctionSet(struct parameters *params, char *functionNames);
 	void printFuctionSet(struct parameters *params);
 	

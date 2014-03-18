@@ -38,6 +38,8 @@ struct parameters{
 	int numOutputs;
 	int arity;
 	
+	float *nodeInputsHold;
+	
 	struct fuctionSet *funcSet;
 	
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
@@ -66,31 +68,38 @@ struct node{
 	int *inputs;
 	float *weights;	
 	int active;
+	float output;
 };
 
 
 /* Prototypes of functions used internally to CGP-Library */
+
+/* node functions */
 struct node *initialiseNode(struct parameters *params, int nodePosition);
 void freeNode(struct parameters *params, struct node *n);
 
+/* getting gene value functions  */
 float getRandomConnectionWeight(struct parameters *params);
 int getRandomNodeInput(struct parameters *params, int nodePosition);
 int getRandomFunction(struct parameters *params);
 int getRandomChromosomeOutput(struct parameters *params);
 
+/* active node functions */
 void setActiveNodes(struct parameters *params, struct chromosome *chromo);
 void recursivelySetActiveNodes(struct parameters *params, struct chromosome *chromo, int nodeIndex);
 
+/* mutation functions  */
 void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 
+/* function set functions */
 void addFuctionToFunctionSet(struct fuctionSet *funcSet, char *functionName);
 void freeFuctionSet(struct fuctionSet *fs);
-
 
 /* node functions defines in CGP-Library */
 float add(const int numInputs, float *inputs, float *weights);
 float sub(const int numInputs, float *inputs, float *weights);
 
+/* other */
 float randFloat(void);
 void bubbleSortInt(int *array, const int length);
 
@@ -122,6 +131,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 		
 	params->funcSet = malloc(sizeof(struct fuctionSet));
 	
+	params->nodeInputsHold = malloc(params->arity * sizeof(float));
+	
 	/* Seed the random number generator */
 	srand(params->randSeed);
 	
@@ -133,6 +144,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 */
 void freeParameters(struct parameters *params){
 	
+	free(params->nodeInputsHold);
 	free(params->funcSet);
 	free(params);
 }
@@ -260,6 +272,14 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 		chromo->outputNodes[i] = getRandomChromosomeOutput(params);
 	}
 	
+	/* Add all nodes to the active node matrix */
+	for(i=0; i<params->numNodes; i++){
+		chromo->activeNodes[i] = i;
+	}
+	
+	/* set the number of active node to the number of nodes (all active) */
+	chromo->numActiveNodes = params->numNodes;
+	
 	return chromo;
 }
 
@@ -267,10 +287,11 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	Frees the memory associated with the given chromosome structure
 */
 void freeChromosome(struct parameters *params, struct chromosome *chromo){
-	
+
 	int i;
-	
-	for(i=0; i<params->numNodes; i++){
+		
+	for(i=0; i < params->numNodes; i++){
+		
 		freeNode(params, chromo->nodes[i]);
 	}
 	
@@ -279,6 +300,58 @@ void freeChromosome(struct parameters *params, struct chromosome *chromo){
 	free(chromo->activeNodes);	
 	free(chromo);
 }
+
+
+/*
+
+*/
+void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs){
+	
+	int i,j;
+	int nodeInputLocation;
+	int currentActiveNode;
+	int currentActiveNodeFuction;
+		
+	/* for all of the active nodes */
+	for(i=0; i<chromo->numActiveNodes; i++){
+		
+		/* get the index of the current active node */
+		currentActiveNode = chromo->activeNodes[i];
+		
+		/* for each of the active nodes inputs */
+		for(j=0; j<params->arity; j++){
+			
+			/* gather the nodes inputs */
+			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
+			
+			if(nodeInputLocation < params->numInputs){
+				params->nodeInputsHold[j] = inputs[nodeInputLocation];
+			}
+			else{
+				params->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - params->numInputs]->output;
+			}
+		}
+		
+		/* get the index of the active node under evaluation */
+		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
+		
+		/* calculate the output of the active node under evaluation */
+		chromo->nodes[currentActiveNode]->output = params->funcSet->functions[currentActiveNodeFuction](params->arity, params->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+	}
+	
+	/* Set the chromosome outputs */
+	for(i=0; i<params->numOutputs; i++){
+	
+		if(chromo->outputNodes[i] < params->numInputs){
+			outputs[i] = inputs[chromo->outputNodes[i]];
+		}
+		else{
+			outputs[i] = chromo->nodes[chromo->outputNodes[i] - params->numInputs]->output;
+		}
+	}
+
+}
+
 
 /*
 	returns a pointer to an initialised node. Initialised means that necessary
@@ -298,6 +371,9 @@ struct node *initialiseNode(struct parameters *params, int nodePosition){
 
 	/* set the node's function */
 	n->function = getRandomFunction(params);
+
+	/* set as active by default */
+	n->active = 1;
 
 	/* set the nodes inputs and connection weights */
 	for(i=0; i<params->arity; i++){
