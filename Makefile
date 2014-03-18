@@ -7,7 +7,7 @@ CC=gcc
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
 	
-CFLAGS= -pedantic -Wall -O3 
+CFLAGS= -pedantic -Wall -g 
 
 all: src/main.c src/cgp.c src/cgp.h
 	@$(CC) -o test src/main.c src/cgp.c src/cgp.h $(CFLAGS) 

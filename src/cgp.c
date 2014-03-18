@@ -17,23 +17,40 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
-#include "libCGP.h"
+#include <string.h>
+#include "cgp.h"
+
+#define FUNCTIONSETSIZE 50
+#define FUNCTIONNAMELENGTH 512
 
 struct parameters{
 	
+	/* can use default values*/
 	int mu;
 	int lambda;
 	float mutationRate;
 	float connectionsWeightRange;
 	unsigned int randSeed;
 	
-	int numFuctions;
+	/* need to be set by user */
 	int numInputs;
 	int numNodes;
 	int numOutputs;
 	int arity;
 	
+	struct fuctionSet *funcSet;
+	
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
+};
+
+struct population{
+	int averageFitness;
+};
+
+struct fuctionSet{
+	int numFunctions;
+	char functionNames[FUNCTIONSETSIZE][FUNCTIONNAMELENGTH];
+	float (*functions[FUNCTIONSETSIZE])(const int numInputs, float *inputs, float *weights);	
 };
 
 struct chromosome{
@@ -54,6 +71,7 @@ struct node{
 
 /* Prototypes of functions used internally to CGP-Library */
 struct node *initialiseNode(struct parameters *params, int nodePosition);
+void freeNode(struct parameters *params, struct node *n);
 
 float getRandomConnectionWeight(struct parameters *params);
 int getRandomNodeInput(struct parameters *params, int nodePosition);
@@ -65,39 +83,58 @@ void recursivelySetActiveNodes(struct parameters *params, struct chromosome *chr
 
 void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 
+void addFuctionToFunctionSet(struct fuctionSet *funcSet, char *functionName);
+void freeFuctionSet(struct fuctionSet *fs);
+
+
+/* node functions defines in CGP-Library */
+float add(const int numInputs, float *inputs, float *weights);
+float sub(const int numInputs, float *inputs, float *weights);
+
 float randFloat(void);
 void bubbleSortInt(int *array, const int length);
 
+
 /*
-	Initialises a parameter struct with default values. These
+	Initialises a parameter struct with default values. These 
 	values can be individually changed via set functions.
 */
-struct parameters *initialiseParameters(void){
+struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity){
 		
 	struct parameters *params;
 	
 	/* allocate memory for parameters */
 	params = malloc(sizeof(struct parameters));
 		
-	/* Set default values*/	
+	/* Set default values */	
 	params->mu = 1;
 	params->lambda = 4;
 	params->mutationRate = 0.5;	
 	params->randSeed = 123456789;
 	params->connectionsWeightRange = 1;
-	params->arity = 2;
-	params->numInputs = 2;
-	params->numNodes = 10;
-	params->numOutputs = 1;
-	params->numFuctions = 4;
 	
+	params->arity = arity;
+	params->numInputs = numInputs;
+	params->numNodes = numNodes;
+	params->numOutputs = numOutputs;
+		
 	params->mutationType = probabilisticMutation;
-	
+		
+	params->funcSet = malloc(sizeof(struct fuctionSet));
 	
 	/* Seed the random number generator */
 	srand(params->randSeed);
 	
 	return params;
+}
+
+/*
+	Frees the memory associated with the given parameter structure
+*/
+void freeParameters(struct parameters *params){
+	
+	free(params->funcSet);
+	free(params);
 }
 
 /*
@@ -121,6 +158,72 @@ void setMu(struct parameters *params, int mu){
 	}
 }
 
+
+/*
+	
+*/
+void setFuctionSet(struct parameters *params, char *functionNames){
+
+	char *pch;
+	char functions[FUNCTIONNAMELENGTH];
+			
+	/* */
+	strcpy(functions, functionNames);
+		
+	/* */
+	params->funcSet->numFunctions = 0;
+	
+	pch = strtok(functions, ",");
+											
+	while (pch != NULL){
+		addFuctionToFunctionSet(params->funcSet, pch);
+		pch = strtok(NULL, " -:,");
+	}
+		
+		
+	if(params->funcSet->numFunctions == 0){
+		printf("Warning: No Functions added to function set.\n");
+	}	
+}
+
+/*
+	
+*/
+void addFuctionToFunctionSet(struct fuctionSet *funcSet, char *functionName){
+	
+	funcSet->numFunctions++;
+		
+	if(strcmp(functionName, "add") == 0){
+		strcpy(funcSet->functionNames[funcSet->numFunctions-1], "add");
+		funcSet->functions[funcSet->numFunctions-1] = add;
+	}
+	else if(strcmp(functionName, "sub") == 0){
+		strcpy(funcSet->functionNames[funcSet->numFunctions-1], "sub");
+		funcSet->functions[funcSet->numFunctions-1] = sub;
+	}
+	else{
+		printf("Warning: function '%s' is not known and was not added.\n", functionName);
+		funcSet->numFunctions--;
+	}	
+}
+
+/*
+	Prints the current functions in the function set to
+	the terminal.  
+*/
+void printFuctionSet(struct parameters *params){
+
+	int i;
+
+	printf("Functions (%d):", params->funcSet->numFunctions);
+	
+	for(i=0; i<params->funcSet->numFunctions; i++){
+		printf(" %s", params->funcSet->functionNames[i]);
+	}
+	
+	printf("\n");
+}
+
 /*
 	Returns a pointer to an initialised chromosome with values obeying the given parameters.
 */
@@ -128,6 +231,12 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	
 	struct chromosome *chromo;
 	int i;
+	
+	/* check that funcSet contains functions*/
+	if(params->funcSet->numFunctions < 1){
+		printf("Error: chromosome not initialised due to empty functionSet.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
 	
 	/* allocate memory for chromosome */
 	chromo = malloc(sizeof(struct chromosome));
@@ -139,7 +248,7 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	chromo->outputNodes = malloc(params->numOutputs * sizeof(int));
 	
 	/* allocate memory for active nodes matrix */
-	chromo->activeNodes = malloc(params->arity * sizeof(int));
+	chromo->activeNodes = malloc(params->numNodes * sizeof(int));
 
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<params->numNodes; i++){
@@ -154,6 +263,22 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	return chromo;
 }
 
+/*
+	Frees the memory associated with the given chromosome structure
+*/
+void freeChromosome(struct parameters *params, struct chromosome *chromo){
+	
+	int i;
+	
+	for(i=0; i<params->numNodes; i++){
+		freeNode(params, chromo->nodes[i]);
+	}
+	
+	free(chromo->nodes);
+	free(chromo->outputNodes);
+	free(chromo->activeNodes);	
+	free(chromo);
+}
 
 /*
 	returns a pointer to an initialised node. Initialised means that necessary
@@ -183,6 +308,17 @@ struct node *initialiseNode(struct parameters *params, int nodePosition){
 	return n;
 }
 
+
+/*
+
+*/
+void freeNode(struct parameters *params, struct node *n){
+	
+	free(n->inputs);
+	free(n->weights);
+	free(n);
+}
+
 /* 
 	returns a random connection weight value
 */
@@ -194,7 +330,14 @@ float getRandomConnectionWeight(struct parameters *params){
 	returns a random function index
 */
 int getRandomFunction(struct parameters *params){
-	return rand() % (params->numFuctions);
+	
+	/* check that funcSet contains functions*/
+	if(params->funcSet->numFunctions <1){
+		printf("Error: cannot assign the function gene a value as the Fuction Set is empty.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
+	
+	return rand() % (params->funcSet->numFunctions);
 }
 
 /*
@@ -377,7 +520,36 @@ void probabilisticMutation(struct parameters *params, struct chromosome *chromo)
 		}
 	}
 }
- 
+
+/*
+	Node function add. Returns the sum of the inputs. 
+*/ 	
+float add(const int numInputs, float *inputs, float *weights){
+	
+	int i;
+	float sum = 0;
+	
+	for(i=0; i<numInputs; i++){
+		sum += inputs[i];
+	}
+	
+	return sum;
+}	
+	
+/*
+	Node function sub. Returns the first input minus all remaining inputs. 
+*/ 	
+float sub(const int numInputs, float *inputs, float *weights){
+	
+	int i;
+	float sum = inputs[0];
+	
+	for(i=1; i<numInputs; i++){
+		sum -= inputs[i];
+	}
+	
+	return sum;
+}	
 	
 /* 
 	returns a random float between [0,1]

@@ -23,11 +23,11 @@
 	struct population;
 	struct chromosome;
 	struct node;
-	
+	struct fuctionSet;
 	
 	
 	/* */
-	struct parameters *initialiseParameters(void);
+	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
 	
 	/*
 		getters and setters for the parameters. Getters return the current values
@@ -35,17 +35,24 @@
 		invalid values are passed to the setters and warning is given and the parameters
 		value remains unchanged. 
 	*/
+	
+	void freeParameters(struct parameters *params);
+	
 	int getMu(struct parameters *params);
 	void setMu(struct parameters *params, int mu);
 	
 	
+	/*
+	
+	*/
+	void setFuctionSet(struct parameters *params, char *functionNames);
+	void printFuctionSet(struct parameters *params);
+	
 	/* */
 	struct chromosome *initialiseChromosome(struct parameters *params);
-	
+	void freeChromosome(struct parameters *params, struct chromosome * chromo);
 	
 	void printChromosome(struct parameters *params, struct chromosome *chromo);
-	
-	
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
 	
 	
