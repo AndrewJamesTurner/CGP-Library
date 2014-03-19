@@ -25,7 +25,7 @@ int main(void){
 	
 	printf("bestFit: %f\n", bestFit);
 	
-	/*setFitnessFuction(params, fullAdder);*/
+	/*setFitnessFuction(params, fullAdder, "fullAdder");*/
 	
 	
 		

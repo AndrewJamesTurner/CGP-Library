@@ -71,7 +71,7 @@
 	void printChromosome(struct parameters *params, struct chromosome *chromo);
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
 	
-	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat));
+	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFuctionName);
 	
 	
 #endif 

@@ -6,6 +6,7 @@ float fullAdder(struct parameters *params, struct chromosome *chromo, struct dat
 	float chromoOutputs[8];	
 	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{0,0,0},{1,0,1},{1,1,0},{1,1,1}};
 	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
+		
 					
 	if(getNumInputs(params) != 3){
 		printf("Error: The 'fullAdder' fitness function requires three chromosome inputs; not %d\n", getNumInputs(params));
