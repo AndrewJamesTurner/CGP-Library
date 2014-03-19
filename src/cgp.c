@@ -291,8 +291,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->mu = 1;
 	params->lambda = 4;
 	params->evolutionaryStrategy = '+';
-	params->mutationRate = 0.05;	
-	params->randSeed = 123456789;
+	params->mutationRate = 0.03;	
+	params->randSeed = 987654321;
 	params->connectionsWeightRange = 1;
 	params->generations = 10000;
 	
