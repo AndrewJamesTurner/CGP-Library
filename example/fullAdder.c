@@ -4,7 +4,7 @@ float fullAdder(struct parameters *params, struct chromosome *chromo, struct dat
 	int i;
 	float error = 0;
 	float chromoOutputs[8];	
-	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{0,0,0},{1,0,1},{1,1,0},{1,1,1}};
+	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
 	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
 		
 					
