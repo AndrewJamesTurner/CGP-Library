@@ -12,7 +12,7 @@
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
 /*
@@ -32,7 +32,7 @@
 		Initialises parameters used throughout the CGP-Library. The inputs describe the structure of the chromosomes created when using <initialiseChromosome> or <initialisePopulation>.
 
 		Parameters:
-			numInputs - the number of chromosome inputs required.
+			numInputs - the number of chromosome inputs required. 
 			numNodes - the number of chromosome nodes required.
 			numOutputs - the number of chromosome outputs required.
 			arity - the arity of each chromosome node required.
@@ -73,7 +73,41 @@
 	*/
 	void freeParameters(struct parameters *params);
 	
+	
+	
+	/*
+		Function: getMu
+
+		Returns the value of mu current set in the given parameters.
+
+		Parameters:
+			params - pointer to parameters structure.
+
+		Returns:
+			The value of mu in the given parameters.
+
+		See Also:
+			<setMu>
+	*/
 	int getMu(struct parameters *params);
+	
+	
+	/*
+		Function: setMu
+
+		Sets the mu value in the given parameters.
+		
+		The given mu value is also parsed to ensure a valid mu value. If a
+		invalid mu value is give a warning is displayed and the mu value is
+		left unchanged.
+
+		Parameters:
+			params - pointer to parameters structure.
+			mu - The value of mu to be set.
+
+		See Also:
+			<getMu>
+	*/
 	void setMu(struct parameters *params, int mu);
 	
 	int getNumInputs(struct parameters *params);

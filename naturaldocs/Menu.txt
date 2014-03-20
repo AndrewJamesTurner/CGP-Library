@@ -40,11 +40,15 @@ Footer: Copyright (C) 2014 Andrew James Turner
 # time it is run.  When working with groups, just deal with the braces and
 # forget about the indentation and comments.
 # 
+# You can use this file on other computers even if they use different
+# directories.  As long as the command line points to the same source files,
+# Natural Docs will be able to correct the locations automatically.
+# 
 # --------------------------------------------------------------------------
 
 
-File: API  (cgp.h)
-File: License  (license.txt)
+File: API  (/home/andy/Desktop/CGP-Library/src/include/cgp.h)
+File: License  (/home/andy/Desktop/CGP-Library/docs/custonFiles/license.txt)
 
 Group: Index  {
 
@@ -53,3 +57,8 @@ Group: Index  {
    Variable Index: Variables
    }  # Group: Index
 
+
+
+##### Do not change or remove these lines. #####
+Data: 1(D3333RuEG3p\fQ3BG6AtuI30Wgz18YHpHQ36H938\9oNfG)
+Data: 1(h3333RuEG3p\fQ3BG6AtuI30Wgz18YHpHQ3fu9639N6tu\m8oG6)

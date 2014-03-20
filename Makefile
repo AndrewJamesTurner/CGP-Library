@@ -12,8 +12,8 @@ CFLAGS= -pedantic -Wall -g
 all: src/main.c src/cgp.c src/include/cgp.h
 	@$(CC) -o test src/main.c src/cgp.c src/include/cgp.h $(CFLAGS) 
 
-docs: src/include/cgp.h src/include/license.txt
-	@naturaldocs -i ./src/include -o FramedHTML ./docs -p ./naturaldocs
+docs: src/include/cgp.h docs/custonFiles/license.txt
+	@naturaldocs -i ./src/include -i ./docs/custonFiles -o FramedHTML ./docs -p ./naturaldocs
 
 so:
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
