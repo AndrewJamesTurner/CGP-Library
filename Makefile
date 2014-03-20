@@ -9,8 +9,11 @@ CC=gcc
 	
 CFLAGS= -pedantic -Wall -g 
 
-all: src/main.c src/cgp.c src/cgp.h
+all: src/main.c src/cgp.c src/include/cgp.h
 	@$(CC) -o test src/main.c src/cgp.c src/cgp.h $(CFLAGS) 
+
+docs: src/cgp.c src/include/cgp.h
+	naturaldocs -i ./src/include -o HTML ./docs -p ./naturaldocs
 
 so:
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
