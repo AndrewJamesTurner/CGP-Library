@@ -97,10 +97,10 @@
 
 		Sets the mu value in the given parameters.
 		
-		The given mu value is also parsed to ensure a valid mu value. If a
-		invalid mu value is give a warning is displayed and the mu value is
-		left unchanged.
-
+		The given mu value is also parsed to ensure a valid mu value. 
+		mu values <1 are invalid. If a invalid mu value is give a 
+		warning is displayed and the mu value is left unchanged.
+		
 		Parameters:
 			params - pointer to parameters structure.
 			mu - The value of mu to be set.
@@ -110,9 +110,91 @@
 	*/
 	void setMu(struct parameters *params, int mu);
 	
+	
+	/*
+		Function: getNumInputs
+
+		Returns the number of chromosome inputs current set in the given parameters.
+
+		Parameters:
+			params - pointer to parameters structure.
+
+		Returns:
+			The number of chromosome inputs current set in the given parameters
+
+		See Also:
+			<setNumInputs>
+	*/
 	int getNumInputs(struct parameters *params);
+	
+	
+	/*
+		Function: getNumOutputs
+
+		Returns the number of chromosome output current set in the given parameters.
+
+		Parameters:
+			params - pointer to parameters structure.
+
+		Returns:
+			The number of chromosome output current set in the given parameters
+
+		See Also:
+			<setNumOutputs>
+	*/
 	int getNumOutputs(struct parameters *params);
 	
+	
+	
+	/*
+		Function: setFitnessFuction
+
+		Set the fitness function describable in parameters to be an externally defined fitness function. 
+		
+		If the fitnessFuction parameter is set as NULL, the fitness function will be reset to supervised learning. 
+
+		Parameters:
+			params - pointer to parameters structure.
+			fitnessFuction - the new fitness function 
+			fitnessFuctionName - the name of the custom fitness function
+
+		Example:
+			
+			Defining a custom fitness function 
+			> float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
+			>
+			> int i;
+			> float error = 0;
+			> float chromoOutputs[8];	
+			> float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+			> float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
+			> 
+			> 	//for each line in the truth table 				
+			> 	for(i=0; i<8; i++){
+			> 		
+			> 		// calculate the chromosome outputs for the set of inputs  
+			> 		executeChromosome(params, chromo, inputs[i], chromoOutputs);
+			> 		
+			> 		// If the first chromosome outputs differ from the correct outputs increment the error 
+			> 		if(outputs[i][0] != chromoOutputs[0]){
+			> 			error++;
+			> 		}
+			> 		
+			> 		// If the second chromosome outputs differ from the correct outputs increment the error 
+			> 		if(outputs[i][1] != chromoOutputs[1]){
+			> 			error++;
+			> 		}
+			> 	}				
+			> 					
+			> 	return error;
+
+			Assigning the new custom fitness function  in the parameters 
+			> struct parameters *params = initialiseParameters();
+			> setFitnessFuction(params, fullAdder, "fullAdder");
+
+		See Also:
+			
+	*/
 	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFuctionName);
 	
 	/* data functions */
