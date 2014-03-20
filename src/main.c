@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
-#include "cgp.h"
+#include "include/cgp.h" 
 
 float add(const int numInputs, const float *inputs, const float *weights){
 	

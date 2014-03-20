@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cgp.h" 
+#include "include/cgp.h" 
 
 #define FUNCTIONSETSIZE 50
 #define FUNCTIONNAMELENGTH 512

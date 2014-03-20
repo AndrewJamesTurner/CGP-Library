@@ -1,13 +1,10 @@
 Format: 1.51
 
 
-# You can add a title and sub-title to your menu like this:
-# Title: [project name]
-# SubTitle: [subtitle]
+Title: CGP-Library
+SubTitle: Documentation
 
-# You can add a footer to your documentation like this:
-# Footer: [text]
-# If you want to add a copyright notice, this would be the place to do it.
+Footer: Copyright (C) 2014 Andrew James Turner
 
 # You can add a timestamp to your documentation like one of these:
 # Timestamp: Generated on month day, year
@@ -45,4 +42,14 @@ Format: 1.51
 # 
 # --------------------------------------------------------------------------
 
+
+File: API  (cgp.h)
+File: License  (license.txt)
+
+Group: Index  {
+
+   Index: Everything
+   Function Index: Functions
+   Variable Index: Variables
+   }  # Group: Index
 

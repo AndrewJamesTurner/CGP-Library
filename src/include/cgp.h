@@ -4,7 +4,7 @@
     CGP-Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published 
     by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    (at your option) any later version. 
 
     CGP-Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,18 +15,62 @@
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+	Title: API
+	
+	Description of all the CGP-Library functions and variables.	
+*/
+
+
 #ifndef CGPLIB
 #define CGPLIB
+		
+	
+	/*
+		Function: initialiseParameters
 
-	/* public structure definitions given via opaque pointers */
-	struct parameters;
-	struct population;
-	struct chromosome;
-	struct fuctionSet;
-	struct data;
+		Initialises parameters used throughout the CGP-Library. The inputs describe the structure of the chromosomes created when using <initialiseChromosome> or <initialisePopulation>.
+
+		Parameters:
+			numInputs - the number of chromosome inputs required.
+			numNodes - the number of chromosome nodes required.
+			numOutputs - the number of chromosome outputs required.
+			arity - the arity of each chromosome node required.
+
+		Returns:
+			A pointer to an initialised parameters structure.
+
+		Example:
 			
-	/* parameter functions */
+			> struct parameters *params;
+			>
+			> int numInputs = 3;
+			> int numNodes = 10;
+			> int numOutputs = 2;
+			> int nodeArity = 2;		
+			>
+			> params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+			>
+			> freeParameters(params);
+			
+
+		See Also:
+			<freeParameters>
+	*/
 	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
+	
+	
+	/*
+		Function: freeParameters
+
+		Frees parameters instance.
+
+		Parameters:
+			params - pointer to parameters structure.
+			
+		See Also:
+			<initialiseParameters>
+	*/
 	void freeParameters(struct parameters *params);
 	
 	int getMu(struct parameters *params);
@@ -64,11 +108,27 @@
 	struct chromosome *getFittestChromosome(struct parameters *params, struct population *pop);	
 	int getNumberOfGenerations(struct population *pop);
 		
+		
+	
+	
 	/*
-		getters and setters for the parameters. Getters return the current values
-		stored in parameters. Setter set the values in parameters to new values. If
-		invalid values are passed to the setters and warning is given and the parameters
-		value remains unchanged. 
+		variable: parameters
+		Stores general parameters used by CGP-Library.
+		
+		The structures variables should not and can not be accessed directly. Getters and Setters must be used.
+		
+		See Also:
+			<initialiseParameters> <freeParameters>
 	*/
+	
+	struct parameters;
+	struct population;
+	struct chromosome;
+	struct fuctionSet;
+	struct data;
+	
+	
+	
+	
 	
 #endif 
