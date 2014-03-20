@@ -2,36 +2,63 @@
 #include <stdlib.h> 
 #include "cgp.h"
 
+float add(const int numInputs, const float *inputs, const float *weights){
+	
+	int i;
+	float sum = 0;
+	
+	for(i=0; i<numInputs; i++){
+		sum += inputs[i];
+	}
+	
+	return sum;
+}	
 
 int main(void){
 
 	struct parameters *params;
 	struct population *pop;
 	struct data *trainingData;
-	
-	float bestFit;
-	
+	struct chromosome *chromo;	
+		
 	int numInputs = 3;
-	int numNodes = 50;
+	int numNodes = 10;
 	int numOutputs = 2;
 	int nodeArity = 2;
 	
+	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};	
+		
+	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
-	setFuctionSet(params, "and,or,nand,nor,xor");
+			
+	addNodeFuction(params, "and,or,nand,nor,xor");
+	printFuctionSet(params);
 	
 	pop = initialisePopulation(params);
 		
-	trainingData = initialiseDataFromFile("./example/fullAdder");
-		
-	bestFit = evolvePopulation(params, pop, trainingData);
+
+	/*trainingData = initialiseDataFromFile("./example/fullAdder");*/	
+	trainingData = initialiseDataFromArrays(3,2,8, inputs[0], outputs[0]);
 	
-	printf("bestFit: %f\n", bestFit);
+		
+	evolvePopulation(params, pop, trainingData);
+	/*printf("bestFit: %f\n", bestFit);*/
+	
+	
+	chromo = getFittestChromosome(params, pop);
+	printf("Best Fitness: %f found after %d generations.\n", getChromosomeFitness(chromo), getNumberOfGenerations(pop));
+	
+	
+	/*printChromosome(chromo);*/
 	
 	
 	freePopulation(params, pop);
 	freeData(trainingData);
 	freeParameters(params);
 	
+	
+		
 	
 	
 	

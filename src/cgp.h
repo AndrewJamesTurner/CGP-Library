@@ -18,26 +18,15 @@
 #ifndef CGPLIB
 #define CGPLIB
 
-	/* Structure definitions given via opaque pointers */
+	/* public structure definitions given via opaque pointers */
 	struct parameters;
 	struct population;
 	struct chromosome;
 	struct fuctionSet;
 	struct data;
-	
-	
-	float evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
-	
-	/* */
+			
+	/* parameter functions */
 	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
-	
-	/*
-		getters and setters for the parameters. Getters return the current values
-		stored in parameters. Setter set the values in parameters to new values. If
-		invalid values are passed to the setters and warning is given and the parameters
-		value remains unchanged. 
-	*/
-	
 	void freeParameters(struct parameters *params);
 	
 	int getMu(struct parameters *params);
@@ -46,32 +35,40 @@
 	int getNumInputs(struct parameters *params);
 	int getNumOutputs(struct parameters *params);
 	
-	/*
+	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFuctionName);
 	
-	*/
-	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
-	
-	
+	/* data functions */
+	struct data *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
 	struct data *initialiseDataFromFile(char *file);
 	void freeData(struct data *dat);
 	void printData(struct data *dat);
-	/*
 	
-	*/
-	void setFuctionSet(struct parameters *params, char *functionNames);
+	/* function set functions */
+	void addNodeFuction(struct parameters *params, char *functionNames);
+	void addNodeFuctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
+	void clearFuctionSet(struct parameters *params);
 	void printFuctionSet(struct parameters *params);
 	
+	/* chromosome functions  */
+	struct chromosome *initialiseChromosome(struct parameters *params);
+	void freeChromosome(struct chromosome *chromo);
+	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
+	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
+	void printChromosome(struct chromosome *chromo);
+	float getChromosomeFitness(struct chromosome *chromo);
+	
+	/* population functions */
 	struct population *initialisePopulation(struct parameters *params);
 	void freePopulation(struct parameters *params, struct population *pop);
-	
-	/* */
-	struct chromosome *initialiseChromosome(struct parameters *params);
-	void freeChromosome(struct parameters *params, struct chromosome * chromo);
-	
-	void printChromosome(struct parameters *params, struct chromosome *chromo);
-	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
-	
-	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFuctionName);
-	
+	void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
+	struct chromosome *getFittestChromosome(struct parameters *params, struct population *pop);	
+	int getNumberOfGenerations(struct population *pop);
+		
+	/*
+		getters and setters for the parameters. Getters return the current values
+		stored in parameters. Setter set the values in parameters to new values. If
+		invalid values are passed to the setters and warning is given and the parameters
+		value remains unchanged. 
+	*/
 	
 #endif 
