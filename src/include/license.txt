@@ -1,0 +1,9 @@
+Title: License
+
+CGP-Library 
+
+Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
+
+GNU Lesser General Public License
+
+
