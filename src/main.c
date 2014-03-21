@@ -1,37 +1,78 @@
 #include <stdio.h>
 #include <stdlib.h> 
+#include <math.h>
 #include "include/cgp.h" 
+
+float symbolicEq1(float x){
+	return powf(x,6.0) - 2*powf(x,4.0) + powf(x,2.0);
+}
+
+
+float symbolicRegression1(struct parameters *params, struct chromosome *chromo, struct data *dat){
+	
+	float i;
+	float error = 0;
+	float chromoInputs[1];	
+	float chromoOutputs[1];	
+						
+	if(getNumInputs(params) != 1){
+		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome input; not %d\n", getNumInputs(params));
+		exit(0);
+	}				
+		
+	if(getNumOutputs(params) != 1){
+		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome output; not %d\n", getNumOutputs(params));
+		exit(0);
+	}		
+					
+	/* for each line in the truth table */				
+	for(i=-5; i<=5; i=i+0.1){
+		
+		chromoInputs[0] = i;
+		
+		/* calculate the chromosome outputs for the set of inputs  */
+		executeChromosome(params, chromo, chromoInputs, chromoOutputs);
+		
+		error = fabs(symbolicEq1(i) - chromoOutputs[0]);
+	}				
+					
+	return error;
+}
+
 
 
 int main(void){
 
 	struct parameters *params;
 	struct population *pop;
-	struct data *trainingData;
+	/*struct data *trainingData;*/
 	struct chromosome *chromo;	
 		
-	int numInputs = 3;
+	int numInputs = 1;
 	int numNodes = 10;
-	int numOutputs = 2;
+	int numOutputs = 1;
 	int nodeArity = 2;
 	
+	/*
 	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
 	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};	
-		
+		*/
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
-	addNodeFunction(params, "and,or,nand,nor,xor");
+	addNodeFunction(params, "add,sub,mul,div");
 	printFunctionSet(params);
+	
+	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
 	pop = initialisePopulation(params);
 		
 
 	/*trainingData = initialiseDataFromFile("./example/fullAdder");*/	
-	trainingData = initialiseDataFromArrays(3,2,8, inputs[0], outputs[0]);
+	/*trainingData = initialiseDataFromArrays(3,2,8, inputs[0], outputs[0]);*/
 	
 		
-	evolvePopulation(params, pop, trainingData);
+	evolvePopulation(params, pop, NULL);
 		
 	
 	chromo = getFittestChromosome(params, pop);
@@ -43,7 +84,7 @@ int main(void){
 	
 	
 	freePopulation(pop);
-	freeData(trainingData);
+	/*freeData(trainingData);*/
 	freeParameters(params);
 	
 

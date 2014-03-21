@@ -414,7 +414,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->connectionsWeightRange = 1;
 	params->generations = 10000;
 	
-	params->updateFrequency = 1000;
+	params->updateFrequency = 500;
 	
 	params->arity = arity;
 	params->numInputs = numInputs;

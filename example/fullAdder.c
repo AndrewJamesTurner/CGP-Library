@@ -10,13 +10,11 @@ float fullAdder(struct parameters *params, struct chromosome *chromo, struct dat
 					
 	if(getNumInputs(params) != 3){
 		printf("Error: The 'fullAdder' fitness function requires three chromosome inputs; not %d\n", getNumInputs(params));
-		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}				
 		
 	if(getNumOutputs(params) != 2){
 		printf("Error: The 'fullAdder' fitness function requires two chromosome outputs; not %d\n", getNumOutputs(params));
-		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}		
 					
