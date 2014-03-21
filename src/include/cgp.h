@@ -19,11 +19,44 @@
 	Title: API
 	
 	Description of all the CGP-Library functions and variables.	
+	
 */
 
 
 #ifndef CGPLIB
 #define CGPLIB
+		
+	/*
+		variable: parameters
+		
+		Stores general parameters used by the CGP-Library.
+		
+		The values stored in parameters are set to default values when initialised and can be altered though setter functions. The parameters variables can not be accessed directly; getters and Setters must be used.
+		
+		Defaults:
+		
+			Default parameter values.
+		
+			> mu:						1
+			> lambda:					4
+			> evolutionary strategy:	+ (mu+lambda)-ES
+			> mutation rate:			0.05
+			> connection weight range:	1 +/- 
+			> maximum generations:		10000
+			> update frequency:			100
+			> mutation type:			probabilistic
+			> fitness function: 		supervisedLearning
+			> selection scheme:			pickHighest
+			> reproduction scheme:		mutateRandomParent
+			
+		See Also:
+			<initialiseParameters>, <freeParameters>
+	*/	
+	struct parameters;
+	struct population;
+	struct chromosome;
+	struct fuctionSet;
+	struct data;	
 		
 	
 	/*
@@ -42,6 +75,7 @@
 
 		Example:
 			
+			Initialising parameters
 			> struct parameters *params;
 			>
 			> int numInputs = 3;
@@ -49,10 +83,7 @@
 			> int numOutputs = 2;
 			> int nodeArity = 2;		
 			>
-			> params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
-			>
-			> freeParameters(params);
-			
+			> params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity); 
 
 		See Also:
 			<freeParameters>
@@ -78,7 +109,7 @@
 	/*
 		Function: getMu
 
-		Returns the value of mu current set in the given parameters.
+		Gets the value of mu current set in the given parameters.
 
 		Parameters:
 			params - pointer to parameters structure.
@@ -114,7 +145,7 @@
 	/*
 		Function: getNumInputs
 
-		Returns the number of chromosome inputs current set in the given parameters.
+		Gets the number of chromosome inputs current set in the given parameters.
 
 		Parameters:
 			params - pointer to parameters structure.
@@ -131,7 +162,7 @@
 	/*
 		Function: getNumOutputs
 
-		Returns the number of chromosome output current set in the given parameters.
+		Gets the number of chromosome output current set in the given parameters.
 
 		Parameters:
 			params - pointer to parameters structure.
@@ -144,23 +175,25 @@
 	*/
 	int getNumOutputs(struct parameters *params);
 	
-	
-	
-	/*
-		Function: setFitnessFuction
-
-		Set the fitness function describable in parameters to be an externally defined fitness function. 
 		
-		If the fitnessFuction parameter is set as NULL, the fitness function will be reset to supervised learning. 
+	/*
+		Function: setFitnessFunction
+
+		Set custom fitness function. 
+		
+		The custom fitness function must take the form:
+		> float functionName(struct parameters *params, struct chromosome *chromo, struct data *dat)
+		
+		If the fitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning. 
 
 		Parameters:
 			params - pointer to parameters structure.
-			fitnessFuction - the new fitness function 
-			fitnessFuctionName - the name of the custom fitness function
+			fitnessFunction - the custom fitness function 
+			fitnessFunctionName - name of custom fitness function
 
 		Example:
 			
-			Defining a custom fitness function 
+			Defining a custom fitness function, full adder
 			> float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
 			>
 			> int i;
@@ -187,63 +220,252 @@
 			> 	}				
 			> 					
 			> 	return error;
+			> }
 
-			Assigning the new custom fitness function  in the parameters 
+			Setting the new custom fitness function as the fitness function to be used
 			> struct parameters *params = initialiseParameters();
-			> setFitnessFuction(params, fullAdder, "fullAdder");
+			> setFitnessFuction(params, fullAdder, "fullAdder");			
+	*/
+	void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFunctionName);
+	
+	
+	
+	
+	/*
+		Function: initialiseDataFromArrays
+
+		Initialises a data structures using the given input output pairs.
+		
+		The data structures can be used by the fitness functions.
+
+		Parameters:
+			numInputs - number of inputs per data sample
+			numOutputs - number of outputs per data sample
+			numSamples - number of data samples 
+			inputs - pointer to the inputs to be stored in the data structure
+			outputs - pointer to the outputs to be stored in the data structure
+
+		Returns:
+			A pointer to an initialised data structure.
+			
+		Example:
+		
+			> struct data *trainingData;
+			>
+			> int numInputs = 3;
+			> int numOutputs = 2;
+			> int numSamples = 8;
+			>
+			> float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+			> float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};	
+			>
+			> trainingData = initialiseDataFromArrays(numInputs, numOutputs, numSamples, inputs[0], outputs[0]);
 
 		See Also:
-			
+			<freeData>, <initialiseDataFromFile>, <printData>
 	*/
-	void setFitnessFuction(struct parameters *params, float (*fitnessFuction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFuctionName);
-	
-	/* data functions */
 	struct data *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
+	
+	
+	/*
+		Function: initialiseDataFromFile
+
+		Initialises a data structures using the given file.
+		
+		The data structures can be used by the fitness functions.
+
+		Parameters:
+			file - the location of the file to be loaded into the data structure
+
+		Returns:
+			A pointer to an initialised data structure.
+			
+		Example:
+		
+			The file containing the data must take the form
+			
+			> 2,3,4
+			> 1,2,3,4,5
+			> 6,7,8,9,10
+			> 11,12,13,14,15
+			> 16,17,18,19,20
+			
+			Where the header describes the number of inputs, number of outputs and the number of samples. The rest of the file should give the input and then the output data of each sample on a new line.
+		
+			The file can then be used to initialise a data structure. 
+		
+			> struct data *trainingData;
+			>
+			> trainingData = initialiseDataFromFile("file");
+
+		See Also:
+			<freeData>, <initialiseDataFromArrays>, <printData>
+	*/
 	struct data *initialiseDataFromFile(char *file);
+	
+	
+	/*
+		Function: freeData
+
+		Frees data instance.
+
+		Parameters:
+			dat - pointer to data structure.
+			
+		See Also:
+			<initialiseDataFromArrays>, <initialiseDataFromFile>
+	*/
 	void freeData(struct data *dat);
+	
+	/*
+		Function: printData
+
+		Prints the input output pairs held by a data structure in a human readable form.  
+
+		Parameters:
+			dat - pointer to data structure.
+			
+		See Also:
+			<initialiseDataFromArrays>, <initialiseDataFromFile>, <freeData>
+	*/
 	void printData(struct data *dat);
 	
-	/* function set functions */
-	void addNodeFuction(struct parameters *params, char *functionNames);
-	void addNodeFuctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
-	void clearFuctionSet(struct parameters *params);
-	void printFuctionSet(struct parameters *params);
 	
-	/* chromosome functions  */
+	
+	/*
+		Function: addNodeFunction
+
+		Adds pre-made node function(s) to the set of functions made available to chromosome nodes.  
+	
+		If one node function's name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
+		
+		If a node function name is given which is not recognised, a warning is given and that function is not added to the function set.
+
+		Parameters:
+			params - pointer to parameters structure
+			functionNames - the name(s) of the function(s) to add to the function set
+			
+		Example:
+			
+			Add the node functions logical AND OR NAND NOR and XOR to the function set.
+			> addNodeFunction(params, "and,or,nand,nor,xor");
+			
+		See Also:
+			<clearFunctionSet>, <addNodeFunctionCustom>, <printFunctionSet>
+	*/
+	void addNodeFunction(struct parameters *params, char *functionNames);
+	
+	
+		/*
+		Function: addNodeFunctionCustom
+
+		Adds a custom node function to the set of functions made available to chromosome nodes.  
+	
+		The custom fitness function must take the form:
+		> float (*nodeFunctionName)(const int numInputs, const float *inputs, const float *weights)
+	
+		Parameters:
+			params - pointer to parameters structure
+			function - the custom node function
+			functionName - the name of the added function
+			
+		Example:
+			
+			custom node function, add
+			> float add(const int numInputs, const float *inputs, const float *connectionWeights){
+			> 
+			> int i;
+			> float sum = 0;
+			> 
+			> for(i=0; i<numInputs; i++){
+			> 	sum += inputs[i];
+			> }
+			> 
+			> return sum;
+			> }	
+			
+			Setting the new custom node function
+			> addNodeFunctionCustom(params, add, "add");
+			
+		See Also:
+			<clearFuctionSet>, <addNodeFunction>, <printFunctionSet>
+	*/
+	void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
+	
+	
+	/*
+		Function: clearFunctionSet
+
+		Resets the function set to contain no functions.
+	
+		Parameters:
+			params - pointer to parameters structure
+						
+		See Also:
+			<addNodeFunction>, <addNodeFunctionCustom>, <printFunctionSet>
+	*/
+	void clearFunctionSet(struct parameters *params);
+	
+	
+	/*
+		Function: printFunctionSet
+
+		Prints the contents of the current function set in a human readable form.  
+			
+		Parameters:
+			params - pointer to parameters structure
+						
+		See Also:
+			<addNodeFunction>, <addNodeFunctionCustom>, <clearFunctionSet>
+	*/
+	void printFunctionSet(struct parameters *params);
+	
+	
+	/*
+		Function: initialiseChromosome
+
+		Initialises chromosome based on the parameters given in params.
+
+		Parameters:
+			params - pointer to parameters structure
+
+		Returns:
+			A pointer to an initialised chromosome structure.
+			
+		See Also:
+			<freeChromosome>, <printChromosome>
+	*/
 	struct chromosome *initialiseChromosome(struct parameters *params);
+	
+	/*
+		Function: freeChromosome
+
+		Frees chromosome instance.
+
+		Parameters:
+			chromo - pointer to chromosome structure.
+			
+		See Also:
+			<initialiseChromosome>
+	*/
 	void freeChromosome(struct chromosome *chromo);
+	
+	
+	
 	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
-	void printChromosome(struct chromosome *chromo);
+	void printChromosome(struct parameters *params, struct chromosome *chromo);
 	float getChromosomeFitness(struct chromosome *chromo);
+	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct data *dat);
+	int getChromosomeNumActiveNodes(struct chromosome *chromo);
 	
 	/* population functions */
 	struct population *initialisePopulation(struct parameters *params);
-	void freePopulation(struct parameters *params, struct population *pop);
+	void freePopulation(struct population *pop);
 	void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
 	struct chromosome *getFittestChromosome(struct parameters *params, struct population *pop);	
 	int getNumberOfGenerations(struct population *pop);
 		
-		
-	
-	
-	/*
-		variable: parameters
-		Stores general parameters used by CGP-Library.
-		
-		The structures variables should not and can not be accessed directly. Getters and Setters must be used.
-		
-		See Also:
-			<initialiseParameters> <freeParameters>
-	*/
-	
-	struct parameters;
-	struct population;
-	struct chromosome;
-	struct fuctionSet;
-	struct data;
-	
-	
 	
 	
 	

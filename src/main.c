@@ -2,7 +2,7 @@
 #include <stdlib.h> 
 #include "include/cgp.h" 
 
-float add(const int numInputs, const float *inputs, const float *weights){
+float add(const int numInputs, const float *inputs, const float *connectionWeights){
 	
 	int i;
 	float sum = 0;
@@ -32,8 +32,8 @@ int main(void){
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
-	addNodeFuction(params, "and,or,nand,nor,xor");
-	printFuctionSet(params);
+	addNodeFunction(params, "and,or,nand,nor,xor");
+	printFunctionSet(params);
 	
 	pop = initialisePopulation(params);
 		
@@ -43,17 +43,17 @@ int main(void){
 	
 		
 	evolvePopulation(params, pop, trainingData);
-	/*printf("bestFit: %f\n", bestFit);*/
-	
+		
 	
 	chromo = getFittestChromosome(params, pop);
-	printf("Best Fitness: %f found after %d generations.\n", getChromosomeFitness(chromo), getNumberOfGenerations(pop));
+	printf("Best Fitness: %f found after %d generations. which used %d active nodes\n", getChromosomeFitness(chromo), getNumberOfGenerations(pop), getChromosomeNumActiveNodes(chromo));
 	
 	
-	/*printChromosome(chromo);*/
+	
+	printChromosome(params,chromo);
 	
 	
-	freePopulation(params, pop);
+	freePopulation(pop);
 	freeData(trainingData);
 	freeParameters(params);
 	
