@@ -144,6 +144,8 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 /* node functions defines in CGP-Library */
 static float add(const int numInputs, const float *inputs, const float *connectionWeights);
 static float sub(const int numInputs, const float *inputs, const float *connectionWeights);
+static float mul(const int numInputs, const float *inputs, const float *connectionWeights);
+static float divide(const int numInputs, const float *inputs, const float *connectionWeights);
 static float and(const int numInputs, const float *inputs, const float *connectionWeights); 
 static float nand(const int numInputs, const float *inputs, const float *connectionWeights);
 static float or(const int numInputs, const float *inputs, const float *connectionWeights);
@@ -596,6 +598,12 @@ static void addPresetFuctionToFunctionSet(struct parameters *params, char *funct
 	}
 	else if(strcmp(functionName, "sub") == 0){
 		addNodeFunctionCustom(params, sub, "sub");
+	}
+	else if(strcmp(functionName, "mul") == 0){
+		addNodeFunctionCustom(params, mul, "mul");
+	}
+	else if(strcmp(functionName, "div") == 0){
+		addNodeFunctionCustom(params, divide, "div");
 	}
 	else if(strcmp(functionName, "and") == 0){
 		addNodeFunctionCustom(params, and, "and");
@@ -1313,6 +1321,39 @@ static float sub(const int numInputs, const float *inputs, const float *connecti
 	}
 	
 	return sum;
+}	
+
+
+/*
+	Node function mul. Returns the multiplication of all the inputs. 
+*/ 	
+static float mul(const int numInputs, const float *inputs, const float *connectionWeights){
+	
+	int i;
+	float multiplication = 1;
+	
+	for(i=0; i<numInputs; i++){
+		multiplication *= inputs[i];
+	}
+	
+	return multiplication;
+}	
+
+
+/*
+	Node function div. Returns the first input divided by the second input divided by the third input etc 
+*/ 	
+static float divide(const int numInputs, const float *inputs, const float *connectionWeights){
+	
+	int i;
+	float divide = inputs[0];
+	
+	for(i=1; i<numInputs; i++){
+				
+		divide /= inputs[i];
+	}
+	
+	return divide;
 }	
 
 
