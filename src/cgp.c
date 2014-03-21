@@ -19,6 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
+#include <float.h>
+
 #include "include/cgp.h" 
 
 #define FUNCTIONSETSIZE 50
@@ -1031,6 +1034,23 @@ void executeChromosome(struct parameters *params, struct chromosome *chromo, flo
 		
 		/* calculate the output of the active node under evaluation */
 		chromo->nodes[currentActiveNode]->output = params->funcSet->functions[currentActiveNodeFuction](params->arity, params->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+	
+		  
+		/* prevent float form going to inf and -inf */
+		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
+		
+			if(chromo->nodes[currentActiveNode]->output > 0){
+				chromo->nodes[currentActiveNode]->output = FLT_MAX;
+			}
+			else{
+				chromo->nodes[currentActiveNode]->output = FLT_MIN;
+			}	
+		}
+		
+		/* deal with floats becoming NAN */
+		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
+			chromo->nodes[currentActiveNode]->output = 0;
+		}
 	}
 	
 	/* Set the chromosome outputs */
