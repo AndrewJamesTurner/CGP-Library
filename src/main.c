@@ -2,17 +2,6 @@
 #include <stdlib.h> 
 #include "include/cgp.h" 
 
-float add(const int numInputs, const float *inputs, const float *connectionWeights){
-	
-	int i;
-	float sum = 0;
-	
-	for(i=0; i<numInputs; i++){
-		sum += inputs[i];
-	}
-	
-	return sum;
-}	
 
 int main(void){
 
@@ -57,11 +46,7 @@ int main(void){
 	freeData(trainingData);
 	freeParameters(params);
 	
-	
-		
-	
-	
-	
+
 	/*setFitnessFuction(params, fullAdder, "fullAdder");*/
 	
 	/*setFitnessFuction(params, fullAdder, "fullAdder");*/
