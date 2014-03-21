@@ -337,13 +337,30 @@
 
 		Adds pre-made node function(s) to the set of functions made available to chromosome nodes.  
 	
-		If one node function's name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
+		If one function name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
 		
 		If a node function name is given which is not recognised, a warning is given and that function is not added to the function set.
 
 		Parameters:
 			params - pointer to parameters structure
 			functionNames - the name(s) of the function(s) to add to the function set
+		
+		Node Functions:
+		
+			mathematical operations 
+			
+			- add 	- 	summation over all inputs.
+			- sub	-	subtracts all but the first input from the first input
+			
+			logic gates
+			
+			- and	-	returns '1' if all inputs are '1', else '0'
+			- nand	-	returns '0' if all inputs are '1', else, '1'
+			- or	-	returns '0' if all inputs are '0', else, '1'
+			- nor	-	returns '1' if all inputs are '0', else, '0'
+			- xor	-	returns '1' if only one of the inputs is '1', else, '0'
+			- xnor	-	returns '0' if only one of the inputs is '1', else, '1'
+			- not	-	returns '1' if first input is '0', else '1'
 			
 		Example:
 			

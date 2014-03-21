@@ -149,6 +149,7 @@ static float nand(const int numInputs, const float *inputs, const float *connect
 static float or(const int numInputs, const float *inputs, const float *connectionWeights);
 static float nor(const int numInputs, const float *inputs, const float *connectionWeights);
 static float xor(const int numInputs, const float *inputs, const float *connectionWeights);
+static float xnor(const int numInputs, const float *inputs, const float *connectionWeights);
 static float not(const int numInputs, const float *inputs, const float *connectionWeights);
 
 /* other */
@@ -610,6 +611,9 @@ static void addPresetFuctionToFunctionSet(struct parameters *params, char *funct
 	}	
 	else if(strcmp(functionName, "xor") == 0){
 		addNodeFunctionCustom(params, xor, "xor");
+	}	
+	else if(strcmp(functionName, "xnor") == 0){
+		addNodeFunctionCustom(params, xnor, "xnor");
 	}	
 	else if(strcmp(functionName, "not") == 0){
 		addNodeFunctionCustom(params, not, "not");
@@ -1376,7 +1380,7 @@ static float or(const int numInputs, const float *inputs, const float *connectio
 
 
 /*
-	Node function nor. logical NOR, returns '1' if all inputs are '1'
+	Node function nor. logical NOR, returns '1' if all inputs are '0'
 	else, '0'
 */ 	
 static float nor(const int numInputs, const float *inputs, const float *connectionWeights){
@@ -1422,6 +1426,37 @@ static float xor(const int numInputs, const float *inputs, const float *connecti
 	}
 	else{
 		out = 0;
+	}
+	
+	return out;
+}
+
+/*
+	Node function xnor. logical XNOR, returns '0' iff one of the inputs is '1'
+	else, '1'. 
+*/ 	
+static float xnor(const int numInputs, const float *inputs, const float *connectionWeights){
+		
+	int i;
+	int numOnes = 0;
+	int out;
+	
+	for(i=0; i<numInputs; i++){
+		
+		if(inputs[i] == 1){
+			numOnes++;
+		}
+		
+		if(numOnes > 1){
+			break;
+		}
+	}
+	
+	if(numOnes == 1){
+		out = 0;
+	}
+	else{
+		out = 1;
 	}
 	
 	return out;
