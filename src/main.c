@@ -44,8 +44,6 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 int main(void){
 
 	struct parameters *params;
-	/*struct data *trainingData;*/
-	/*struct chromosome *chromo = NULL;	*/
 	struct results *rels = NULL;
 		
 	int numInputs = 1;
@@ -53,35 +51,50 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	/*
-	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
-	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};	
-		*/
+	int numGens = 3000;
+	int numRuns = 10;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
+	setNumGenerations(params, numGens);		
+			
+	setTargetFitness(params, 0.1);		
+			
 	addNodeFunction(params, "add,sub,mul,div");
-	printFunctionSet(params);
 	
 	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
-
+	
+	rels = repeatCGP(params, NULL, numRuns);	
+	
+		
+	printf("\n");
+	printChromosome(getChromosome(rels,0));
+			
+	freeResults(rels);
+	freeParameters(params);		
+		
+		
+		
+		
+	/*printFunctionSet(params);*/	
+		
+	/*struct data *trainingData;*/
+	/*struct chromosome *chromo = NULL;	*/	
+		
+		
+		/*
+	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};	
+	*/	
+		
+			
 	/*trainingData = initialiseDataFromFile("./example/fullAdder");*/	
 	/*trainingData = initialiseDataFromArrays(3,2,8, inputs[0], outputs[0]);*/
 	
-	
 	/*chromo = runCGP(params, NULL);
 	printf("Chromo fitness: %f\n", getChromosomeFitness(chromo));
-	*/		
-			
-	rels = repeatCGP(params, NULL,1);	
-	printf("Average Fitness: %f\tAverage Active Nodes: %f\n", getAverageFitness(rels), getAverageActiveNodes(rels));	
-	
-	printChromosome(getChromosome(rels,0));
-			
-			
-			
-			
+	*/				
 			
 			
 			
@@ -95,8 +108,7 @@ int main(void){
 	/*freeChromosome(chromo);*/
 	/*freePopulation(pop);*/
 	/*freeData(trainingData);*/
-	freeResults(rels);
-	freeParameters(params);
+	
 	
 
 	/*setFitnessFuction(params, fullAdder, "fullAdder");*/

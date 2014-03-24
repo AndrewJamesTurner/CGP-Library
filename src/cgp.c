@@ -39,11 +39,13 @@ struct parameters{
 	char evolutionaryStrategy;
 	float mutationRate;
 	float connectionsWeightRange;
-	int generations;
+	int numGenerations;
 	int numInputs;
 	int numNodes;
 	int numOutputs;
 	int arity;
+	
+	float targetFitness;
 	
 	struct fuctionSet *funcSet;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
@@ -78,6 +80,7 @@ struct chromosome{
 	float *outputValues;
 	struct fuctionSet *funcSet;
 	float *nodeInputsHold;
+	int generation;
 	
 };
 
@@ -171,13 +174,32 @@ static void copyFuctionSet(struct fuctionSet *funcSetDest, struct fuctionSet *fu
 /* population functions */
 struct population *initialisePopulation(struct parameters *params);
 void freePopulation(struct population *pop);
-void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
+
 struct chromosome *getFittestChromosome(struct population *pop);	
 int getNumberOfGenerations(struct population *pop);
-
-
-
 struct results* initialiseResults(struct parameters *params, int numRuns);
+
+
+
+void setTargetFitness(struct parameters *params, float targetFitness){
+
+	/* error checking */
+	
+	
+	params->targetFitness = targetFitness;
+
+}
+
+
+void setNumGenerations(struct parameters *params, int numGens){
+	
+	/* error checking */
+	
+	
+	params->numGenerations = numGens;
+}
+
+
 
 
 struct results* initialiseResults(struct parameters *params, int numRuns){
@@ -251,6 +273,30 @@ float getAverageFitness(struct results *rels){
 	return avgFit;
 }
 
+float getAverageGenerations(struct results *rels){
+	
+	int i;
+	float avgGens = 0;
+	struct chromosome *chromoTemp;
+	
+	
+	for(i=0; i<rels->numRuns; i++){
+		
+		chromoTemp = rels->bestChromosomes[i];
+
+		avgGens += getChromosomeGenerations(chromoTemp);
+	}
+	
+	avgGens = avgGens / rels->numRuns;
+	
+	return avgGens;
+}
+
+int getChromosomeGenerations(struct chromosome *chromo){
+	return chromo->generation;
+}
+
+
 struct chromosome* getChromosome(struct results *rels, int run){
 	
 	/* do some error checking */
@@ -263,8 +309,13 @@ struct results* repeatCGP(struct parameters *params, struct data *dat, int numRu
 	
 	int i;
 	struct results *rels;
+	int updateFrequency = params->updateFrequency;
+		
+	params->updateFrequency = 0;	
 		
 	rels = initialiseResults(params, numRuns);
+
+	printf("Run\tFitness\t\tGeneration\tActive Nodes\n");
 
 	/* for each run */
 	for(i=0; i<numRuns; i++){
@@ -272,7 +323,14 @@ struct results* repeatCGP(struct parameters *params, struct data *dat, int numRu
 		/* run cgp */
 		rels->bestChromosomes[i] = runCGP(params, dat);
 		
+		printf("%d\t%f\t%d\t\t%d\n", i, rels->bestChromosomes[i]->fitness, rels->bestChromosomes[i]->generation, rels->bestChromosomes[i]->numActiveNodes);	
 	}
+	
+	printf("-------------------------------------------------------------\n");
+	printf("AVG\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));	
+	
+	
+	params->updateFrequency = updateFrequency;
 	
 	return rels;
 }
@@ -325,10 +383,12 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 		}
 	}
 	
-	printf("Gen\tfit\n");
+	if(params->updateFrequency != 0){
+		printf("Gen\tfit\n");
+	}
 	
 	/* for each generation */
-	for(gen=0; gen<params->generations; gen++){
+	for(gen=0; gen<params->numGenerations; gen++){
 		
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
@@ -339,8 +399,12 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 				
 		/* check termination conditions */
 		bestChromo = getFittestChromosome(pop);
-		if(bestChromo->fitness <= 0){
-			printf("%d\t%f - Solution Found\n", gen, bestChromo->fitness);
+		if(bestChromo->fitness <= params->targetFitness){
+			
+			if(params->updateFrequency != 0){
+				printf("%d\t%f - Solution Found\n", gen, bestChromo->fitness);
+			}
+			
 			break;
 		}			
 				
@@ -365,7 +429,7 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 		
 		
 		/* */
-		if(gen % params->updateFrequency == 0 || gen >= params->generations-1){
+		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= params->numGenerations-1) ){
 			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
 		}
 			
@@ -378,6 +442,7 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 	
 	
 	bestChromo = getFittestChromosome(pop);
+	bestChromo->generation = gen;
 	copyChromosome(chromo, bestChromo);
 	
 	
@@ -675,7 +740,9 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->evolutionaryStrategy = '+';
 	params->mutationRate = 0.05;	
 	params->connectionsWeightRange = 1;
-	params->generations = 1000;
+	params->numGenerations = 1000;
+	
+	params->targetFitness = 0;
 	
 	params->updateFrequency = 100;
 	
@@ -1073,7 +1140,8 @@ static void copyChromosome(struct chromosome *chromoDest, struct chromosome *chr
 	/* copy the fitness */
 	chromoDest->fitness = chromoSrc->fitness;
 	
-	
+	/* copy generation */
+	chromoDest->generation = chromoSrc->generation;
 }
 
 
@@ -1114,97 +1182,7 @@ void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, 
 
 
 
-/*
-	Evolves the given population using the parameters specified in the given parameters. The data 
-	structure can be used by the fitness function if required, otherwise set as NULL.
-*/
-void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat){
-	
-	int i;
-	int gen;
-	
-	/* storage for chromosomes used by selection scheme */
-	struct chromosome **candidateChromos;
-	int numCandidateChromos;
-		
-	/* determine the size of the Candidate Chromos based on the evolutionary Strategy */	
-	if(params->evolutionaryStrategy == '+'){
-		numCandidateChromos = params->mu + params->lambda;
-	}
-	else{
-		numCandidateChromos = params->lambda;
-	}	
-			
-	/* initialise the candidateChromos */	
-	candidateChromos = malloc(numCandidateChromos * sizeof(struct chromosome *));	
-		
-	for(i=0; i<numCandidateChromos; i++){
-		candidateChromos[i] = initialiseChromosome(params);
-	}
-		
-	/* if using '+' evolutionary strategy */
-	if(params->evolutionaryStrategy == '+'){
-		
-		/* set fitness of the parents */
-		for(i=0; i<params->mu; i++){
-			setActiveNodes(pop->parents[i]);
-			setChromosomeFitness(params, pop->parents[i], dat);
-		}
-	}
-	
-	printf("Gen\tfit\n");
-	
-	/* for each generation */
-	for(gen=0; gen<params->generations; gen++){
-		
-		/* set fitness of the children of the population */
-		for(i=0; i< params->lambda; i++){
-			setActiveNodes(pop->children[i]);
-			setChromosomeFitness(params, pop->children[i], dat);
-		}
-				
-			
-		/* 
-			Set the chromosomes which will be used by the selection scheme
-			dependant upon the evolutionary strategy
-		*/
-		for(i=0; i<numCandidateChromos; i++){
-			
-			if(i < params->lambda){
-				copyChromosome(candidateChromos[i], pop->children[i] );
-			}
-			else{
-				copyChromosome(candidateChromos[i], pop->parents[i - params->lambda] );
-			}
-		}
-						
-		/* select the parents */		
-		params->selectionScheme(params, pop->parents, candidateChromos, numCandidateChromos);
-						
-		/* check termination conditions */
-		if(pop->parents[0]->fitness <= 0){
-			printf("%d\t%f - Solution Found\n", gen, pop->parents[0]->fitness);
-			break;
-		}	
-		
-		/* */
-		if(gen % params->updateFrequency == 0){
-			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
-		}
-			
-		/* create the children */
-		params->reproductionScheme(params, pop);	
-	}
-	
-		
-	pop->trainedGenerations = gen;
-	
-	for(i=0; i<numCandidateChromos; i++){
-		freeChromosome(candidateChromos[i]);
-	}
 
-	free(candidateChromos);
-}
 
 
 /*

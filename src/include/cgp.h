@@ -491,6 +491,12 @@
 	
 	float getAverageFitness(struct results *rels);
 	float getAverageActiveNodes(struct results *rels);
+	float getAverageGenerations(struct results *rels);
+	
 	struct chromosome* getChromosome(struct results *rels, int run);
 	
+	int getChromosomeGenerations(struct chromosome *chromo);
+	
+	void setNumGenerations(struct parameters *params, int numGens);
+	void setTargetFitness(struct parameters *params, float targetFitness);
 #endif 
