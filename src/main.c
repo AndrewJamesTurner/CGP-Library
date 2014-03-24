@@ -43,17 +43,17 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 
 int main(void){
 
-	struct parameters *params;
+	struct parameters *params = NULL;
 	struct results *rels = NULL;
-	struct chromosome *chromo;
+	struct chromosome *chromo = NULL;
 		
 	int numInputs = 1;
-	int numNodes = 10;
+	int numNodes = 20;
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 3000;
-	int numRuns = 1;
+	int numGens = 5000;
+	int numRuns = 10;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -68,14 +68,14 @@ int main(void){
 	
 	rels = repeatCGP(params, NULL, numRuns);	
 	
-		
+	/*	
 	printf("\n");
 	printChromosome(getChromosome(rels,0));
 		
 	saveChromosome(getChromosome(rels,0), "test.chromo");
 	chromo = loadChromosome("test.chromo");
 	printChromosome(chromo);		
-			
+		*/	
 	free(chromo);		
 	freeResults(rels);
 	freeParameters(params);		

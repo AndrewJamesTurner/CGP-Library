@@ -243,7 +243,7 @@ struct chromosome* loadChromosome(char *file){
 	/* ensure that the file was created correctly */
 	if(fp == NULL){
 		printf("Warning: cannot load chromosome: '%s'. Chromosome was not loaded.\n", file);
-		return;
+		return NULL;
 	}
 	
 	/* get num inputs */
@@ -372,10 +372,14 @@ void freeResults(struct results *rels){
 	
 	int i;
 	
+	/* attempt to prevent user double freeing */	
+	if(rels == NULL){
+		return;
+	}	
+	
 	for(i=0; i<rels->numRuns; i++){
 		freeChromosome(rels->bestChromosomes[i]);
 	}
-	
 	
 	free(rels->bestChromosomes);
 	free(rels);
@@ -831,6 +835,11 @@ void freeData(struct data *dat){
 	
 	int i;
 	
+	/* attempt to prevent user double freeing */	
+	if(dat == NULL){
+		return;
+	}	
+	
 	for(i=0; i<dat->numSamples; i++){
 		free(dat->inputData[i]);
 		free(dat->outputData[i]);
@@ -927,6 +936,10 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 */
 void freeParameters(struct parameters *params){
 	
+	/* attempt to prevent user double freeing */	
+	if(params == NULL){
+		return;
+	}	
 	
 	free(params->funcSet);
 			
@@ -971,6 +984,11 @@ struct population *initialisePopulation(struct parameters *params){
 void freePopulation(struct population *pop){
 	
 	int i;
+	
+	/* attempt to prevent user double freeing */	
+	if(pop == NULL){
+		return;
+	}	
 	
 	for(i=0; i < pop->mu; i++){
 		freeChromosome(pop->parents[i]);
@@ -1235,8 +1253,12 @@ void freeChromosome(struct chromosome *chromo){
 
 	int i;
 		
+	/* attempt to prevent user double freeing */	
+	if(chromo == NULL){
+		return;
+	}	
+				
 	for(i=0; i < chromo->numNodes; i++){
-		
 		freeNode(chromo->nodes[i]);
 	}
 	
@@ -1518,6 +1540,11 @@ static struct node *initialiseNode(struct parameters *params, int nodePosition){
 
 */
 static void freeNode(struct node *n){
+	
+	/* attempt to prevent user double freeing */	
+	if(n == NULL){
+		return;
+	}	
 	
 	free(n->inputs);
 	free(n->weights);
