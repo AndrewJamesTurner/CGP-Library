@@ -181,13 +181,161 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 
 
 
+void saveChromosome(struct chromosome *chromo, char *file){
+	
+	int i,j;
+	FILE *fp;
+	
+	/* create the chromosome file */
+	fp = fopen(file, "w");
+	
+	/* ensure that the file was created correctly */
+	if(fp == NULL){
+		printf("Warning: cannot save chromosome to '%s'. Chromosome was not saved.\n", file);
+		return;
+	}
+		
+	fprintf(fp, "numInputs,%d\n", chromo->numInputs);
+	fprintf(fp, "numNodes,%d\n", chromo->numNodes);
+	fprintf(fp, "numOutputs,%d\n", chromo->numOutputs);
+	fprintf(fp, "arity,%d\n", chromo->arity);
+	
+	fprintf(fp, "fuctionSet");
+	
+	for(i=0; i<chromo->funcSet->numFunctions; i++){
+		fprintf(fp, ",%s", chromo->funcSet->functionNames[i]);	
+	}
+	fprintf(fp, "\n");
+	
+	for(i=0; i<chromo->numNodes; i++){
+		
+		fprintf(fp, "%d\n", chromo->nodes[i]->function);
+		
+		for(j=0; j<chromo->arity; j++){
+			fprintf(fp, "%d,%f\n", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
+		}
+	}
+	
+	for(i=0; i<chromo->numOutputs; i++){
+		fprintf(fp, "%d,", chromo->outputNodes[i]);
+	}
+	
+	fclose(fp);
+}
+
+struct chromosome* loadChromosome(char *file){
+	
+	FILE *fp;
+	struct chromosome *chromo;
+	struct parameters *params;
+	
+	char *line, *record;
+	char funcName[FUNCTIONNAMELENGTH];
+	char buffer[1024];
+	
+	int i,j;
+	int numInputs, numNodes, numOutputs, arity;
+	
+	
+	/* create the chromosome file */
+	fp = fopen(file, "r");
+	
+	/* ensure that the file was created correctly */
+	if(fp == NULL){
+		printf("Warning: cannot load chromosome: '%s'. Chromosome was not loaded.\n", file);
+		return;
+	}
+	
+	/* get num inputs */
+	line = fgets(buffer, sizeof(buffer), fp);
+	if(line == NULL){/*error*/}
+	record = strtok(line,",");
+	record = strtok(NULL,",");
+	numInputs = atoi(record);
+	printf("numInputs: %d\n", numInputs);
+	
+	/* get num nodes */
+	line = fgets(buffer, sizeof(buffer), fp);
+	if(line == NULL){/*error*/}
+	record = strtok(line,",");
+	record = strtok(NULL,",");
+	numNodes = atoi(record);
+	printf("numNodes: %d\n", numNodes);
+	
+	/* get num outputs */
+	line = fgets(buffer, sizeof(buffer), fp);
+	if(line == NULL){/*error*/}
+	record = strtok(line,",");
+	record = strtok(NULL,",");
+	numOutputs = atoi(record);
+	printf("numOutputs: %d\n", numOutputs);
+	
+	/* get arity */
+	line = fgets(buffer, sizeof(buffer), fp);
+	if(line == NULL){/*error*/}
+	record = strtok(line,",");
+	record = strtok(NULL,",");
+	arity = atoi(record);
+	printf("arity: %d\n", arity);
+	
+	/* initialise parameters  */
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	
+	/* get and set node functions */
+	line = fgets(buffer, sizeof(buffer), fp);
+	if(line == NULL){/*error*/}
+	record = strtok(line,",\n");
+	record = strtok(NULL,",\n");
+	
+	/* for each function name */
+	while( record != NULL){
+		
+		strcpy(funcName, record);				
+		addPresetFuctionToFunctionSet(params,funcName);
+		record = strtok(NULL,",\n");
+				
+	}
+		
+	/* initialise chromosome */
+	chromo = initialiseChromosome(params);
+	
+	
+	/* set the node parameters */
+	for(i=0; i<numNodes; i++){
+		
+		/* get the function gene */
+		line=fgets(buffer, sizeof(buffer), fp);		
+		record = strtok(line,",\n");
+		chromo->nodes[i]->function = atoi(record);
+
+		for(j=0; j<arity; j++){
+			line=fgets(buffer, sizeof(buffer), fp);
+			sscanf(line,"%d,%f", &chromo->nodes[i]->inputs[j], &chromo->nodes[i]->weights[j]);
+		}
+	}
+	
+	/* set the outputs */
+	line=fgets(buffer, sizeof(buffer), fp);	
+	record = strtok(line,",\n");
+	chromo->outputNodes[0] = atoi(record);
+	
+	for(i=1; i<numOutputs; i++){
+		record = strtok(NULL,",\n");
+		chromo->outputNodes[i] = atoi(record);
+	}
+			
+	free(params);
+	
+	return chromo;
+}
+
+
 void setTargetFitness(struct parameters *params, float targetFitness){
 
 	/* error checking */
 	
 	
 	params->targetFitness = targetFitness;
-
 }
 
 

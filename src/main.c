@@ -45,6 +45,7 @@ int main(void){
 
 	struct parameters *params;
 	struct results *rels = NULL;
+	struct chromosome *chromo;
 		
 	int numInputs = 1;
 	int numNodes = 10;
@@ -52,7 +53,7 @@ int main(void){
 	int nodeArity = 2;
 	
 	int numGens = 3000;
-	int numRuns = 10;
+	int numRuns = 1;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -70,7 +71,12 @@ int main(void){
 		
 	printf("\n");
 	printChromosome(getChromosome(rels,0));
+		
+	saveChromosome(getChromosome(rels,0), "test.chromo");
+	chromo = loadChromosome("test.chromo");
+	printChromosome(chromo);		
 			
+	free(chromo);		
 	freeResults(rels);
 	freeParameters(params);		
 		

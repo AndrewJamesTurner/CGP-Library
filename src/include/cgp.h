@@ -499,4 +499,9 @@
 	
 	void setNumGenerations(struct parameters *params, int numGens);
 	void setTargetFitness(struct parameters *params, float targetFitness);
+	
+	void saveChromosome(struct chromosome *chromo, char *file);
+	struct chromosome* loadChromosome(char *file);
+	
+	
 #endif 
