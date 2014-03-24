@@ -392,21 +392,21 @@
 			custom node function, add
 			> float add(const int numInputs, const float *inputs, const float *connectionWeights){
 			> 
-			> int i;
-			> float sum = 0;
+			> 	int i;
+			> 	float sum = 0;
 			> 
-			> for(i=0; i<numInputs; i++){
-			> 	sum += inputs[i];
-			> }
+			> 	for(i=0; i<numInputs; i++){
+			> 		sum += inputs[i];
+			> 	}
 			> 
-			> return sum;
+			> 	return sum;
 			> }	
 			
-			Setting the new custom node function
+			Adding the new custom node function
 			> addNodeFunctionCustom(params, add, "add");
 			
 		See Also:
-			<clearFuctionSet>, <addNodeFunction>, <printFunctionSet>
+			<clearFunctionSet>, <addNodeFunction>, <printFunctionSet>
 	*/
 	void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
 	
