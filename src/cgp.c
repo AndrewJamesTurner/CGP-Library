@@ -44,7 +44,7 @@ struct parameters{
 	int numNodes;
 	int numOutputs;
 	int arity;
-	float *nodeInputsHold;
+	
 	struct fuctionSet *funcSet;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
@@ -76,6 +76,8 @@ struct chromosome{
 	int *activeNodes;
 	float fitness;
 	float *outputValues;
+	struct fuctionSet *funcSet;
+	float *nodeInputsHold;
 	
 };
 
@@ -86,6 +88,7 @@ struct node{
 	float *weights;	
 	int active;
 	float output;
+	int arity;
 };
 
 struct fuctionSet{
@@ -102,9 +105,11 @@ struct data{
 	float **outputData;
 };
 
-
-
-
+struct results{
+	
+	int numRuns;
+	struct chromosome **bestChromosomes;
+};
 
 
 /* 
@@ -112,12 +117,12 @@ struct data{
 */
 
 /* chromosome functions */
-static void copyChromosome(struct parameters *params, struct chromosome *chromoDest, struct chromosome *chromoSrc);
+static void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
 
 /* node functions */
 static struct node *initialiseNode(struct parameters *params, int nodePosition);
 static void freeNode(struct node *n);
-static void copyNode(struct parameters *params, struct node *nodeDest, struct node *nodeSrc);
+static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 
 /* getting gene value functions  */
 static float getRandomConnectionWeight(struct parameters *params);
@@ -161,6 +166,264 @@ static float not(const int numInputs, const float *inputs, const float *connecti
 static float randFloat(void);
 static void bubbleSortInt(int *array, const int length);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
+static void copyFuctionSet(struct fuctionSet *funcSetDest, struct fuctionSet *funcSetSrc);
+
+/* population functions */
+struct population *initialisePopulation(struct parameters *params);
+void freePopulation(struct population *pop);
+void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
+struct chromosome *getFittestChromosome(struct population *pop);	
+int getNumberOfGenerations(struct population *pop);
+
+
+
+struct results* initialiseResults(struct parameters *params, int numRuns);
+
+
+struct results* initialiseResults(struct parameters *params, int numRuns){
+	
+	int i;
+	struct results *rels;
+
+	rels = malloc(sizeof(struct results));
+	rels->bestChromosomes = malloc(numRuns * sizeof(struct chromosome));
+	
+	
+	rels->numRuns = numRuns;
+	
+	for(i=0; i<numRuns; i++){
+		/* rels->bestChromosomes[i] = initialiseChromosome(params); */
+	}
+	
+	return rels;
+}
+
+void freeResults(struct results *rels){
+	
+	int i;
+	
+	for(i=0; i<rels->numRuns; i++){
+		freeChromosome(rels->bestChromosomes[i]);
+	}
+	
+	
+	free(rels->bestChromosomes);
+	free(rels);
+}
+
+
+float getAverageActiveNodes(struct results *rels){
+	
+	int i;
+	float avgActiveNodes = 0;
+	struct chromosome *chromoTemp;
+	
+	
+	for(i=0; i<rels->numRuns; i++){
+		
+		chromoTemp = rels->bestChromosomes[i];
+
+		avgActiveNodes += getChromosomeActiveNodes(chromoTemp);
+	}
+	
+	avgActiveNodes = avgActiveNodes / rels->numRuns;
+	
+	return avgActiveNodes;
+}
+
+
+float getAverageFitness(struct results *rels){
+	
+	int i;
+	float avgFit = 0;
+	struct chromosome *chromoTemp;
+	
+	
+	for(i=0; i<rels->numRuns; i++){
+		
+		chromoTemp = rels->bestChromosomes[i];
+
+		avgFit += getChromosomeFitness(chromoTemp);
+	}
+	
+	avgFit = avgFit / rels->numRuns;
+	
+	return avgFit;
+}
+
+struct chromosome* getChromosome(struct results *rels, int run){
+	
+	/* do some error checking */
+	
+	return rels->bestChromosomes[run];
+}
+
+
+struct results* repeatCGP(struct parameters *params, struct data *dat, int numRuns){
+	
+	int i;
+	struct results *rels;
+		
+	rels = initialiseResults(params, numRuns);
+
+	/* for each run */
+	for(i=0; i<numRuns; i++){
+		
+		/* run cgp */
+		rels->bestChromosomes[i] = runCGP(params, dat);
+		
+	}
+	
+	return rels;
+}
+
+
+struct chromosome* runCGP(struct parameters *params, struct data *dat){
+	
+	int i;
+	int gen;
+	
+	/* */
+	struct chromosome *chromo;
+	struct chromosome *bestChromo;
+	
+	/* */
+	struct population *pop;
+	
+	/* storage for chromosomes used by selection scheme */
+	struct chromosome **candidateChromos;
+	int numCandidateChromos;
+		
+	/* */
+	chromo = initialiseChromosome(params);
+		
+	/* */
+	pop = initialisePopulation(params);
+		
+	/* determine the size of the Candidate Chromos based on the evolutionary Strategy */	
+	if(params->evolutionaryStrategy == '+'){
+		numCandidateChromos = params->mu + params->lambda;
+	}
+	else{
+		numCandidateChromos = params->lambda;
+	}	
+			
+	/* initialise the candidateChromos */	
+	candidateChromos = malloc(numCandidateChromos * sizeof(struct chromosome *));	
+		
+	for(i=0; i<numCandidateChromos; i++){
+		candidateChromos[i] = initialiseChromosome(params);
+	}
+		
+	/* if using '+' evolutionary strategy */
+	if(params->evolutionaryStrategy == '+'){
+		
+		/* set fitness of the parents */
+		for(i=0; i<params->mu; i++){
+			setActiveNodes(pop->parents[i]);
+			setChromosomeFitness(params, pop->parents[i], dat);
+		}
+	}
+	
+	printf("Gen\tfit\n");
+	
+	/* for each generation */
+	for(gen=0; gen<params->generations; gen++){
+		
+		/* set fitness of the children of the population */
+		for(i=0; i< params->lambda; i++){
+			setActiveNodes(pop->children[i]);
+			setChromosomeFitness(params, pop->children[i], dat);
+		}
+				
+				
+		/* check termination conditions */
+		bestChromo = getFittestChromosome(pop);
+		if(bestChromo->fitness <= 0){
+			printf("%d\t%f - Solution Found\n", gen, bestChromo->fitness);
+			break;
+		}			
+				
+			
+		/* 
+			Set the chromosomes which will be used by the selection scheme
+			dependant upon the evolutionary strategy
+		*/
+		for(i=0; i<numCandidateChromos; i++){
+			
+			if(i < params->lambda){
+				copyChromosome(candidateChromos[i], pop->children[i] );
+			}
+			else{
+				copyChromosome(candidateChromos[i], pop->parents[i - params->lambda] );
+			}
+		}
+						
+		/* select the parents */		
+		params->selectionScheme(params, pop->parents, candidateChromos, numCandidateChromos);
+						
+		
+		
+		/* */
+		if(gen % params->updateFrequency == 0 || gen >= params->generations-1){
+			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
+		}
+			
+		/* create the children */
+		params->reproductionScheme(params, pop);	
+	}
+	
+		
+	pop->trainedGenerations = gen;
+	
+	
+	bestChromo = getFittestChromosome(pop);
+	copyChromosome(chromo, bestChromo);
+	
+	
+	
+	for(i=0; i<numCandidateChromos; i++){
+		freeChromosome(candidateChromos[i]);
+	}
+	free(candidateChromos);
+	
+	
+	freePopulation(pop);
+	
+	
+	return chromo;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* */
+static void copyFuctionSet(struct fuctionSet *funcSetDest, struct fuctionSet *funcSetSrc){
+	
+	int i;
+	
+	funcSetDest->numFunctions = funcSetSrc->numFunctions;
+	
+
+	for(i=0; i<funcSetDest->numFunctions; i++){
+		
+		strcpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i]);	
+		funcSetDest->functions[i] = funcSetSrc->functions[i];
+	}
+}
 
 
 
@@ -186,7 +449,7 @@ float getChromosomeFitness(struct chromosome *chromo){
 /*
 
 */
-int getChromosomeNumActiveNodes(struct chromosome *chromo){
+int getChromosomeActiveNodes(struct chromosome *chromo){
 	return chromo->numActiveNodes;
 }
 
@@ -194,7 +457,7 @@ int getChromosomeNumActiveNodes(struct chromosome *chromo){
 /*
 	Returns a pointer to the best chromosome in the given population
 */
-struct chromosome *getFittestChromosome(struct parameters *params, struct population *pop){
+struct chromosome *getFittestChromosome(struct population *pop){
 
 	struct chromosome *bestChromo;
 	float bestFitness;
@@ -205,7 +468,7 @@ struct chromosome *getFittestChromosome(struct parameters *params, struct popula
 	bestFitness = pop->parents[0]->fitness;
 	
 	/* for all the parents except the first parent */
-	for(i=1; i<params->mu; i++){
+	for(i=1; i<pop->mu; i++){
 		
 		/* set this parent to be the best chromosome if it is fitter than the current best */
 		if(pop->parents[i]->fitness < bestFitness){
@@ -216,7 +479,7 @@ struct chromosome *getFittestChromosome(struct parameters *params, struct popula
 	}
 	
 	/* for all the children */
-	for(i=0; i<params->lambda; i++){
+	for(i=0; i<pop->lambda; i++){
 		
 		/* set this child to be the best chromosome if it is fitter than the current best */
 		if(pop->children[i]->fitness < bestFitness){
@@ -412,9 +675,9 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->evolutionaryStrategy = '+';
 	params->mutationRate = 0.05;	
 	params->connectionsWeightRange = 1;
-	params->generations = 10000;
+	params->generations = 1000;
 	
-	params->updateFrequency = 500;
+	params->updateFrequency = 100;
 	
 	params->arity = arity;
 	params->numInputs = numInputs;
@@ -426,7 +689,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->funcSet = malloc(sizeof(struct fuctionSet));
 	params->funcSet->numFunctions = 0;
 	
-	params->nodeInputsHold = malloc(params->arity * sizeof(float));
+	
 	
 	params->fitnessFunction = supervisedLearning;
 	strcpy(params->fitnessFunctionName, "supervisedLearning");
@@ -449,7 +712,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 */
 void freeParameters(struct parameters *params){
 	
-	free(params->nodeInputsHold);
+	
 	free(params->funcSet);
 			
 	free(params);
@@ -735,9 +998,17 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	/* */
 	chromo->fitness = -1;
 	
+	/*  */
+	chromo->funcSet = malloc(sizeof(struct fuctionSet));
 	
 	/* */
+	copyFuctionSet(chromo->funcSet, params->funcSet);
+		
+	/* */
 	setActiveNodes(chromo);
+	
+	
+	chromo->nodeInputsHold = malloc(params->arity * sizeof(float));
 	
 	return chromo;
 }
@@ -754,6 +1025,8 @@ void freeChromosome(struct chromosome *chromo){
 		freeNode(chromo->nodes[i]);
 	}
 	
+	free(chromo->nodeInputsHold);
+	free(chromo->funcSet);
 	free(chromo->outputValues);
 	free(chromo->nodes);
 	free(chromo->outputNodes);
@@ -765,40 +1038,48 @@ void freeChromosome(struct chromosome *chromo){
 /*
 
 */
-static void copyChromosome(struct parameters *params, struct chromosome *chromoDest, struct chromosome *chromoSrc){
-	
+static void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc){
+
 	int i;
 	
+	/* copy num inputs, nodes, output and arity */
+	chromoDest->numInputs = chromoSrc->numInputs;
+	chromoDest->numNodes = chromoSrc->numNodes;
+	chromoDest->numOutputs = chromoSrc->numOutputs;
+	chromoDest->arity = chromoSrc->arity;
+	
+	
 	/* copy nodes */
-	for(i=0; i<params->numNodes; i++){
-		copyNode(params, chromoDest->nodes[i],  chromoSrc->nodes[i]);
+	for(i=0; i<chromoSrc->numNodes; i++){
+		copyNode(chromoDest->nodes[i],  chromoSrc->nodes[i]);
 	}
+	
+	/* copy fuctionset */
+	copyFuctionSet(chromoDest->funcSet, chromoSrc->funcSet);
 		
 	/* copy each of the chromosomes outputs */
-	for(i=0; i<params->numOutputs; i++){
+	for(i=0; i<chromoSrc->numOutputs; i++){
 		chromoDest->outputNodes[i] = chromoSrc->outputNodes[i];
 	}
 	
 	/* copy the active node matrix */
-	for(i=0; i<params->numNodes; i++){
+	for(i=0; i<chromoSrc->numNodes; i++){
 		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
 	}
-	
-	/* copy the number of inputs and outputs */
-	chromoDest->numInputs = chromoSrc->numInputs;
-	chromoDest->numOutputs = chromoSrc->numOutputs;
-	
+		
 	/* copy the number of active node */
 	chromoDest->numActiveNodes = chromoSrc->numActiveNodes;
 	
 	/* copy the fitness */
 	chromoDest->fitness = chromoSrc->fitness;
+	
+	
 }
 
 
 /*
 */
-static void copyNode(struct parameters *params, struct node *nodeDest, struct node *nodeSrc){
+static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 
 	int i;
 
@@ -807,9 +1088,12 @@ static void copyNode(struct parameters *params, struct node *nodeDest, struct no
 
 	/* copy active flag */
 	nodeDest->active = nodeSrc->active;
+	
+	/* */
+	nodeDest->arity = nodeSrc->arity;
 
 	/* copy the nodes inputs and connection weights */
-	for(i=0; i<params->arity; i++){
+	for(i=0; i<nodeSrc->arity; i++){
 		nodeDest->inputs[i] = nodeSrc->inputs[i];
 		nodeDest->weights[i] = nodeSrc->weights[i];
 	}
@@ -887,10 +1171,10 @@ void evolvePopulation(struct parameters *params, struct population *pop, struct 
 		for(i=0; i<numCandidateChromos; i++){
 			
 			if(i < params->lambda){
-				copyChromosome(params, candidateChromos[i], pop->children[i] );
+				copyChromosome(candidateChromos[i], pop->children[i] );
 			}
 			else{
-				copyChromosome(params, candidateChromos[i], pop->parents[i - params->lambda] );
+				copyChromosome(candidateChromos[i], pop->parents[i - params->lambda] );
 			}
 		}
 						
@@ -934,7 +1218,7 @@ static void mutateRandomParent(struct parameters *params, struct population *pop
 	for(i=0; i< params->lambda; i++){
 		
 		/* set child as clone of random parent */
-		copyChromosome(params, pop->children[i], pop->parents[rand() % params->mu]);
+		copyChromosome(pop->children[i], pop->parents[rand() % params->mu]);
 		
 		/* mutate newly cloned child */
 		params->mutationType(params, pop->children[i]);
@@ -957,7 +1241,7 @@ static void pickHighest(struct parameters *params, struct chromosome **parents, 
 			
 	for(i=0; i<params->mu; i++){
 		
-		copyChromosome(params, parents[i], candidateChromos[i]);
+		copyChromosome(parents[i], candidateChromos[i]);
 	}	
 }
 
@@ -1002,7 +1286,7 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 /*
 	Executes the given chromosome with the given outputs and placed the outputs in 'outputs'.
 */
-void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs){
+void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs){
 	
 	int i,j;
 	int nodeInputLocation;
@@ -1016,16 +1300,16 @@ void executeChromosome(struct parameters *params, struct chromosome *chromo, flo
 		currentActiveNode = chromo->activeNodes[i];
 		
 		/* for each of the active nodes inputs */
-		for(j=0; j<params->arity; j++){
+		for(j=0; j<chromo->arity; j++){
 			
 			/* gather the nodes inputs */
 			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
 			
-			if(nodeInputLocation < params->numInputs){
-				params->nodeInputsHold[j] = inputs[nodeInputLocation];
+			if(nodeInputLocation < chromo->numInputs){
+				chromo->nodeInputsHold[j] = inputs[nodeInputLocation];
 			}
 			else{
-				params->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - params->numInputs]->output;
+				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - chromo->numInputs]->output;
 			}
 		}
 		
@@ -1033,7 +1317,7 @@ void executeChromosome(struct parameters *params, struct chromosome *chromo, flo
 		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
 		
 		/* calculate the output of the active node under evaluation */
-		chromo->nodes[currentActiveNode]->output = params->funcSet->functions[currentActiveNodeFuction](params->arity, params->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](chromo->arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
 	
 		  
 		/* prevent float form going to inf and -inf */
@@ -1054,13 +1338,13 @@ void executeChromosome(struct parameters *params, struct chromosome *chromo, flo
 	}
 	
 	/* Set the chromosome outputs */
-	for(i=0; i<params->numOutputs; i++){
+	for(i=0; i<chromo->numOutputs; i++){
 	
-		if(chromo->outputNodes[i] < params->numInputs){
+		if(chromo->outputNodes[i] < chromo->numInputs){
 			outputs[i] = inputs[chromo->outputNodes[i]];
 		}
 		else{
-			outputs[i] = chromo->nodes[chromo->outputNodes[i] - params->numInputs]->output;
+			outputs[i] = chromo->nodes[chromo->outputNodes[i] - chromo->numInputs]->output;
 		}
 	}
 }
@@ -1096,6 +1380,9 @@ static struct node *initialiseNode(struct parameters *params, int nodePosition){
 	
 	/* */
 	n->output = 0;
+	
+	/* */
+	n->arity = params->arity;
 	
 	return n;
 }
@@ -1219,7 +1506,7 @@ static int getRandomChromosomeOutput(struct parameters *params){
 /*
 	Prints the given chromosome to the screen
 */	 
-void printChromosome(struct parameters *params, struct chromosome *chromo){
+void printChromosome(struct chromosome *chromo){
 
 	int i,j;			
 				
@@ -1235,7 +1522,7 @@ void printChromosome(struct parameters *params, struct chromosome *chromo){
 	for(i = 0; i < chromo->numNodes; i++){ 
 	
 		/* print the node function */
-		printf("(%d):\t%s\t", chromo->numInputs + i, params->funcSet->functionNames[chromo->nodes[i]->function]);
+		printf("(%d):\t%s\t", chromo->numInputs + i, chromo->funcSet->functionNames[chromo->nodes[i]->function]);
 		
 		/* for the arity of the node */
 		for(j = 0; j < chromo->arity; j++){
@@ -1563,18 +1850,15 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 		exit(0);
 	}
 
-	
 	/* for each sample in data */
 	for(i=0 ; i<dat->numSamples; i++){
 	
 		/* calculate the chromosome outputs for the set of inputs  */
-		executeChromosome(params, chromo, dat->inputData[i], chromo->outputValues);
+		executeChromosome(chromo, dat->inputData[i], chromo->outputValues);
 	
 		/* for each chromosome output */
 		for(j=0; j<chromo->numOutputs; j++){
-			
-			/*printf("%f ", chromo->outputValues[j]);*/
-						
+									
 			temp = (chromo->outputValues[j] - dat->outputData[i][j]);
 			
 			if(temp >= 0){
@@ -1584,13 +1868,8 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 				error -= temp;
 			}
 		}
-		
-		/*printf("\n");	*/
 	}
-/*
-	printf("\nFit: %f\n", error);
-	getchar();
-*/
+	
 	return error;
 }
 /* 

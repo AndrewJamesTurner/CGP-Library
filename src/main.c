@@ -31,7 +31,7 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 		chromoInputs[0] = i;
 		
 		/* calculate the chromosome outputs for the set of inputs  */
-		executeChromosome(params, chromo, chromoInputs, chromoOutputs);
+		executeChromosome(chromo, chromoInputs, chromoOutputs);
 		
 		error = fabs(symbolicEq1(i) - chromoOutputs[0]);
 	}				
@@ -44,9 +44,9 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 int main(void){
 
 	struct parameters *params;
-	struct population *pop;
 	/*struct data *trainingData;*/
-	struct chromosome *chromo;	
+	/*struct chromosome *chromo = NULL;	*/
+	struct results *rels = NULL;
 		
 	int numInputs = 1;
 	int numNodes = 10;
@@ -65,26 +65,37 @@ int main(void){
 	
 	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
-	pop = initialisePopulation(params);
-		
 
 	/*trainingData = initialiseDataFromFile("./example/fullAdder");*/	
 	/*trainingData = initialiseDataFromArrays(3,2,8, inputs[0], outputs[0]);*/
 	
-		
-	evolvePopulation(params, pop, NULL);
-		
 	
-	chromo = getFittestChromosome(params, pop);
-	printf("Best Fitness: %f found after %d generations. which used %d active nodes\n", getChromosomeFitness(chromo), getNumberOfGenerations(pop), getChromosomeNumActiveNodes(chromo));
+	/*chromo = runCGP(params, NULL);
+	printf("Chromo fitness: %f\n", getChromosomeFitness(chromo));
+	*/		
+			
+	rels = repeatCGP(params, NULL,1);	
+	printf("Average Fitness: %f\tAverage Active Nodes: %f\n", getAverageFitness(rels), getAverageActiveNodes(rels));	
+	
+	printChromosome(getChromosome(rels,0));
+			
+			
+			
+			
+			
+			
+			
+	/*chromo = getFittestChromosome(params, pop);*/
+	/*printf("Best Fitness: %f found after %d generations. which used %d active nodes\n", getChromosomeFitness(chromo), getNumberOfGenerations(pop), getChromosomeNumActiveNodes(chromo));*/
 	
 	
 	
-	printChromosome(params,chromo);
+	/*printChromosome(params,chromo);*/
 	
-	
-	freePopulation(pop);
+	/*freeChromosome(chromo);*/
+	/*freePopulation(pop);*/
 	/*freeData(trainingData);*/
+	freeResults(rels);
 	freeParameters(params);
 	
 

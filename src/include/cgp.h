@@ -53,10 +53,11 @@
 			<initialiseParameters>, <freeParameters>
 	*/	
 	struct parameters;
-	struct population;
 	struct chromosome;
 	struct fuctionSet;
 	struct data;	
+	struct population;
+	struct results;
 		
 	
 	/*
@@ -469,21 +470,27 @@
 	
 	
 	
-	void executeChromosome(struct parameters *params, struct chromosome *chromo, float *inputs, float *outputs);
+	void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs);
 	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
-	void printChromosome(struct parameters *params, struct chromosome *chromo);
+	void printChromosome(struct chromosome *chromo);
 	float getChromosomeFitness(struct chromosome *chromo);
+	
 	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct data *dat);
-	int getChromosomeNumActiveNodes(struct chromosome *chromo);
+	int getChromosomeActiveNodes(struct chromosome *chromo);
 	
-	/* population functions */
-	struct population *initialisePopulation(struct parameters *params);
-	void freePopulation(struct population *pop);
-	void evolvePopulation(struct parameters *params, struct population *pop, struct data *dat);
-	struct chromosome *getFittestChromosome(struct parameters *params, struct population *pop);	
-	int getNumberOfGenerations(struct population *pop);
-		
+
+	/*
+		returns an initilised chromosome which shoyulod be freed by the user.
+	*/	
+	struct chromosome* runCGP(struct parameters *params, struct data *dat);
 	
 	
+	struct results* repeatCGP(struct parameters *params, struct data *dat, int numRuns);
+	
+	void freeResults(struct results *rels);
+	
+	float getAverageFitness(struct results *rels);
+	float getAverageActiveNodes(struct results *rels);
+	struct chromosome* getChromosome(struct results *rels, int run);
 	
 #endif 
