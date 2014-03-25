@@ -567,6 +567,9 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat, int numGe
 	}
 	
 	if(params->updateFrequency != 0){
+		
+		printf("-- Starting CGP --\n\n");
+		
 		printf("Gen\tfit\n");
 	}
 	
@@ -1805,9 +1808,9 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 	
 void printParameters(struct parameters *params){
 
-	printf("Parameters:\n");
+	printf("\t-- Parameters --\n");
 	
-	printf("(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printf("evolutionaryStrategy: (%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
 	printFunctionSet(params);
 
 	printf("Mutation Type: %s\n", params->mutationTypeName);
@@ -1820,6 +1823,7 @@ void printParameters(struct parameters *params){
 
 	printf("Update frequency: %d\n", params->updateFrequency);
 
+	printf("------------------------------------------\n\n");
 /*
 	
 	int numInputs;
@@ -1839,6 +1843,8 @@ void printChromosome(struct chromosome *chromo){
 				
 	/* set the active nodes in the given chromosome */
 	setActiveNodes(chromo);
+		
+	printf("\n");	
 								
 	/* for all the chromo inputs*/
 	for(i=0; i<chromo->numInputs; i++){
@@ -2486,13 +2492,13 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 		
 	/* error checking */
 	if(chromo->numInputs != dat->numInputs){
-		printf("Error: the number of chromosome inputs specified in the chromosome must match the number of required inputs specified in the data.\n");
+		printf("Error: the number of chromosome inputs must match the number of inputs specified in the data.\n");
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
 
 	if(chromo->numOutputs != dat->numOutputs){
-		printf("Error: the number of chromosome outputs specified in the chromosome must match the number of required outputs specified in the data.\n");
+		printf("Error: the number of chromosome outputs must match the number of outputs specified in the data.\n");
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
