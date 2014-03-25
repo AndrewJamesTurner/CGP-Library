@@ -1,6 +1,6 @@
 Title: Installation
 
-First download CGP-Library from http://www.andrewjamesturner.co.uk.
+First download CGP-Library from http://www.andrewjamesturner.co.uk and unzip the file.
 
 Simplest:
 

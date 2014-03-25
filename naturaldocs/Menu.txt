@@ -47,7 +47,13 @@ Footer: Copyright (C) 2014 Andrew James Turner
 # --------------------------------------------------------------------------
 
 
-File: Installation  (/home/at568/Desktop/CGP-Library/docs/custonFiles/Installation.txt)
+File: About  (no auto-title, /home/at568/Desktop/CGP-Library/docs/custonFiles/About.txt)
+
+Group: Tutorials  {
+
+   File: Installation  (/home/at568/Desktop/CGP-Library/docs/custonFiles/Installation.txt)
+   }  # Group: Tutorials
+
 File: API  (/home/at568/Desktop/CGP-Library/src/include/cgp.h)
 File: License  (/home/at568/Desktop/CGP-Library/docs/custonFiles/license.txt)
 
