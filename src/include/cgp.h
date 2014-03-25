@@ -511,4 +511,7 @@
 	
 	void printParameters(struct parameters *params);
 	
+	void removeInactiveNodes(struct chromosome *chromo);
+	void setUpdateFrequency(struct parameters *params, int updateFrequency);
+	
 #endif 

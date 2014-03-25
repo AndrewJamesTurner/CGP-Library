@@ -44,13 +44,13 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 int main(void){
 
 	struct parameters *params = NULL;
-	struct results *rels = NULL;
+	/*struct results *rels = NULL;*/
 	struct chromosome *chromo = NULL;
 		
 	int numInputs = 1;
 	int numNodes = 20;
 	int numOutputs = 1;
-	int nodeArity = 2;
+	int nodeArity = 3;
 	
 	int numGens = 5000;
 	int numRuns = 10;
@@ -61,17 +61,26 @@ int main(void){
 			
 	setTargetFitness(params, 0.1);		
 			
-	addNodeFunction(params, "add,sub,mul,div");
-	
+	addNodeFunction(params, "add,sub,mul,div,sin,cos");
+		
 	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
 	setMutationType(params, "probabilistic");
-	setMutationRate(params, 0.3);
+	setMutationRate(params, 0.05);
+	
+	setUpdateFrequency(params, 1000);
 	
 	printParameters(params);
-	exit(0);
 	
-	rels = repeatCGP(params, NULL, numGens, numRuns);	
+	
+	chromo = runCGP(params, NULL, numGens);	
+	
+	printChromosome(chromo);
+	removeInactiveNodes(chromo);
+	printChromosome(chromo);
+	
+	setChromosomeFitness(params, chromo, NULL);
+	printf("\n%f\n", getChromosomeFitness(chromo));
 	
 	/*	
 	printf("\n");
@@ -82,7 +91,7 @@ int main(void){
 	printChromosome(chromo);		
 		*/	
 	free(chromo);		
-	freeResults(rels);
+	/*freeResults(rels);*/
 	freeParameters(params);		
 		
 		
