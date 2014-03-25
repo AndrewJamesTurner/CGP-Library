@@ -41,6 +41,6 @@ Once CGP-Library has been installed it can be accessed by #include <cgp.h> in yo
 
     >$ gcc yourFiles.c -lcgp
 
-####Windows
+Windows:
 
-####Mac
+Mac:
