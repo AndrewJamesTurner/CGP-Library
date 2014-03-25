@@ -54,7 +54,7 @@
 	*/	
 	struct parameters;
 	struct chromosome;
-	struct fuctionSet;
+	struct functionSet;
 	struct data;	
 	struct population;
 	struct results;
@@ -482,10 +482,10 @@
 	/*
 		returns an initilised chromosome which shoyulod be freed by the user.
 	*/	
-	struct chromosome* runCGP(struct parameters *params, struct data *dat);
+	struct chromosome* runCGP(struct parameters *params, struct data *dat, int gens);
 	
 	
-	struct results* repeatCGP(struct parameters *params, struct data *dat, int numRuns);
+	struct results* repeatCGP(struct parameters *params, struct data *dat, int numGens, int numRuns);
 	
 	void freeResults(struct results *rels);
 	
@@ -497,7 +497,7 @@
 	
 	int getChromosomeGenerations(struct chromosome *chromo);
 	
-	void setNumGenerations(struct parameters *params, int numGens);
+	/*void setNumGenerations(struct parameters *params, int numGens);*/
 	void setTargetFitness(struct parameters *params, float targetFitness);
 	
 	void saveChromosome(struct chromosome *chromo, char *file);
@@ -506,6 +506,8 @@
 	void setLambda(struct parameters *params, int lambda);
 	void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
 	void setMutationRate(struct parameters *params, float mutationRate);
+	void setConnectionWeightRange(struct parameters *params, float weightRange);
+	void setMutationType(struct parameters *params, char *mutationType);
 	
 	
 #endif 

@@ -57,7 +57,7 @@ int main(void){
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
-	setNumGenerations(params, numGens);		
+	/*setNumGenerations(params, numGens);		*/
 			
 	setTargetFitness(params, 0.1);		
 			
@@ -65,8 +65,10 @@ int main(void){
 	
 	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
+	setMutationType(params, "probilistic");
+	setMutationRate(params, 0.3);
 	
-	rels = repeatCGP(params, NULL, numRuns);	
+	rels = repeatCGP(params, NULL, numGens, numRuns);	
 	
 	/*	
 	printf("\n");

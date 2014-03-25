@@ -27,6 +27,7 @@
 #define FUNCTIONSETSIZE 50
 #define FUNCTIONNAMELENGTH 512
 #define FITNESSFUNCTIONNAMELENGTH 512
+#define MUTATIONTYPENAMELENGTH 512
 
 /*
 	Structure definitions 
@@ -39,7 +40,6 @@ struct parameters{
 	char evolutionaryStrategy;
 	float mutationRate;
 	float connectionWeightRange;
-	int numGenerations;
 	int numInputs;
 	int numNodes;
 	int numOutputs;
@@ -47,12 +47,15 @@ struct parameters{
 	
 	float targetFitness;
 	
-	struct fuctionSet *funcSet;
+	struct functionSet *funcSet;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
 	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
 	void (*reproductionScheme)(struct parameters *params, struct population *pop);
+	
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
+	char mutationTypeName[MUTATIONTYPENAMELENGTH];
+	
 	
 	int updateFrequency;
 };
@@ -78,7 +81,7 @@ struct chromosome{
 	int *activeNodes;
 	float fitness;
 	float *outputValues;
-	struct fuctionSet *funcSet;
+	struct functionSet *funcSet;
 	float *nodeInputsHold;
 	int generation;
 	
@@ -94,7 +97,7 @@ struct node{
 	int arity;
 };
 
-struct fuctionSet{
+struct functionSet{
 	int numFunctions;
 	char functionNames[FUNCTIONSETSIZE][FUNCTIONNAMELENGTH];
 	float (*functions[FUNCTIONSETSIZE])(const int numInputs, const float *inputs, const float *connectionWeights);	
@@ -128,10 +131,10 @@ static void freeNode(struct node *n);
 static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 
 /* getting gene value functions  */
-static float getRandomConnectionWeight(struct parameters *params);
-static int getRandomNodeInput(struct parameters *params, int nodePosition);
-static int getRandomFunction(struct parameters *params);
-static int getRandomChromosomeOutput(struct parameters *params);
+static float getRandomConnectionWeight(float weightRange);
+static int getRandomNodeInput(int numChromoInputs, int nodePosition);
+static int getRandomFunction(int numFunctions);
+static int getRandomChromosomeOutput(int numInputs, int numNodes);
 
 /* active node functions */
 static void setActiveNodes(struct chromosome *chromo);
@@ -142,6 +145,7 @@ static void addPresetFuctionToFunctionSet(struct parameters *params, char *funct
 
 /* mutation functions  */
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
+static void pointMutation(struct parameters *params, struct chromosome *chromo);
 
 /* selection scheme functions */
 static void pickHighest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);	
@@ -169,7 +173,7 @@ static float not(const int numInputs, const float *inputs, const float *connecti
 static float randFloat(void);
 static void bubbleSortInt(int *array, const int length);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
-static void copyFuctionSet(struct fuctionSet *funcSetDest, struct fuctionSet *funcSetSrc);
+static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
 
 /* population functions */
 struct population *initialisePopulation(struct parameters *params);
@@ -339,16 +343,6 @@ void setTargetFitness(struct parameters *params, float targetFitness){
 }
 
 
-void setNumGenerations(struct parameters *params, int numGens){
-	
-	/* error checking */
-	
-	
-	params->numGenerations = numGens;
-}
-
-
-
 
 struct results* initialiseResults(struct parameters *params, int numRuns){
 	
@@ -385,7 +379,10 @@ void freeResults(struct results *rels){
 	free(rels);
 }
 
-
+/*
+	returns the average number of chromosome active nodes from repeated 
+	run results specified in rels.
+*/
 float getAverageActiveNodes(struct results *rels){
 	
 	int i;
@@ -405,7 +402,10 @@ float getAverageActiveNodes(struct results *rels){
 	return avgActiveNodes;
 }
 
-
+/*
+	returns the average chromosome fitness from repeated 
+	run results specified in rels.
+*/
 float getAverageFitness(struct results *rels){
 	
 	int i;
@@ -425,6 +425,9 @@ float getAverageFitness(struct results *rels){
 	return avgFit;
 }
 
+/*
+	returns the number of generations used by each run  specified in rels.
+*/
 float getAverageGenerations(struct results *rels){
 	
 	int i;
@@ -448,7 +451,9 @@ int getChromosomeGenerations(struct chromosome *chromo){
 	return chromo->generation;
 }
 
-
+/*
+	returns a pointer to the best chromosomes found on the given run in rels.
+*/
 struct chromosome* getChromosome(struct results *rels, int run){
 	
 	/* do some error checking */
@@ -457,38 +462,40 @@ struct chromosome* getChromosome(struct results *rels, int run){
 }
 
 
-struct results* repeatCGP(struct parameters *params, struct data *dat, int numRuns){
+struct results* repeatCGP(struct parameters *params, struct data *dat, int numGens, int numRuns){
 	
 	int i;
 	struct results *rels;
 	int updateFrequency = params->updateFrequency;
 		
+	/* set the update frequency so as to to so generational results */	
 	params->updateFrequency = 0;	
 		
 	rels = initialiseResults(params, numRuns);
 
-	printf("Run\tFitness\t\tGeneration\tActive Nodes\n");
+	printf("Run\tFitness\t\tGenerations\tActive Nodes\n");
 
 	/* for each run */
 	for(i=0; i<numRuns; i++){
 		
 		/* run cgp */
-		rels->bestChromosomes[i] = runCGP(params, dat);
+		rels->bestChromosomes[i] = runCGP(params, dat, numGens);
 		
 		printf("%d\t%f\t%d\t\t%d\n", i, rels->bestChromosomes[i]->fitness, rels->bestChromosomes[i]->generation, rels->bestChromosomes[i]->numActiveNodes);	
 	}
 	
-	printf("-------------------------------------------------------------\n");
+	printf("----------------------------------------------------\n");
 	printf("AVG\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));	
+	printf("----------------------------------------------------\n");
 	
-	
+	/* restore the original value for the update frequency */	
 	params->updateFrequency = updateFrequency;
 	
 	return rels;
 }
 
 
-struct chromosome* runCGP(struct parameters *params, struct data *dat){
+struct chromosome* runCGP(struct parameters *params, struct data *dat, int numGens){
 	
 	int i;
 	int gen;
@@ -503,6 +510,11 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 	/* storage for chromosomes used by selection scheme */
 	struct chromosome **candidateChromos;
 	int numCandidateChromos;
+		
+	/* */
+	if(numGens < 0){
+		printf("Error: %d generations is invalid. The number of generations must be >= 0. \n Terminating CGP-Library.\n", numGens);
+	}	
 		
 	/* */
 	chromo = initialiseChromosome(params);
@@ -540,15 +552,14 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 	}
 	
 	/* for each generation */
-	for(gen=0; gen<params->numGenerations; gen++){
+	for(gen=0; gen <numGens; gen++){
 		
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
 			setActiveNodes(pop->children[i]);
 			setChromosomeFitness(params, pop->children[i], dat);
 		}
-				
-				
+					
 		/* check termination conditions */
 		bestChromo = getFittestChromosome(pop);
 		if(bestChromo->fitness <= params->targetFitness){
@@ -581,7 +592,7 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 		
 		
 		/* */
-		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= params->numGenerations-1) ){
+		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
 			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
 		}
 			
@@ -612,23 +623,8 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* */
-static void copyFuctionSet(struct fuctionSet *funcSetDest, struct fuctionSet *funcSetSrc){
+static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc){
 	
 	int i;
 	
@@ -897,8 +893,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->evolutionaryStrategy = '+';
 	params->mutationRate = 0.05;	
 	params->connectionWeightRange = 1;
-	params->numGenerations = 1000;
-	
+		
 	params->targetFitness = 0;
 	
 	params->updateFrequency = 100;
@@ -909,8 +904,9 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->numOutputs = numOutputs;
 		
 	params->mutationType = probabilisticMutation;
-		
-	params->funcSet = malloc(sizeof(struct fuctionSet));
+	strcpy(params->mutationTypeName, "probabilistic"); 
+		 
+	params->funcSet = malloc(sizeof(struct functionSet));
 	params->funcSet->numFunctions = 0;
 	
 	
@@ -1059,6 +1055,27 @@ void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrateg
 }
 
 
+
+void setMutationType(struct parameters *params, char *mutationType){
+
+	if(strcmp(mutationType, "probabilistic") == 0){
+		
+		params->mutationType = probabilisticMutation;
+		strcpy(params->mutationTypeName, "probabilistic");
+	}
+	
+	else if(strcmp(mutationType, "point") == 0){
+		
+		params->mutationType = pointMutation;
+		strcpy(params->mutationTypeName, "point");
+	}
+	
+	else{
+		printf("\nWarning: mutation type '%s' is invalid. The mutation type must be 'probabilistic' or 'point'. The mutation type has been left unchanged as '%s'.\n", mutationType, params->mutationTypeName);
+	}
+}
+
+
 /*
 	Sets the mutation rate given in parameters. IF an invalid mutation
 	rate is given a warning is displayed and the mutation rate is left
@@ -1078,7 +1095,7 @@ void setMutationRate(struct parameters *params, float mutationRate){
 /*
 	Sets the connection weight range given in parameters.
 */
-void set ConnectionWeightRange(struct parameters *params, float weightRange){
+void setConnectionWeightRange(struct parameters *params, float weightRange){
 
 	params->connectionWeightRange = weightRange;
 }
@@ -1118,6 +1135,10 @@ void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(stru
 		strcpy(params->fitnessFunctionName, fitnessFunctionName);
 	}
 }
+
+
+
+
 
 /*
 	Sets the given function set to contain the per-set functions 
@@ -1275,7 +1296,7 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 		
 	/* set each of the chromosomes outputs */
 	for(i=0; i<params->numOutputs; i++){
-		chromo->outputNodes[i] = getRandomChromosomeOutput(params);
+		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes);
 	}
 	
 	/* Add all nodes to the active node matrix */
@@ -1296,7 +1317,7 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	chromo->fitness = -1;
 	
 	/*  */
-	chromo->funcSet = malloc(sizeof(struct fuctionSet));
+	chromo->funcSet = malloc(sizeof(struct functionSet));
 	
 	/* */
 	copyFuctionSet(chromo->funcSet, params->funcSet);
@@ -1579,15 +1600,15 @@ static struct node *initialiseNode(struct parameters *params, int nodePosition){
 	n->weights = malloc(params->arity * sizeof(float));	
 
 	/* set the node's function */
-	n->function = getRandomFunction(params);
+	n->function = getRandomFunction(params->funcSet->numFunctions);
 
 	/* set as active by default */
 	n->active = 1;
 
 	/* set the nodes inputs and connection weights */
 	for(i=0; i<params->arity; i++){
-		n->inputs[i] = getRandomNodeInput(params,nodePosition);
-		n->weights[i] = getRandomConnectionWeight(params);
+		n->inputs[i] = getRandomNodeInput(params->numInputs,nodePosition);
+		n->weights[i] = getRandomConnectionWeight(params->connectionWeightRange);
 	}
 	
 	/* */
@@ -1618,32 +1639,32 @@ static void freeNode(struct node *n){
 /* 
 	returns a random connection weight value
 */
-static float getRandomConnectionWeight(struct parameters *params){
-	return (randFloat() * 2 * params->connectionWeightRange) - params->connectionWeightRange;
+static float getRandomConnectionWeight(float weightRange){
+	return (randFloat() * 2 * weightRange) - weightRange;
 }
 
 /*
 	returns a random function index
 */
-static int getRandomFunction(struct parameters *params){
+static int getRandomFunction(int numFunctions){
 	
 	/* check that funcSet contains functions*/
-	if(params->funcSet->numFunctions <1){
+	if(numFunctions <1){
 		printf("Error: cannot assign the function gene a value as the Fuction Set is empty.\nTerminating CGP-Library.\n");
 		exit(0);
 	}
 	
-	return rand() % (params->funcSet->numFunctions);
+	return rand() % (numFunctions);
 }
 
 /*
  returns a random input for the given node
 */
-static int getRandomNodeInput(struct parameters *params, int nodePosition){
+static int getRandomNodeInput(int numChromoInputs, int nodePosition){
 	
 	int input;
 	
-	input = rand() % (params->numInputs + nodePosition); 
+	input = rand() % (numChromoInputs + nodePosition); 
 	
 	return input;
 }
@@ -1711,14 +1732,44 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 /*
 	returns a random chromosome output
 */	
-static int getRandomChromosomeOutput(struct parameters *params){
+static int getRandomChromosomeOutput(int numInputs, int numNodes){
 	
 	int output;
 	
-	output = rand() % (params->numInputs + params->numNodes);
+	output = rand() % (numInputs + numNodes);
 	
 	return output;
 }
+	
+	
+void printParameters(struct parameters *params){
+/*
+	int mu;
+	int lambda;
+	char evolutionaryStrategy;
+	float mutationRate;
+	float connectionWeightRange;
+	int numInputs;
+	int numNodes;
+	int numOutputs;
+	int arity;
+	
+	float targetFitness;
+	
+	struct fuctionSet *funcSet;
+	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
+	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
+	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
+	void (*reproductionScheme)(struct parameters *params, struct population *pop);
+	
+	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
+	char mutationTypeName[MUTATIONTYPENAMELENGTH];
+	
+	
+	int updateFrequency;
+	*/
+}
+	
 	
 /*
 	Prints the given chromosome to the screen
@@ -1775,6 +1826,77 @@ void mutateChromosome(struct parameters *params, struct chromosome *chromo){
 	params->mutationType(params, chromo);
 }
 
+
+/*
+	Conductions point mutation on the give chromosome. A predetermined 
+	number of chromosome genes are randomly selected and changed to 
+	a random valid allele. The number of mutations is the number of chromosome
+	genes multiplied by the mutation rate. Each gene has equal probability 
+	of being selected.
+*/
+static void pointMutation(struct parameters *params, struct chromosome *chromo){
+	
+	int i;
+	int numGenes;
+	int numFunctionGenes, numInputGenes, numWeightGenes, numOutputGenes;
+	int numGenesToMutate;
+	int geneToMutate;
+	int nodeIndex;
+	int nodeInputIndex;
+	
+	/* get the number of each type of gene */
+	numFunctionGenes = params->numNodes;
+	numInputGenes = params->numNodes * params->arity;
+	numWeightGenes = params->numNodes * params->arity;
+	numOutputGenes = params->numOutputs;
+	
+	/* set the total number of chromosome genes */
+	numGenes = numFunctionGenes + numInputGenes + numWeightGenes + numOutputGenes;
+	
+	/* calculate the number of genes to mutate */
+	numGenesToMutate = (int)roundf(numGenes * params->mutationRate);
+			
+	/* for the number of genes to mutate */
+	for(i=0; i<numGenesToMutate; i++){
+		
+		/* select a random gene */
+		geneToMutate = rand() % numGenesToMutate;
+		
+		/* mutate function gene */
+		if(geneToMutate < numFunctionGenes){
+			
+			nodeIndex = geneToMutate;
+			
+			chromo->nodes[nodeIndex]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+		
+		/* mutate node input gene */
+		else if(geneToMutate < numFunctionGenes + numInputGenes){
+			
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
+		
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
+		}
+		
+		/* mutate connection weight */
+		else if(geneToMutate < numFunctionGenes + numInputGenes + numWeightGenes){
+		
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes - numInputGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes - numInputGenes) % chromo->arity;
+			
+			chromo->nodes[nodeIndex]->weights[nodeInputIndex] = getRandomConnectionWeight(params->connectionWeightRange);
+		}
+		
+		/* mutate output gene */
+		else{
+			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes - numWeightGenes;
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
+
+
 /*
 	Conductions probabilistic mutation on the give chromosome. Each chromosome
 	gene is changed to a random valid allele with a probability specified in
@@ -1783,13 +1905,13 @@ void mutateChromosome(struct parameters *params, struct chromosome *chromo){
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo){
 	
 	int i,j;
-	
+		
 	/* for every nodes in the chromosome */
 	for(i=0; i<params->numNodes; i++){
 		
 		/* mutate the function gene */
 		if(randFloat() <= params->mutationRate){
-			chromo->nodes[i]->function = getRandomFunction(params);
+			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 		
 		/* for every input to each chromosome */
@@ -1797,12 +1919,12 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 			
 			/* mutate the node input */
 			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(params, i);
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
 			}
 			
 			/* mutate the node connection weight */
 			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params);
+				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
 	}
@@ -1812,10 +1934,14 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 		
 		/* mutate the chromosome output */
 		if(randFloat() <= params->mutationRate){
-			chromo->outputNodes[i] = getRandomChromosomeOutput(params);
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
 		}
 	}
 }
+
+
+
+
 
 /*
 	Node function add. Returns the sum of the inputs. 
