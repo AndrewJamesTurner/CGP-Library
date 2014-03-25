@@ -65,8 +65,11 @@ int main(void){
 	
 	setFitnessFunction(params, symbolicRegression1, "symBol1" );
 	
-	setMutationType(params, "probilistic");
+	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.3);
+	
+	printParameters(params);
+	exit(0);
 	
 	rels = repeatCGP(params, NULL, numGens, numRuns);	
 	

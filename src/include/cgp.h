@@ -509,5 +509,6 @@
 	void setConnectionWeightRange(struct parameters *params, float weightRange);
 	void setMutationType(struct parameters *params, char *mutationType);
 	
+	void printParameters(struct parameters *params);
 	
 #endif 

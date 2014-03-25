@@ -28,6 +28,8 @@
 #define FUNCTIONNAMELENGTH 512
 #define FITNESSFUNCTIONNAMELENGTH 512
 #define MUTATIONTYPENAMELENGTH 512
+#define SELECTIONSCHEMENAMELENGTH 512
+#define REPRODUCTIONSCHEMENAMELENGTH 512
 
 /*
 	Structure definitions 
@@ -49,14 +51,17 @@ struct parameters{
 	
 	struct functionSet *funcSet;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
-	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
-	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
-	void (*reproductionScheme)(struct parameters *params, struct population *pop);
-	
-	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
 	
+	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);	
+	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
+		
+	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
+	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
 	
+	void (*reproductionScheme)(struct parameters *params, struct population *pop);
+	char reproductionSchemeName[REPRODUCTIONSCHEMENAMELENGTH];
+		
 	int updateFrequency;
 };
 
@@ -909,14 +914,14 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->funcSet = malloc(sizeof(struct functionSet));
 	params->funcSet->numFunctions = 0;
 	
-	
-	
 	params->fitnessFunction = supervisedLearning;
 	strcpy(params->fitnessFunctionName, "supervisedLearning");
 	
 	params->selectionScheme = pickHighest;
-	
+	strcpy(params->selectionSchemeName, "pickHighest");
+		
 	params->reproductionScheme = mutateRandomParent;
+	strcpy(params->reproductionSchemeName, "mutateRandomParent"); 
 	
 	/* Seed the random number generator */
 	srand(time(NULL));
@@ -1251,13 +1256,13 @@ void printFunctionSet(struct parameters *params){
 
 	int i;
 
-	printf("Functions (%d):", params->funcSet->numFunctions);
+	printf("Functions:");
 	
 	for(i=0; i<params->funcSet->numFunctions; i++){
 		printf(" %s", params->funcSet->functionNames[i]);
 	}
 	
-	printf("\n");
+	printf(" (%d)\n", params->funcSet->numFunctions);
 }
 
 /*
@@ -1743,30 +1748,28 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 	
 	
 void printParameters(struct parameters *params){
+
+	printf("Parameters:\n");
+	
+	printf("(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printFunctionSet(params);
+
+	printf("Mutation Type: %s\n", params->mutationTypeName);
+	printf("Mutation rate: %f\n", params->mutationRate);
+	printf("Connection weights range: +/- %f\n", params->connectionWeightRange);
+	printf("Fitness Function: %s\n", params->fitnessFunctionName);
+	printf("Target Fitness: %f\n", params->targetFitness);
+	printf("Selection scheme: %s\n", params->selectionSchemeName);
+	printf("Reproduction scheme: %s\n", params->reproductionSchemeName);
+
+	printf("Update frequency: %d\n", params->updateFrequency);
+
 /*
-	int mu;
-	int lambda;
-	char evolutionaryStrategy;
-	float mutationRate;
-	float connectionWeightRange;
+	
 	int numInputs;
 	int numNodes;
 	int numOutputs;
-	int arity;
-	
-	float targetFitness;
-	
-	struct fuctionSet *funcSet;
-	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
-	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);		
-	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
-	void (*reproductionScheme)(struct parameters *params, struct population *pop);
-	
-	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
-	char mutationTypeName[MUTATIONTYPENAMELENGTH];
-	
-	
-	int updateFrequency;
+	int arity;	
 	*/
 }
 	
