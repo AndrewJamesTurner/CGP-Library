@@ -38,7 +38,7 @@ struct parameters{
 	int lambda;
 	char evolutionaryStrategy;
 	float mutationRate;
-	float connectionsWeightRange;
+	float connectionWeightRange;
 	int numGenerations;
 	int numInputs;
 	int numNodes;
@@ -896,7 +896,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->lambda = 4;
 	params->evolutionaryStrategy = '+';
 	params->mutationRate = 0.05;	
-	params->connectionsWeightRange = 1;
+	params->connectionWeightRange = 1;
 	params->numGenerations = 1000;
 	
 	params->targetFitness = 0;
@@ -1025,6 +1025,70 @@ void setMu(struct parameters *params, int mu){
 		printf("\nWarning: mu value '%d' is invalid. Mu value must have a value of one or greater. Mu value left unchanged as '%d'.\n", mu, params->mu);
 	}
 }
+
+
+/*
+	Sets the lambda value in given parameters to the new given value. 
+	If lambda value is invalid a warning is displayed and the lambda value 
+	is left unchanged.
+*/
+void setLambda(struct parameters *params, int lambda){
+	
+	if(lambda > 0){
+		params->lambda = lambda;
+	}
+	else{
+		printf("\nWarning: lambda value '%d' is invalid. Lambda value must have a value of one or greater. Lambda value left unchanged as '%d'.\n", lambda, params->lambda);
+	}
+}
+
+
+/*
+	Sets the evolutionary strategy given in parameters to '+' or ','.
+	If an invalid option is given a warning is displayed and the evolutionary 
+	strategy is left unchanged. 
+*/
+void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy){
+	
+	if(evolutionaryStrategy == '+' || evolutionaryStrategy == ','){
+		params->evolutionaryStrategy = evolutionaryStrategy;
+	}
+	else{
+		printf("\nWarning: the evolutionary strategy '%c' is invalid. The evolutionary strategy must be '+' or ','. The evolutionary strategy has been left unchanged as '%c'.\n", evolutionaryStrategy, params->evolutionaryStrategy);
+	}	
+}
+
+
+/*
+	Sets the mutation rate given in parameters. IF an invalid mutation
+	rate is given a warning is displayed and the mutation rate is left
+	unchanged.
+*/
+void setMutationRate(struct parameters *params, float mutationRate){
+
+	if(mutationRate >= 0 && mutationRate <= 1){
+		params->mutationRate = mutationRate;
+	}
+	else{
+		printf("\nWarning: mutation rate '%f' is invalid. The mutation rate must be in the range [0,1]. The mutation rate has been left unchanged as '%f'.\n", mutationRate, params->mutationRate);
+	}
+}
+
+
+/*
+	Sets the connection weight range given in parameters.
+*/
+void set ConnectionWeightRange(struct parameters *params, float weightRange){
+
+	params->connectionWeightRange = weightRange;
+}
+
+
+
+
+
+
+
 
 
 /*
@@ -1555,7 +1619,7 @@ static void freeNode(struct node *n){
 	returns a random connection weight value
 */
 static float getRandomConnectionWeight(struct parameters *params){
-	return (randFloat() * 2 * params->connectionsWeightRange) - params->connectionsWeightRange;
+	return (randFloat() * 2 * params->connectionWeightRange) - params->connectionWeightRange;
 }
 
 /*

@@ -503,5 +503,9 @@
 	void saveChromosome(struct chromosome *chromo, char *file);
 	struct chromosome* loadChromosome(char *file);
 	
+	void setLambda(struct parameters *params, int lambda);
+	void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
+	void setMutationRate(struct parameters *params, float mutationRate);
+	
 	
 #endif 
