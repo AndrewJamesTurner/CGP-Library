@@ -52,10 +52,14 @@ File: About  (no auto-title, /home/at568/Desktop/CGP-Library/docs/custonFiles/Ab
 Group: Tutorials  {
 
    File: Installation  (/home/at568/Desktop/CGP-Library/docs/custonFiles/Installation.txt)
+   File: Getting Started  (/home/at568/Desktop/CGP-Library/docs/custonFiles/GettingStarted.txt)
+   File: Custom Node Functions  (/home/at568/Desktop/CGP-Library/docs/custonFiles/CustomNodeFunctions.txt)
+   File: Custom Fitness Function  (/home/at568/Desktop/CGP-Library/docs/custonFiles/CustomFitnessFunction.txt)
+   File: Real World Use  (/home/at568/Desktop/CGP-Library/docs/custonFiles/RealWorldUse.txt)
+   File: Academic Use  (/home/at568/Desktop/CGP-Library/docs/custonFiles/AcademicUse.txt)
    }  # Group: Tutorials
 
 File: API  (/home/at568/Desktop/CGP-Library/src/include/cgp.h)
-File: License  (/home/at568/Desktop/CGP-Library/docs/custonFiles/license.txt)
 
 Group: Index  {
 
@@ -64,6 +68,7 @@ Group: Index  {
    Variable Index: Variables
    }  # Group: Index
 
+File: License  (/home/at568/Desktop/CGP-Library/docs/custonFiles/license.txt)
 
 
 ##### Do not change or remove these lines. #####
