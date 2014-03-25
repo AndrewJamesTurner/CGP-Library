@@ -1,5 +1,6 @@
 /*
-	This file is part of CGP-Library, Andrew James Turner 2014.
+	This file is part of CGP-Library
+	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published 
