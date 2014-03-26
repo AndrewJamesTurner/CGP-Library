@@ -52,10 +52,11 @@ int main(void){
 
 <div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.</p><p>In order to use the CGP-Library cgp.h must be included.&nbsp; The location of cgp.h and where your complier looks for it will depend upon your personal set up.</p><blockquote><pre class="prettyprint">#include &quot;../src/include/cgp.h&quot;</pre></blockquote><p>The CGP-Library leaves memory management up to the user so as to allow the user more control.&nbsp; Structures are used to to store information relating to various aspect of the CGP-Library; These structures must be defined by the user but are initialised and free&rsquo;d using provided functions.&nbsp; The parameters structure contains general information related to the CGP-Library and is used to pass information into other functions without requiring a long series of inputs.&nbsp; The dataSet structure is used to store any data which may be needed when evaluating chromosome fitnesses.&nbsp; For instance in this example it shall be used to store the data points to which CGP must fit an equation.&nbsp; The chromosome structure is used to store all the information relating to a single CGP chromosome instance.</p><blockquote><pre class="prettyprint">struct parameters *params = NULL;
 struct dataSet *trainingData = NULL;
-struct chromosome *chromo = NULL;</pre></blockquote><blockquote><pre class="prettyprint">int numInputs = 1;
+struct chromosome *chromo = NULL;</pre></blockquote><p>Later we will need to know the dimensions so these are assigned to variables.&nbsp; The number of inputs are the number of chromosome inputs.&nbsp; The number of nodes is the maximum number of chromosome nodes.&nbsp; The number of outputs is the number of chromosome outputs.&nbsp; The arity is the arity of each chromosome node.</p><blockquote><pre class="prettyprint">int numInputs = 1;
 int numNodes = 15;
 int numOutputs = 1;
-int nodeArity = 2;</pre></blockquote><blockquote><pre>1,1,101,
+int nodeArity = 2;</pre></blockquote><p>We will also later need to give the number of generations before terminating the search and how often to update the terminal with the current best fitness.&nbsp; The update frequency is in generations.</p><blockquote><pre class="prettyprint">int numGens = 10000;
+int updateFrequency = 500;</pre></blockquote><blockquote><pre class="prettyprint">params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);</pre></blockquote><blockquote><pre>1,1,101,
 -5.000000,14400.000000,
 -4.900000,12712.338867,
 -4.800000,11191.950195,

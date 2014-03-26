@@ -972,7 +972,7 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 		
 	params->targetFitness = 0;
 	
-	params->updateFrequency = 100;
+	params->updateFrequency = 1;
 	
 	
 	setNumInputs(params, numInputs);

@@ -32,12 +32,13 @@ int main(void){
 	
 	int numGens = 10000;
 	int updateFrequency = 500;  
+	float targetFitness = 0.1;	
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
 	addNodeFunction(params, "add,sub,mul,div,sin");
 	
-	setTargetFitness(params, 0.1);
+	setTargetFitness(params, targetFitness);
 		
 	setUpdateFrequency(params, updateFrequency);	
 				

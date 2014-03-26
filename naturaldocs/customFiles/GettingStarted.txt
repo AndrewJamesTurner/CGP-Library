@@ -26,12 +26,13 @@ int main(void){
 	
 	int numGens = 10000;
 	int updateFrequency = 500;  
+	float targetFitness = 0.1;	
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
 	addNodeFunction(params, "add,sub,mul,div,sin");
 	
-	setTargetFitness(params, 0.1);
+	setTargetFitness(params, targetFitness);
 		
 	setUpdateFrequency(params, updateFrequency);	
 				
@@ -69,11 +70,64 @@ struct dataSet *trainingData = NULL;
 struct chromosome *chromo = NULL;
 (end)
 
+Later we will need to know the dimensions so these are assigned to 
+variables. The number of inputs are the number of chromosome inputs. 
+The number of nodes is the maximum number of chromosome nodes. The 
+number of outputs is the number of chromosome outputs. The arity is 
+the arity of each chromosome node.
+
 (begin code)
 int numInputs = 1;
 int numNodes = 15;
 int numOutputs = 1;
 int nodeArity = 2;
+(end)
+
+We will also later need to specify the number of generations or what 
+fitness should be reached before terminating the search. We will also  how often to update the terminal with the 
+current best fitness. The update frequency is in generations. 
+
+(begin code)
+int numGens = 10000;
+int updateFrequency = 500; 
+float targetFitness = 0.1;	 
+(end)
+
+Next the parameters structure is initialised with default parameters 
+and the chromosome dimensions defined earlier. 
+
+(begin code)
+params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+(end)
+
+One of the roles of the parameters is to store a function set 
+containing the functions which each node can implement. Newly initialised 
+parameters contain a empty function set and it is up to the user to 
+populate it. The functions are added to the function set using 
+addNodeFunction. 
+
+(begin code)
+addNodeFunction(params, "add,sub,mul,div,sin");
+(end)
+
+The default target fitness is '0' and is altered using 
+setTargetFitness. 
+
+(begin code)
+setTargetFitness(params, 0.1);
+(end)
+
+The default update frequency is '1' and is altered using 
+setUpdateFrequency.
+
+(begin code)
+setUpdateFrequency(params, updateFrequency);
+(end)
+
+
+
+(begin code)
+printParameters(params);
 (end)
 
 
