@@ -56,7 +56,7 @@
 	struct parameters;
 	struct chromosome;
 	struct functionSet;
-	struct data;	
+	struct dataSet;	
 	struct population;
 	struct results;
 		
@@ -228,7 +228,7 @@
 			> struct parameters *params = initialiseParameters();
 			> setFitnessFuction(params, fullAdder, "fullAdder");			
 	*/
-	void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFunctionName);
+	void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 	
 	
 	
@@ -266,7 +266,7 @@
 		See Also:
 			<freeData>, <initialiseDataFromFile>, <printData>
 	*/
-	struct data *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
+	struct dataSet *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
 	
 	
 	/*
@@ -303,11 +303,11 @@
 		See Also:
 			<freeData>, <initialiseDataFromArrays>, <printData>
 	*/
-	struct data *initialiseDataFromFile(char *file);
+	struct dataSet *initialiseDataFromFile(char *file);
 	
 	
-	/*
-		Function: freeData
+	/*  
+		Function: freeData 
 
 		Frees data instance.
 
@@ -317,7 +317,7 @@
 		See Also:
 			<initialiseDataFromArrays>, <initialiseDataFromFile>
 	*/
-	void freeData(struct data *dat);
+	void freeDataSet(struct dataSet *data);
 	
 	/*
 		Function: printData
@@ -330,7 +330,7 @@
 		See Also:
 			<initialiseDataFromArrays>, <initialiseDataFromFile>, <freeData>
 	*/
-	void printData(struct data *dat);
+	void printDataSet(struct dataSet *data);
 	
 	
 	
@@ -476,19 +476,19 @@
 	void printChromosome(struct chromosome *chromo);
 	float getChromosomeFitness(struct chromosome *chromo);
 	
-	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct data *dat);
+	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 	int getChromosomeActiveNodes(struct chromosome *chromo);
 	
 
 	/*
 		returns an initilised chromosome which shoyulod be freed by the user.
 	*/	
-	struct chromosome* runCGP(struct parameters *params, struct data *dat, int gens);
+	struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int gens);
 	
 	
-	struct results* repeatCGP(struct parameters *params, struct data *dat, int numGens, int numRuns);
+	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
 	
-	void freeResults(struct results *rels);
+	void freeResults(struct results *rels); 
 	
 	float getAverageFitness(struct results *rels);
 	float getAverageActiveNodes(struct results *rels);
@@ -514,5 +514,7 @@
 	
 	void removeInactiveNodes(struct chromosome *chromo);
 	void setUpdateFrequency(struct parameters *params, int updateFrequency);
+	
+	void saveDataSet(struct dataSet *data, char *fileName);
 	
 #endif 

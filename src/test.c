@@ -8,7 +8,7 @@ float symbolicEq1(float x){
 }
 
 
-float symbolicRegression1(struct parameters *params, struct chromosome *chromo, struct data *dat){
+float symbolicRegression1(struct parameters *params, struct chromosome *chromo, struct dataSet *dat){
 	
 	float i;
 	float error = 0;
@@ -53,7 +53,7 @@ int main(void){
 	int nodeArity = 3;
 	
 	int numGens = 5000;
-	int numRuns = 10;
+	/*int numRuns = 10;*/
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			

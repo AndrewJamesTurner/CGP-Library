@@ -9,11 +9,14 @@ CC=gcc
 	
 CFLAGS= -pedantic -Wall -g 
 
-all: src/main.c src/cgp.c src/include/cgp.h
-	@$(CC) -o test src/main.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+test: src/test.c src/cgp.c src/include/cgp.h
+	@$(CC) -o test src/test.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/include/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+
+createDataSet: examples/createDataSet.c src/cgp.c src/include/cgp.h
+	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
 
 docs: src/include/cgp.h docs/custonFiles/license.txt
 	@naturaldocs -i ./src/include -i ./docs/custonFiles -o FramedHTML ./docs -p ./naturaldocs
@@ -27,4 +30,4 @@ dll:
 	@gcc -o cgp.dll -s -shared cgp.o -lm
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet

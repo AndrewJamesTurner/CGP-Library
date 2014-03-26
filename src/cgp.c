@@ -51,7 +51,7 @@ struct parameters{
 	struct functionSet *funcSet;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
-	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat);	
+	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);	
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
 	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
@@ -102,7 +102,7 @@ struct functionSet{
 	float (*functions[FUNCTIONSETSIZE])(const int numInputs, const float *inputs, const float *connectionWeights);	
 };
 
-struct data{
+struct dataSet{
 	int numSamples;
 	int numInputs;
 	int numOutputs;
@@ -153,7 +153,7 @@ static void pickHighest(struct parameters *params, struct chromosome **parents, 
 static void mutateRandomParent(struct parameters *params, struct population *pop);
 
 /* fitness function */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat);
+static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
 
 /* node functions defines in CGP-Library */
 static float add(const int numInputs, const float *inputs, const float *connectionWeights);
@@ -482,7 +482,7 @@ struct chromosome* getChromosome(struct results *rels, int run){
 }
 
 
-struct results* repeatCGP(struct parameters *params, struct data *dat, int numGens, int numRuns){
+struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns){
 	
 	int i;
 	struct results *rels;
@@ -499,7 +499,7 @@ struct results* repeatCGP(struct parameters *params, struct data *dat, int numGe
 	for(i=0; i<numRuns; i++){
 		
 		/* run cgp */
-		rels->bestChromosomes[i] = runCGP(params, dat, numGens);
+		rels->bestChromosomes[i] = runCGP(params, data, numGens);
 		
 		printf("%d\t%f\t%d\t\t%d\n", i, rels->bestChromosomes[i]->fitness, rels->bestChromosomes[i]->generation, rels->bestChromosomes[i]->numActiveNodes);	
 	}
@@ -515,7 +515,7 @@ struct results* repeatCGP(struct parameters *params, struct data *dat, int numGe
 }
 
 
-struct chromosome* runCGP(struct parameters *params, struct data *dat, int numGens){
+struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int numGens){
 	
 	int i;
 	int gen;
@@ -563,7 +563,7 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat, int numGe
 		/* set fitness of the parents */
 		for(i=0; i<params->mu; i++){
 			setActiveNodes(pop->parents[i]);
-			setChromosomeFitness(params, pop->parents[i], dat);
+			setChromosomeFitness(params, pop->parents[i], data);
 		}
 	}
 	
@@ -580,7 +580,7 @@ struct chromosome* runCGP(struct parameters *params, struct data *dat, int numGe
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
 			setActiveNodes(pop->children[i]);
-			setChromosomeFitness(params, pop->children[i], dat);
+			setChromosomeFitness(params, pop->children[i], data);
 		}
 					
 		/* check termination conditions */
@@ -734,10 +734,10 @@ struct chromosome *getFittestChromosome(struct population *pop){
 /*
 	Initialises data structure and assigns values of given file
 */
-struct data *initialiseDataFromFile(char *file){
+struct dataSet *initialiseDataFromFile(char *file){ 
 	
 	int i;
-	struct data *dat;
+	struct dataSet *data;
 	FILE *fp; 
 	char *line, *record;
 	char buffer[1024];
@@ -754,7 +754,7 @@ struct data *initialiseDataFromFile(char *file){
 	}
 	
 	/* initialise memory for data structure */
-	dat = malloc(sizeof(struct data));
+	data = malloc(sizeof(struct dataSet));
 	
 	/* for every line in the given file */
 	while( (line=fgets(buffer, sizeof(buffer), fp)) != NULL){
@@ -762,14 +762,14 @@ struct data *initialiseDataFromFile(char *file){
 		/* deal with the first line containing meta data */
 		if(lineNum == -1){
 						
-			sscanf(line, "%d,%d,%d", &(dat->numInputs), &(dat->numOutputs), &(dat->numSamples));
+			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
 						
-			dat->inputData = malloc(dat->numSamples * sizeof(float**));
-			dat->outputData = malloc(dat->numSamples * sizeof(float**));
+			data->inputData = malloc(data->numSamples * sizeof(float**));
+			data->outputData = malloc(data->numSamples * sizeof(float**));
 		
-			for(i=0; i<dat->numSamples; i++){
-				dat->inputData[i] = malloc(dat->numInputs * sizeof(float));
-				dat->outputData[i] = malloc(dat->numOutputs * sizeof(float));
+			for(i=0; i<data->numSamples; i++){
+				data->inputData[i] = malloc(data->numInputs * sizeof(float));
+				data->outputData[i] = malloc(data->numOutputs * sizeof(float));
 			}			
 		}
 		/* the other lines contain input output pairs */
@@ -783,13 +783,13 @@ struct data *initialiseDataFromFile(char *file){
 			while(record != NULL){
 							
 				/* if its an input value */				
-				if(col < dat->numInputs){
-					dat->inputData[lineNum][col] = atof(record);
+				if(col < data->numInputs){
+					data->inputData[lineNum][col] = atof(record);
 				}
 				
 				/* if its an output value */
 				else{
-					dat->outputData[lineNum][col - dat->numInputs] = atof(record);
+					data->outputData[lineNum][col - data->numInputs] = atof(record);
 				}
 				
 				/* get the next value on the given line */
@@ -806,92 +806,129 @@ struct data *initialiseDataFromFile(char *file){
 
 	fclose(fp);
 
-	return dat;
+	return data;
 }
 
 
 /*
 
 */
-struct data *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
+struct dataSet *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
 	
 	int i,j;
-	struct data *dat;
+	struct dataSet *data;
 	
 	/* initialise memory for data structure */
-	dat = malloc(sizeof(struct data));
+	data = malloc(sizeof(struct dataSet));
 	
-	dat->numInputs = numInputs;
-	dat->numOutputs = numOutputs;
-	dat->numSamples = numSamples; 
+	data->numInputs = numInputs;
+	data->numOutputs = numOutputs;
+	data->numSamples = numSamples; 
 	
-	dat->inputData = malloc(dat->numSamples * sizeof(float**));
-	dat->outputData = malloc(dat->numSamples * sizeof(float**));
+	data->inputData = malloc(data->numSamples * sizeof(float**));
+	data->outputData = malloc(data->numSamples * sizeof(float**));
 		
-	for(i=0; i<dat->numSamples; i++){
+	for(i=0; i<data->numSamples; i++){
 		
-		dat->inputData[i] = malloc(dat->numInputs * sizeof(float));
-		dat->outputData[i] = malloc(dat->numOutputs * sizeof(float));
+		data->inputData[i] = malloc(data->numInputs * sizeof(float));
+		data->outputData[i] = malloc(data->numOutputs * sizeof(float));
 	
-		for(j=0; j<dat->numInputs; j++){
-			dat->inputData[i][j] = inputs[(i*dat->numInputs) + j];
+		for(j=0; j<data->numInputs; j++){
+			data->inputData[i][j] = inputs[(i*data->numInputs) + j];
 		}
 	
-		for(j=0; j<dat->numOutputs; j++){
-			dat->outputData[i][j] = outputs[(i*dat->numOutputs) + j];
+		for(j=0; j<data->numOutputs; j++){
+			data->outputData[i][j] = outputs[(i*data->numOutputs) + j];
 		}
-	
 	}			
 	
-	return dat;
+	return data;
 }
 
 
 /*
 
 */
-void freeData(struct data *dat){
+void freeDataSet(struct dataSet *data){
 	
 	int i;
 	
 	/* attempt to prevent user double freeing */	
-	if(dat == NULL){
+	if(data == NULL){
 		return;
 	}	
 	
-	for(i=0; i<dat->numSamples; i++){
-		free(dat->inputData[i]);
-		free(dat->outputData[i]);
+	for(i=0; i<data->numSamples; i++){
+		free(data->inputData[i]);
+		free(data->outputData[i]);
 	}
 	
-	free(dat->inputData);
-	free(dat->outputData);
-	free(dat);
+	free(data->inputData);
+	free(data->outputData);
+	free(data);
 }
+
+/*
+
+*/
+void saveDataSet(struct dataSet *data, char *fileName){
+	
+	int i,j;
+	FILE *fp;
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		printf("Warning: cannot save data set to %s. Data set was not saved.\n", fileName);
+		return;
+	}
+
+	fprintf(fp, "%d,", data->numInputs);
+	fprintf(fp, "%d,", data->numOutputs);
+	fprintf(fp, "%d,", data->numSamples);
+	fprintf(fp, "\n");
+	
+		
+	for(i=0; i<data->numSamples; i++){
+		
+		for(j=0; j<data->numInputs; j++){
+			fprintf(fp, "%f,", data->inputData[i][j]);
+		}
+				
+		for(j=0; j<data->numOutputs; j++){
+			fprintf(fp, "%f,", data->outputData[i][j]);
+		}
+		
+		fprintf(fp, "\n");
+	}
+}
+
+
+
 
 
 /*
 	prints the given data structure to the screen
 */
-void printData(struct data *dat){
+void printDataSet(struct dataSet *data){
 	
 	int i,j;
 	
 	printf("DATA SET\n");
-	printf("Inputs: %d, ", dat->numInputs);
-	printf("Outputs: %d, ", dat->numOutputs);
-	printf("Samples: %d\n", dat->numSamples);
+	printf("Inputs: %d, ", data->numInputs);
+	printf("Outputs: %d, ", data->numOutputs);
+	printf("Samples: %d\n", data->numSamples);
 	
-	for(i=0; i<dat->numSamples; i++){
+	for(i=0; i<data->numSamples; i++){
 		
-		for(j=0; j<dat->numInputs; j++){
-			printf("%f ", dat->inputData[i][j]);
+		for(j=0; j<data->numInputs; j++){
+			printf("%f ", data->inputData[i][j]);
 		}
 		
 		printf(" : ");
 		
-		for(j=0; j<dat->numOutputs; j++){
-			printf("%f ", dat->outputData[i][j]);
+		for(j=0; j<data->numOutputs; j++){
+			printf("%f ", data->outputData[i][j]);
 		}
 		
 		printf("\n");
@@ -1147,7 +1184,7 @@ int getNumOutputs(struct parameters *params){
 	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL 
 	then the default supervisedLearning fitness function is used. 
 */
-void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct data *dat), char *fitnessFunctionName){
+void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
 	
 	if(fitnessFunction == NULL){
 		params->fitnessFunction = supervisedLearning;
@@ -1490,11 +1527,11 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 /*
 	sets the fitness of the given chromosome 
 */
-void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct data *dat){
+void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 	
 	float fitness;
 	
-	fitness = params->fitnessFunction(params, chromo, dat);
+	fitness = params->fitnessFunction(params, chromo, data);
 	
 	chromo->fitness = fitness;
 }
@@ -2485,7 +2522,7 @@ void removeInactiveNodes(struct chromosome *chromo){
 
 /*
 */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct data *dat){
+static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *dat){
 
 	int i,j;
 	float error = 0;

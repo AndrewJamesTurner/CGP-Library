@@ -9,7 +9,7 @@
 
     CGP-Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
@@ -17,40 +17,47 @@
 */
 
 #include <stdio.h>
+#include <math.h>
 #include "../src/include/cgp.h"  
 
-int main(void){
 
-	struct parameters *params = NULL;
-	struct dataSet *trainingData = NULL;
-	struct chromosome *chromo = NULL;
-		 
-	int numInputs = 3;
-	int numNodes = 20;
-	int numOutputs = 2;
-	int nodeArity = 2;
+#define NUMINPUTS 1
+#define NUMOUTPUTS 1
+#define NUMSAMPLES 101
+
+/*
+	Returns x^6 - 2x^4 + x^2
+*/
+float symbolicEq1(float x){
+	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+}
+
+int main(void){
 	
-	int numGens = 50000;
-	int updateFrequency = 1000;  
-	
-	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
-			
-	addNodeFunction(params, "and,or,not,xor,nor,nand");
+	int i;
 		
-	setUpdateFrequency(params, updateFrequency);	
-		
-	printParameters(params);
+	struct dataSet *data;
 	
-	trainingData = initialiseDataFromFile("./examples/fullAdder.data");
+	float inputs[NUMSAMPLES][NUMINPUTS];
+	float outputs[NUMSAMPLES][NUMOUTPUTS];
 	
-	
-	chromo = runCGP(params, trainingData, numGens);	
-	
-	removeInactiveNodes(chromo);
-	printChromosome(chromo);
-	
-	freeChromosome(chromo);		
-	freeParameters(params);		
+	float inputTemp;
+	float outputTemp;
 			
+	for(i=0; i<NUMSAMPLES; i++){
+		
+		inputTemp = (i - NUMSAMPLES - 1) / 10.0;
+		outputTemp = symbolicEq1(inputTemp);
+		
+		inputs[i][0] = inputTemp;
+		outputs[i][0] = outputTemp;
+	}
+	
+	data = initialiseDataFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
+	
+	saveDataSet(data, "symbolicEq1.data");
+	
+	freeDataSet(data);
+	
 	return 1;
 }
