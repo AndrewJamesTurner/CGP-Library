@@ -54,7 +54,7 @@ int main(void){
 	
 	data = initialiseDataFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
 	
-	saveDataSet(data, "symbolicEq1.data");
+	saveDataSet(data, "symbolic.data");
 	
 	freeDataSet(data);
 	

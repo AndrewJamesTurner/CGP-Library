@@ -56,8 +56,8 @@ struct parameters{
 	int numNodes;
 	int numOutputs;
 	int arity;
-	float targetFitness;
 	struct functionSet *funcSet;
+	float targetFitness;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
 	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);	
@@ -149,7 +149,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
 
 /* selection scheme functions */
-static void pickHighest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);	
+static void pickFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);	
 
 /* reproduction scheme functions */
 static void mutateRandomParent(struct parameters *params, struct population *pop);
@@ -533,10 +533,24 @@ struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int n
 	struct chromosome **candidateChromos;
 	int numCandidateChromos;
 		
-	/* */
+	/* error checking */
 	if(numGens < 0){
-		printf("Error: %d generations is invalid. The number of generations must be >= 0. \n Terminating CGP-Library.\n", numGens);
+		printf("Error: %d generations is invalid. The number of generations must be >= 0.\n Terminating CGP-Library.\n", numGens);
 	}	
+	
+	if(data != NULL && params->numInputs != data->numInputs){
+		
+		printf("Warning: The number of inputs specified in the data (%d) do not match the number of inputs specified in the parameters (%d). Setting the number of inputs specified in the parameters to be that specified in the data.\n", data->numInputs, params->numInputs);
+		
+		params->numInputs = data->numInputs;
+	}
+	
+	if(data != NULL && params->numOutputs != data->numOutputs){
+		
+		printf("Warning: The number of outputs specified in the data (%d) do not match the number of outputs specified in the parameters (%d). Setting the number of outputs specified in the parameters to be that specified in the data.\n", data->numOutputs, params->numOutputs);
+		
+		params->numInputs = data->numInputs;
+	}
 		
 	/* */
 	chromo = initialiseChromosome(params);
@@ -571,9 +585,9 @@ struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int n
 	
 	if(params->updateFrequency != 0){
 		
-		printf("-- Starting CGP --\n\n");
+		printf("\n-- Starting CGP --\n\n");
 		
-		printf("Gen\tfit\n");
+		printf("Gen\tfitness\n");
 	}
 	
 	/* for each generation */
@@ -960,11 +974,13 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	
 	params->updateFrequency = 100;
 	
-	params->arity = arity;
-	params->numInputs = numInputs;
-	params->numNodes = numNodes;
-	params->numOutputs = numOutputs;
-		
+	
+	setNumInputs(params, numInputs);
+	setNumNodes(params, numNodes);
+	setNumOutputs(params, numOutputs);
+	setArity(params, arity);
+	
+			
 	params->mutationType = probabilisticMutation;
 	strcpy(params->mutationTypeName, "probabilistic"); 
 		 
@@ -974,8 +990,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->fitnessFunction = supervisedLearning;
 	strcpy(params->fitnessFunctionName, "supervisedLearning");
 	
-	params->selectionScheme = pickHighest;
-	strcpy(params->selectionSchemeName, "pickHighest");
+	params->selectionScheme = pickFittest;
+	strcpy(params->selectionSchemeName, "pickFittest");
 		
 	params->reproductionScheme = mutateRandomParent;
 	strcpy(params->reproductionSchemeName, "mutateRandomParent"); 
@@ -987,6 +1003,59 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 }
 
 
+/*
+
+*/
+void setNumInputs(struct parameters *params, int numInputs){
+	
+	/* error checking */
+	if(numInputs < 0){
+		printf("Warning: number of chromosome inputs cannot be negative; %d is invalid.\n", numInputs);
+	}
+	
+	params->numInputs = numInputs;
+}
+
+
+/*
+
+*/
+void setNumNodes(struct parameters *params, int numNodes){
+	
+	/* error checking */
+	if(numNodes < 0){
+		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\n", numNodes);
+	}
+	
+	params->numNodes = numNodes;
+}
+
+/*
+
+*/
+void setNumOutputs(struct parameters *params, int numOutputs){
+	
+	/* error checking */
+	if(numOutputs < 0){
+		printf("Warning: number of chromosome outputs cannot be less than one; %d is invalid.\n", numOutputs);
+	}
+	
+	params->numOutputs = numOutputs;
+}
+
+
+/*
+
+*/
+void setArity(struct parameters *params, int arity){
+	
+	/* error checking */
+	if(arity < 0){
+		printf("Warning: node arity cannot be less than one; %d is invalid.\n", arity);
+	}
+	
+	params->arity = arity;
+}
 
 
 /*
@@ -1566,11 +1635,9 @@ static void mutateRandomParent(struct parameters *params, struct population *pop
 
 /*
 	Selection scheme which selects the fittest members of the population
-	to be the parents. For the '+' evolutionary strategy the parents are
-	selected form the current parents and children. For the ',' 
-	evolutionary strategy the parents are selected form only the children 
+	to be the parents. 
 */
-static void pickHighest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos ){
+static void pickFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos ){
 	
 	int i;
 			
@@ -1848,22 +1915,21 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 	
 void printParameters(struct parameters *params){
 
-	printf("\t-- Parameters --\n");
-	
-	printf("evolutionaryStrategy: (%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printf("---------------------------------------------------\n");
+	printf("                   Parameters                      \n");
+	printf("---------------------------------------------------\n");
+	printf("evolutionaryStrategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printf("Mutation Type:\t\t\t%s\n", params->mutationTypeName);
+	printf("Mutation rate:\t\t\t%f\n", params->mutationRate);
+	printf("Connection weights range:\t+/- %f\n", params->connectionWeightRange);
+	printf("Fitness Function:\t\t%s\n", params->fitnessFunctionName);
+	printf("Target Fitness:\t\t\t%f\n", params->targetFitness);
+	printf("Selection scheme:\t\t%s\n", params->selectionSchemeName);
+	printf("Reproduction scheme:\t\t%s\n", params->reproductionSchemeName);
+	printf("Update frequency:\t\t%d\n", params->updateFrequency);
 	printFunctionSet(params);
 
-	printf("Mutation Type: %s\n", params->mutationTypeName);
-	printf("Mutation rate: %f\n", params->mutationRate);
-	printf("Connection weights range: +/- %f\n", params->connectionWeightRange);
-	printf("Fitness Function: %s\n", params->fitnessFunctionName);
-	printf("Target Fitness: %f\n", params->targetFitness);
-	printf("Selection scheme: %s\n", params->selectionSchemeName);
-	printf("Reproduction scheme: %s\n", params->reproductionSchemeName);
-
-	printf("Update frequency: %d\n", params->updateFrequency);
-
-	printf("------------------------------------------\n\n");
+	printf("---------------------------------------------------\n\n");
 /*
 	
 	int numInputs;
@@ -2528,8 +2594,7 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 
 	int i,j;
 	float error = 0;
-	float temp;
-		
+			
 	/* error checking */
 	if(chromo->numInputs != dat->numInputs){
 		printf("Error: the number of chromosome inputs must match the number of inputs specified in the data.\n");
@@ -2551,15 +2616,8 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 	
 		/* for each chromosome output */
 		for(j=0; j<chromo->numOutputs; j++){
-									
-			temp = (chromo->outputValues[j] - dat->outputData[i][j]);
-			
-			if(temp >= 0){
-				error += temp;
-			}
-			else{
-				error -= temp;
-			}
+				
+			error += fabs(chromo->outputValues[j] - dat->outputData[i][j]);
 		}
 	}
 	

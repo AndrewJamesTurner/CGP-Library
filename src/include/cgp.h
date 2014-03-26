@@ -134,7 +134,15 @@
 	*/
 	void freeParameters(struct parameters *params);
 	
-	
+	/*
+		Function: printParameters
+
+		Prints the given parameters to the screen in a human readable format. 
+
+		Parameters:
+			params - pointer to parameters structure.
+			
+	*/
 	void printParameters(struct parameters *params);
 	
 			
@@ -186,8 +194,10 @@
 
 		Adds a custom node function to the set of functions made available to chromosome nodes.  
 	
-		The custom fitness function must take the form:
+		The custom fitness function must take the form
 		> float (*nodeFunctionName)(const int numInputs, const float *inputs, const float *weights)
+	
+		where the user replaces 'nodeFunctionName' with their own function name.
 	
 		Parameters:
 			params - pointer to parameters structure
@@ -197,6 +207,7 @@
 		Example:
 			
 			custom node function, add
+			
 			(begin code)
 			float add(const int numInputs, const float *inputs, const float *connectionWeights){
 			 
@@ -212,8 +223,9 @@
 			(end)
 			
 			Adding the new custom node function
+			
 			(begin code)
-			> addNodeFunctionCustom(params, add, "add");
+			addNodeFunctionCustom(params, add, "add");
 			(end)
 			
 		See Also:
@@ -403,12 +415,149 @@
 	void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 	
 
+	/*
+		Function: setNumInputs
+		
+			Sets the number of chromosome inputs in the given parameters.
+		
+			The given number of chromosome inputs is also parsed to ensure a valid number of chromosome inputs. 
+			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give a 
+			warning is displayed but the number of chromosome inputs *is changed*.
+		
+		Parameters:
+			params - pointer to parameters structure.
+			numInputs - The number of chromosome inputs to be set.
+
+		See Also:
+			<getNumInputs>
+	*/
+	void setNumInputs(struct parameters *params, int numInputs);
+
+
+	/*
+		Function: setNumnodes
+		
+			Sets the number of chromosome nodes in the given parameters.
+		
+			The given number of chromosome nodes is also parsed to ensure a valid number of chromosome nodes. 
+			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give a 
+			warning is displayed but the number of chromosome nodes *is changed*.
+		
+		Parameters:
+			params - pointer to parameters structure.
+			nodes - The number of chromosome nodes to be set.
+
+		See Also:
+			<getNumNodes>
+	*/
+	void setNumNodes(struct parameters *params, int numNodes);
+
+	/*
+		Function: setNumOutputs
+		
+			Sets the number of chromosome outputs in the given parameters.
+		
+			The given number of chromosome outputs is also parsed to ensure a valid number of chromosome outputs. 
+			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give a 
+			warning is displayed but the number of chromosome outputs *is changed*.
+		
+		Parameters:
+			params - pointer to parameters structure.
+			numOutputs - The number of chromosome outputs to be set.
+
+		See Also:
+			<getNumOutputs>
+	*/
+	void setNumOutputs(struct parameters *params, int numOutputs);
+
+
+	/*
+		Function: setArity
+		
+			Sets the arity of the chromosome nodes in the given parameters.
+		
+			The given arity for each chromosome node is also parsed to ensure a valid chromosome node arity. 
+			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give a 
+			warning is displayed but the chromosome node arity  *is changed*.
+		
+		Parameters:
+			params - pointer to parameters structure.
+			arity - The chromosome node arity to be set.
+
+		See Also:
+			<getArity>
+	*/
+	void setArity(struct parameters *params, int arity);
+
+
+	/*
+		Function: setTargetFitness
+		
+			Sets the target fitness used when running CGP. 
+			
+			In all cases lower fitness values are used to represent fitter chromosomes.
+				
+		Parameters:
+			params - pointer to parameters structure.
+			targetFitness - The target fitness to be set.
+
+		See Also:
+			<getTargetFitness>
+	*/
 	void setTargetFitness(struct parameters *params, float targetFitness);
 	
 	
-	void setMutationRate(struct parameters *params, float mutationRate);
-	void setConnectionWeightRange(struct parameters *params, float weightRange);
+	/*
+		Function: setTargetFitness
+		
+			Sets the target fitness used when running CGP. 
+			
+			In all cases lower fitness values are used to represent fitter chromosomes.
+				
+		Parameters:
+			params - pointer to parameters structure.
+			targetFitness - The target fitness to be set.
+
+		See Also:
+			<getTargetFitness>
+	*/
+	
+	
+	/*
+		Function: setMutationType
+		
+			Sets the mutation methods used when mutating chromosomes. 
+			
+			There are two mutation type options: the default "probabilistic" and "point". 
+			If a invalid mutation type is given a warning is displayed and the mutation type is left unchanged.
+				
+		Parameters:
+			params - pointer to parameters structure.
+			mutationType - char array specifying the mutation type.
+
+		See Also:
+			<getMutationType>
+	*/
 	void setMutationType(struct parameters *params, char *mutationType);
+	
+	
+	/*
+		Function: setUpdateFrequency
+		
+			Sets the frequency of the updates to the user when using runCGP. 
+			
+			The update frequency represents the number of generations which elapse between showing the user the current best fitness.
+			
+		Note:	
+			A value of '0' is a special case which causes not updates to be shown.
+				
+		Parameters:
+			params - pointer to parameters structure.
+			updateFrequency - update frequency in generations.
+
+		See Also:
+			<getUpdateFrequency> <runCGP>
+	*/
 	void setUpdateFrequency(struct parameters *params, int updateFrequency);
 	
 	

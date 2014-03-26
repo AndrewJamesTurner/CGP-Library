@@ -1,6 +1,13 @@
 Title: Getting Started
 
-File located in CGP-Library/examples/gettingStarted.c
+This tutorial introduces and steps though a simple program which used the CGP-Library to solve a symbolic regression task. Symbolic regression is the task of describing a series of data points using a mathematical equation. If you have not already downloaded and/or installed the CGP-Library please see the <Installation> tutorial. 
+
+Title: The Program
+
+A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.
+
+The program below is provided in the CGP-Library download within /examples/gettingStarted.c
+
 
 (start code)
 #include <stdio.h>
@@ -12,28 +19,28 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 	struct chromosome *chromo = NULL;
 		 
-	int numInputs = 3;
-	int numNodes = 20;
-	int numOutputs = 2;
+	int numInputs = 1;
+	int numNodes = 15;
+	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 50000;
-	int updateFrequency = 1000;  
-	
+	int numGens = 10000;
+	int updateFrequency = 500;  
+		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
-	addNodeFunction(params, "and,or,not,xor,nor,nand");
+	addNodeFunction(params, "add,sub,mul,div,sin");
+	
+	setTargetFitness(params, 0.1);
 		
 	setUpdateFrequency(params, updateFrequency);	
-		
+				
 	printParameters(params);
 	
-	trainingData = initialiseDataFromFile("./examples/fullAdder.data");
+	trainingData = initialiseDataFromFile("./examples/symbolic.data");
 	
 	chromo = runCGP(params, trainingData, numGens);	
-	
-	removeInactiveNodes(chromo);
-	
+			
 	printChromosome(chromo);
 	
 	freeChromosome(chromo);		
@@ -42,3 +49,38 @@ int main(void){
 	return 1;
 }
 (end)
+
+
+Title: Stepping Through the Code
+
+A close look at each line of the example code.
+
+In order to use the CGP-Library cgp.h must be included. The location of cgp.h and where your complier looks for it will depend upon your personal set up.
+
+(begin code)
+#include "../src/include/cgp.h"  
+(end)
+
+The CGP-Library leaves memory management up to the user so as to allow the user more control. Structures are used to to store information relating to various aspect of the CGP-Library; These structures must be defined by the user but are initialised and free'd using provided functions. The parameters structure contains general information related to the CGP-Library and is used to pass information into other functions without requiring a long series of inputs. The dataSet structure is used to store any data which may be needed when evaluating chromosome fitnesses. For instance in this example it shall be used to store the data points to which CGP must fit an equation. The chromosome structure is used to store all the information relating to a single CGP chromosome instance.  
+
+(begin code)
+struct parameters *params = NULL;
+struct dataSet *trainingData = NULL;
+struct chromosome *chromo = NULL;
+(end)
+
+(begin code)
+int numInputs = 1;
+int numNodes = 15;
+int numOutputs = 1;
+int nodeArity = 2;
+(end)
+
+
+>1,1,101,
+>-5.000000,14400.000000,
+>-4.900000,12712.338867,
+>-4.800000,11191.950195,
+>-4.700000,9825.367188,
+
+

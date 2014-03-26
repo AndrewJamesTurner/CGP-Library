@@ -25,28 +25,28 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 	struct chromosome *chromo = NULL;
 		 
-	int numInputs = 3;
-	int numNodes = 20;
-	int numOutputs = 2;
+	int numInputs = 1;
+	int numNodes = 15;
+	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 50000;
-	int updateFrequency = 1000;  
+	int numGens = 10000;
+	int updateFrequency = 500;  
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
-	addNodeFunction(params, "and,or,not,xor,nor,nand");
+	addNodeFunction(params, "add,sub,mul,div,sin");
+	
+	setTargetFitness(params, 0.1);
 		
 	setUpdateFrequency(params, updateFrequency);	
-		
+				
 	printParameters(params);
 	
-	trainingData = initialiseDataFromFile("./examples/fullAdder.data");
+	trainingData = initialiseDataFromFile("./examples/symbolic.data");
 	
 	chromo = runCGP(params, trainingData, numGens);	
-		
-	removeInactiveNodes(chromo);
-	
+			
 	printChromosome(chromo);
 	
 	freeChromosome(chromo);		

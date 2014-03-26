@@ -21,13 +21,9 @@ createDataSet: examples/createDataSet.c src/cgp.c src/include/cgp.h
 docs: ./src/include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./src/include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
-so:
+so: src/cgp.c
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
 	@gcc -shared -o libcgp.so cgp.o -lm
-
-dll:
-	@$(CC) -c -o cgp.o src/cgp.c $(CFLAGS) 
-	@gcc -o cgp.dll -s -shared cgp.o -lm
 
 clean:
 	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet
