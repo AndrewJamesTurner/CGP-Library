@@ -36,6 +36,15 @@
 	Structure definitions 
 */
 
+struct population{
+		
+	int mu;
+	int lambda;	
+	struct chromosome **parents;
+	struct chromosome **children;
+	int trainedGenerations;
+};
+
 struct parameters{
 	
 	int mu;
@@ -60,14 +69,7 @@ struct parameters{
 	int updateFrequency;
 };
 
-struct population{
-		
-	int mu;
-	int lambda;	
-	struct chromosome **parents;
-	struct chromosome **children;
-	int trainedGenerations;
-};
+
 
 struct chromosome{
 		
@@ -242,7 +244,7 @@ void saveChromosome(struct chromosome *chromo, char *file){
 	fclose(fp);
 }
 
-struct chromosome* loadChromosome(char *file){
+struct chromosome* initialiseChromosomeFromFile(char *file){
 	
 	FILE *fp;
 	struct chromosome *chromo;
@@ -414,7 +416,7 @@ float getAverageActiveNodes(struct results *rels){
 		
 		chromoTemp = rels->bestChromosomes[i];
 
-		avgActiveNodes += getChromosomeActiveNodes(chromoTemp);
+		avgActiveNodes += getChromosomeNumActiveNodes(chromoTemp);
 	}
 	
 	avgActiveNodes = avgActiveNodes / rels->numRuns;
@@ -685,7 +687,7 @@ float getChromosomeFitness(struct chromosome *chromo){
 /*
 
 */
-int getChromosomeActiveNodes(struct chromosome *chromo){
+int getChromosomeNumActiveNodes(struct chromosome *chromo){
 	return chromo->numActiveNodes;
 }
 
@@ -1627,7 +1629,7 @@ void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs)
 	int nodeInputLocation;
 	int currentActiveNode;
 	int currentActiveNodeFuction;
-		
+			
 	/* for all of the active nodes */
 	for(i=0; i<chromo->numActiveNodes; i++){
 		

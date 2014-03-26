@@ -18,8 +18,8 @@ gettingStarted: examples/gettingStarted.c src/cgp.c src/include/cgp.h
 createDataSet: examples/createDataSet.c src/cgp.c src/include/cgp.h
 	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
 
-docs: src/include/cgp.h docs/custonFiles/license.txt
-	@naturaldocs -i ./src/include -i ./docs/custonFiles -o FramedHTML ./docs -p ./naturaldocs
+docs: ./src/include/cgp.h ./naturaldocs/customFiles/*
+	@naturaldocs -i ./src/include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 so:
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 

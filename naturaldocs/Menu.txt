@@ -47,19 +47,20 @@ Footer: Copyright (C) 2014 Andrew James Turner
 # --------------------------------------------------------------------------
 
 
-File: About  (no auto-title, /home/at568/Desktop/CGP-Library/docs/custonFiles/About.txt)
+File: About  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/About.txt)
+File: License  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/license.txt)
+File: API  (/home/at568/Desktop/CGP-Library/src/include/cgp.h)
 
 Group: Tutorials  {
 
-   File: Installation  (/home/at568/Desktop/CGP-Library/docs/custonFiles/Installation.txt)
-   File: Getting Started  (/home/at568/Desktop/CGP-Library/docs/custonFiles/GettingStarted.txt)
-   File: Custom Node Functions  (/home/at568/Desktop/CGP-Library/docs/custonFiles/CustomNodeFunctions.txt)
-   File: Custom Fitness Function  (/home/at568/Desktop/CGP-Library/docs/custonFiles/CustomFitnessFunction.txt)
-   File: Real World Use  (/home/at568/Desktop/CGP-Library/docs/custonFiles/RealWorldUse.txt)
-   File: Academic Use  (/home/at568/Desktop/CGP-Library/docs/custonFiles/AcademicUse.txt)
+   File: Installation  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/Installation.txt)
+   File: Getting Started  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/GettingStarted.txt)
+   File: Create Data Set  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CreateDataSet.txt)
+   File: Custom Node Functions  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CustomNodeFunctions.txt)
+   File: Custom Fitness Function  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CustomFitnessFunction.txt)
+   File: Real World Use  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/RealWorldUse.txt)
+   File: Academic Use  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/AcademicUse.txt)
    }  # Group: Tutorials
-
-File: API  (/home/at568/Desktop/CGP-Library/src/include/cgp.h)
 
 Group: Index  {
 
@@ -68,9 +69,8 @@ Group: Index  {
    Variable Index: Variables
    }  # Group: Index
 
-File: License  (/home/at568/Desktop/CGP-Library/docs/custonFiles/license.txt)
 
 
 ##### Do not change or remove these lines. #####
 Data: 1(D3333RuEG3ptnSJ3BG6AtuI30Wgz18YHpHQ36H938\9oNfG)
-Data: 1(h3333RuEG3ptnSJ3BG6AtuI30Wgz18YHpHQ3fu9639N6tu\m8oG6)
+Data: 1(h3333RuEG3ptnSJ3BG6AtuI30Wgz18YHpHQ3\ptNHpofu9639N6tuEm8oG6)

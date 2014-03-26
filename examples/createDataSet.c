@@ -20,7 +20,6 @@
 #include <math.h>
 #include "../src/include/cgp.h"  
 
-
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
 #define NUMSAMPLES 101

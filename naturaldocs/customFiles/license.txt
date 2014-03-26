@@ -4,6 +4,6 @@ CGP-Library
 
 Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
 
-GNU Lesser General Public License
+GNU Lesser General Public License <https://www.gnu.org/licenses/lgpl.html>
 
 

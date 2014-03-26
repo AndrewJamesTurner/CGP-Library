@@ -9,7 +9,44 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 
 
-<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Getting_Started"></a>Getting Started</h1><div class=CBody></div></div></div>
+<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Getting_Started"></a>Getting Started</h1><div class=CBody><p>File located in CGP-Library/examples/gettingStarted.c</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
+#include &quot;../src/include/cgp.h&quot;
+
+int main(void){
+
+    struct parameters *params = NULL;
+    struct dataSet *trainingData = NULL;
+    struct chromosome *chromo = NULL;
+
+    int numInputs = 3;
+    int numNodes = 20;
+    int numOutputs = 2;
+    int nodeArity = 2;
+
+    int numGens = 50000;
+    int updateFrequency = 1000;
+
+    params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+
+    addNodeFunction(params, &quot;and,or,not,xor,nor,nand&quot;);
+
+    setUpdateFrequency(params, updateFrequency);
+
+    printParameters(params);
+
+    trainingData = initialiseDataFromFile(&quot;./examples/fullAdder.data&quot;);
+
+    chromo = runCGP(params, trainingData, numGens);
+
+    removeInactiveNodes(chromo);
+
+    printChromosome(chromo);
+
+    freeChromosome(chromo);
+    freeParameters(params);
+
+    return 1;
+}</pre></blockquote></div></div></div>
 
 </div><!--Content-->
 
