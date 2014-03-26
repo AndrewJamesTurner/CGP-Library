@@ -1,9 +1,13 @@
-Title: License
+Title: Licenses
 
-CGP-Library 
+Title: CGP-Library
 
 Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
 
 Licensed under the GNU Lesser General Public License, available at <https://www.gnu.org/licenses/lgpl.html>
 
+Title: CGP-Library Documentation 
 
+Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
+
+Licensed under the GNU Free Documentation License, available at <https://www.gnu.org/licenses/fdl.html>

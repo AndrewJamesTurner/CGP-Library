@@ -48,7 +48,7 @@ Footer: Copyright (C) 2014 Andrew James Turner
 
 
 File: About  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/About.txt)
-File: License  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/license.txt)
+File: Licenses  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/license.txt)
 File: API  (/home/at568/Desktop/CGP-Library/src/include/cgp.h)
 
 Group: Tutorials  {
