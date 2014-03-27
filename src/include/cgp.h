@@ -1166,7 +1166,7 @@
 			
 			
 		See Also:
-			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults>
+			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults> 
 	*/	
 	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
 	

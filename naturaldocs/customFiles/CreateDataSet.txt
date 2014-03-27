@@ -1,11 +1,11 @@
-Title: Creating Data Sets
+Title: Creating Data Sets 
 
-Title: The Program
+Title: The Program 
 
 (begin code)
 #include <stdio.h>
 #include <math.h>
-#include "../src/include/cgp.h"  
+#include "../src/include/cgp.h"   
 
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1

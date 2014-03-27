@@ -1,4 +1,4 @@
-Title: Getting Started
+Title: Getting Started   
 
 This tutorial introduces and steps though a simple program which uses the CGP-Library to solve a simple symbolic regression problem.
 
