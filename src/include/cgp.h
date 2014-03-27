@@ -456,7 +456,7 @@
 
 
 	/*
-		Function: setNumnodes
+		Function: setNumNodes
 		
 			Sets the number of chromosome nodes in the given parameters.
 		
