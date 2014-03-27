@@ -9,7 +9,7 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 
 
-<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Getting_Started"></a>Getting Started</h1><div class=CBody><p>This tutorial introduces and steps though a simple program which used the CGP-Library to solve a symbolic regression task.&nbsp; Symbolic regression is the task of describing a series of data points using a mathematical equation.&nbsp; If you have not already downloaded and/or installed the CGP-Library please see the <a href="Installation-txt.html#Installation" class=LSection id=link1 onMouseOver="ShowTip(event, 'tt1', 'link1')" onMouseOut="HideTip('tt1')">Installation</a> tutorial.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#Getting_Started" >Getting Started</a></td><td class=SDescription>This tutorial introduces and steps though a simple program which used the CGP-Library to solve a symbolic regression task. </td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription>A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.</td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription>A close look at each line of the example code.</td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
+<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Getting_Started"></a>Getting Started</h1><div class=CBody><p>This tutorial introduces and steps though a simple program which uses the CGP-Library to solve a simple symbolic regression problem.</p><p>Symbolic regression is the task of describing a series of data points using a mathematical equation.&nbsp; If you have not already downloaded and/or installed the CGP-Library please see the <a href="Installation-txt.html#Installation" class=LSection id=link1 onMouseOver="ShowTip(event, 'tt1', 'link1')" onMouseOut="HideTip('tt1')">Installation</a> tutorial.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#Getting_Started" >Getting Started</a></td><td class=SDescription>This tutorial introduces and steps though a simple program which uses the CGP-Library to solve a simple symbolic regression problem.</td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription>A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.</td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription>A close look at each line of the example code.</td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
 
 <div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><p>A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.</p><p>The program below is provided in the CGP-Library download within /examples/gettingStarted.c</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
 #include &quot;../src/include/cgp.h&quot;
@@ -27,40 +27,73 @@ int main(void){
 
     int numGens = 10000;
     int updateFrequency = 500;
+    float targetFitness = 0.1;
 
     params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
     addNodeFunction(params, &quot;add,sub,mul,div,sin&quot;);
 
-    setTargetFitness(params, 0.1);
+    setTargetFitness(params, targetFitness);
 
     setUpdateFrequency(params, updateFrequency);
 
     printParameters(params);
 
-    trainingData = initialiseDataFromFile(&quot;./examples/symbolic.data&quot;);
+    trainingData = initialiseDataSetFromFile(&quot;./examples/symbolic.data&quot;);
 
     chromo = runCGP(params, trainingData, numGens);
 
     printChromosome(chromo);
 
+    freeDataSet(trainingData);
     freeChromosome(chromo);
     freeParameters(params);
 
     return 1;
 }</pre></blockquote></div></div></div>
 
-<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.</p><p>In order to use the CGP-Library cgp.h must be included.&nbsp; The location of cgp.h and where your complier looks for it will depend upon your personal set up.</p><blockquote><pre class="prettyprint">#include &quot;../src/include/cgp.h&quot;</pre></blockquote><p>The CGP-Library leaves memory management up to the user so as to allow the user more control.&nbsp; Structures are used to to store information relating to various aspect of the CGP-Library; These structures must be defined by the user but are initialised and free&rsquo;d using provided functions.&nbsp; The parameters structure contains general information related to the CGP-Library and is used to pass information into other functions without requiring a long series of inputs.&nbsp; The dataSet structure is used to store any data which may be needed when evaluating chromosome fitnesses.&nbsp; For instance in this example it shall be used to store the data points to which CGP must fit an equation.&nbsp; The chromosome structure is used to store all the information relating to a single CGP chromosome instance.</p><blockquote><pre class="prettyprint">struct parameters *params = NULL;
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.</p><p>First cgp.h must be included to use the CGP-Library.&nbsp; The location of cgp.h and where your complier looks for it will depend upon your personal set up.</p><blockquote><pre class="prettyprint">#include &quot;../src/include/cgp.h&quot;</pre></blockquote><p>The CGP-Library leaves memory management up to the user so as to allow the user more control.&nbsp; Structures are used to to store information relating to various aspect of the CGP-Library; These structures must be defined by the user but are initialised and free&rsquo;d using provided functions.&nbsp; The parameters structure contains general information related to the CGP-Library and is used to pass information into other functions without requiring a long series of inputs.&nbsp; The dataSet structure is used to store any data which may be needed when evaluating chromosome fitnesses.&nbsp; For instance in this example it shall be used to store the data points to which CGP must fit an equation.&nbsp; The chromosome structure is used to store all the information relating to a single CGP chromosome instance.</p><blockquote><pre class="prettyprint">struct parameters *params = NULL;
 struct dataSet *trainingData = NULL;
 struct chromosome *chromo = NULL;</pre></blockquote><p>Later we will need to know the dimensions so these are assigned to variables.&nbsp; The number of inputs are the number of chromosome inputs.&nbsp; The number of nodes is the maximum number of chromosome nodes.&nbsp; The number of outputs is the number of chromosome outputs.&nbsp; The arity is the arity of each chromosome node.</p><blockquote><pre class="prettyprint">int numInputs = 1;
 int numNodes = 15;
 int numOutputs = 1;
-int nodeArity = 2;</pre></blockquote><p>We will also later need to give the number of generations before terminating the search and how often to update the terminal with the current best fitness.&nbsp; The update frequency is in generations.</p><blockquote><pre class="prettyprint">int numGens = 10000;
-int updateFrequency = 500;</pre></blockquote><blockquote><pre class="prettyprint">params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);</pre></blockquote><blockquote><pre>1,1,101,
+int nodeArity = 2;</pre></blockquote><p>We will also later need to specify the number of generations allowed before the search is terminated.</p><blockquote><pre class="prettyprint">int numGens = 10000;</pre></blockquote><p>Although the parameters contain default values the user can also specify the target fitness and the frequency at which the user is shown the progress of the search.&nbsp; By default the target fitness is &lsquo;0&rsquo; and the user is shown the current best fitness at each generation.&nbsp; We will change these defaults later using the the values below.</p><blockquote><pre class="prettyprint">float targetFitness = 0.1;
+int updateFrequency = 500;</pre></blockquote><p>Next the parameters structure is initialised with default parameters and the chromosome dimensions defined earlier.</p><blockquote><pre class="prettyprint">params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);</pre></blockquote><p>One of the roles of the parameters is to store a function set containing the functions which each node can implement.&nbsp; Newly initialised parameters contain a empty function set and it is up to the user to populate it.&nbsp; The functions are added to the function set using addNodeFunction.</p><p>The fuctions added here are: addition, subtraction, multiplication, division and sine.</p><blockquote><pre class="prettyprint">addNodeFunction(params, &quot;add,sub,mul,div,sin&quot;);</pre></blockquote><p>The default target fitness of &lsquo;0&rsquo; is altered using setTargetFitness.</p><blockquote><pre class="prettyprint">setTargetFitness(params, 0.1);</pre></blockquote><p>The default update frequency of &lsquo;1&rsquo; is altered using setUpdateFrequency.</p><blockquote><pre class="prettyprint">setUpdateFrequency(params, updateFrequency);</pre></blockquote><p>If the user wishes to inspect the parameters currently set they can be printed to the terminal using printParameters.</p><blockquote><pre class="prettyprint">printParameters(params);</pre></blockquote><p>When printed the parameters should appear as follows.&nbsp; Most of the parameters have been left as the defaults but the target fitness and update frequency have been altered.&nbsp; Additionally the function set contains the the functions we specified.</p><blockquote><pre>---------------------------------------------------
+                  Parameters
+---------------------------------------------------
+evolutionaryStrategy:         (1+4)-ES
+Mutation Type:                probabilistic
+Mutation rate:                0.050000
+Connection weights range:     +/- 1.000000
+Fitness Function:             supervisedLearning
+Target Fitness:               0.100000
+Selection scheme:             pickFittest
+Reproduction scheme:          mutateRandomParent
+Update frequency:             500
+Function Set: add sub mul div sin (5)
+---------------------------------------------------</pre></blockquote><p>Now the parameters associated with the CGP-Library are set up we next need to define the task to be solved.&nbsp; By default a supervised learning fitness function is used.&nbsp; The supervised learning fitness function applies sets of user defined input output pairs to each chromosome and assigns a fitness proportional to how closely the chromosomes outputs match the desired correct outputs.&nbsp; The fitness used is the sum of the absolute differences between the generated and correct outputs over all given inputs.</p><p>Input output pairs are stored using the dataSet structure which contains the number of data samples and how many inputs and outputs each sample contains.</p><p>One method of initialising a dataSet structure is to load the dataSet information from a file using initialiseDataSetFromFile which returns an initialised dataSet structure containing the data in the file specified.</p><p>Here we load in a data set containing 101 evenly sampled points from y = x^6 - 2x^4 + x^2 within the range [-5,5].&nbsp; The data set is given in /examples/symbolic.data.</p><blockquote><pre class="prettyprint">trainingData = initialiseDataSetFromFile(&quot;./examples/symbolic.data&quot;);</pre></blockquote><p>In order for initialiseDataSetFromFile to parse the data set the file must use the following format.&nbsp; Where the first line contains the number of inputs each sample uses followed by the number of outputs each sample uses followed by the total number of samples.&nbsp; The remaining lines each describe an individual sample giving the inputs values followed by the output values.&nbsp; All values must be comma separated.</p><blockquote><pre>1,1,101,
 -5.000000,14400.000000,
 -4.900000,12712.338867,
 -4.800000,11191.950195,
--4.700000,9825.367188,</pre></blockquote></div></div></div>
+-4.700000,9825.367188,</pre></blockquote><p>Now we have set the CGP-Library parameters and gave specified the training data we can run CGP.&nbsp; The runCGP function takes our defined parameters, training data and the number of generations allowed before terminating the search.&nbsp; The runCGP function also returns an initialised which represents the best solution to the given task.</p><p>Whilst CGP is running the current progress will be displayed to the terminal at the rate specified in the parameters.</p><blockquote><pre class="prettyprint">chromo = runCGP(params, trainingData, numGens);</pre></blockquote><p>To inspect the best solution CGP found the returned chromosome can be printed to the terminal.</p><blockquote><pre class="prettyprint">printChromosome(chromo);</pre></blockquote><p>The printed chromosome take the following form.&nbsp; Each number line represents a node where a node can be an input node or a function node.&nbsp; Each function node is labelled with a textural description of what operation the node does.&nbsp; This is followed by pairs of number for each node input.&nbsp; Each pair gives the node to which that node input connects and a connection weight associated with that connection.&nbsp; As connection weights are only used when evolving neural networks then can be ignored in this example.&nbsp; Finally some function nodes are labelled with &lsquo;*&rsquo; indicating that it is a active node (it contribute the the overall operation of the evolved program).</p><blockquote><pre>(0):  input
+(1):  mul 0,-0.0  0,+0.1  *
+(2):  mul 1,-0.7  1,-0.2  *
+(3):  sub 2,+0.2  1,+0.4  *
+(4):  add 2,+0.8  3,-0.1  *
+(5):  sub 3,-0.6  4,-0.1  *
+(6):  div 0,+0.0  1,-0.1
+(7):  sub 0,-0.9  0,+0.8
+(8):  add 1,+0.1  5,+0.6  *
+(9):  mul 3,+0.8  1,-0.1  *
+(10): sin 2,-0.5  3,+0.2
+(11): sin 6,+0.3  0,+0.2
+(12): div 0,+0.9  9,-1.0
+(13): add 8,+0.8  9,-0.4  *
+(14): mul 7,+0.9  7,+0.8
+(15): add 7,+0.3  3,+0.7
+outputs: 13</pre></blockquote><p>Finally the memory associated with the structures used should be free&rsquo;d.</p><blockquote><pre class="prettyprint">freeDataSet(trainingData);
+freeChromosome(chromo);
+freeParameters(params);</pre></blockquote><p>And that&rsquo;s it, in just 39 lines of code we have applied CGP to a symbolic regression task.</p></div></div></div>
 
 </div><!--Content-->
 

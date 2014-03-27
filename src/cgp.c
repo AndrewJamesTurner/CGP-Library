@@ -750,7 +750,7 @@ struct chromosome *getFittestChromosome(struct population *pop){
 /*
 	Initialises data structure and assigns values of given file
 */
-struct dataSet *initialiseDataFromFile(char *file){ 
+struct dataSet *initialiseDataSetFromFile(char *file){ 
 	
 	int i;
 	struct dataSet *data;
@@ -780,8 +780,8 @@ struct dataSet *initialiseDataFromFile(char *file){
 						
 			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
 						
-			data->inputData = malloc(data->numSamples * sizeof(float**));
-			data->outputData = malloc(data->numSamples * sizeof(float**));
+			data->inputData = malloc(data->numSamples * sizeof(float*));
+			data->outputData = malloc(data->numSamples * sizeof(float*));
 		
 			for(i=0; i<data->numSamples; i++){
 				data->inputData[i] = malloc(data->numInputs * sizeof(float));
@@ -792,7 +792,7 @@ struct dataSet *initialiseDataFromFile(char *file){
 		else{
 			
 			/* get the first value on the given line */
-			record = strtok(line,",");
+			record = strtok(line," ,\n");
 			col = 0;
 		
 			/* until end of line */
@@ -805,11 +805,12 @@ struct dataSet *initialiseDataFromFile(char *file){
 				
 				/* if its an output value */
 				else{
+										
 					data->outputData[lineNum][col - data->numInputs] = atof(record);
 				}
 				
 				/* get the next value on the given line */
-				record = strtok(NULL,",");
+				record = strtok(NULL," ,\n");
 		
 				/* increment the current col index */
 				col++;
@@ -829,7 +830,7 @@ struct dataSet *initialiseDataFromFile(char *file){
 /*
 
 */
-struct dataSet *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
+struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
 	
 	int i,j;
 	struct dataSet *data;
@@ -1424,7 +1425,7 @@ void printFunctionSet(struct parameters *params){
 
 	int i;
 
-	printf("Functions:");
+	printf("Function Set:");
 	
 	for(i=0; i<params->funcSet->numFunctions; i++){
 		printf(" %s", params->funcSet->functionNames[i]);

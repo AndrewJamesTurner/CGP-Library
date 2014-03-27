@@ -31,8 +31,8 @@ int main(void){
 	int nodeArity = 2;
 	
 	int numGens = 10000;
-	int updateFrequency = 500;  
 	float targetFitness = 0.1;	
+	int updateFrequency = 500;  
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -44,12 +44,13 @@ int main(void){
 				
 	printParameters(params);
 	
-	trainingData = initialiseDataFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 	
 	chromo = runCGP(params, trainingData, numGens);	
 			
 	printChromosome(chromo);
 	
+	freeDataSet(trainingData);
 	freeChromosome(chromo);		
 	freeParameters(params);		
 			

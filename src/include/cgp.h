@@ -851,7 +851,7 @@
 	
 	
 	/*
-		Function: initialiseDataFromArrays
+		Function: initialiseDataSetFromArrays
 
 		Initialises a data structures using the given input output pairs.
 		
@@ -883,13 +883,13 @@
 			(end)
 
 		See Also:
-			<freeData>, <initialiseDataFromFile>, <printData>
+			<freeData>, <initialiseDataSetFromFile>, <printDataSet>
 	*/
-	struct dataSet *initialiseDataFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
+	struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
 	
 	
 	/*
-		Function: initialiseDataFromFile
+		Function: initialiseDataSetFromFile
 
 		Initialises a data structures using the given file.
 		
@@ -922,13 +922,13 @@
 			(end)
 
 		See Also:
-			<freeData>, <initialiseDataFromArrays>, <printData>
+			<freeDataSet>, <initialiseDataSetFromArrays>, <printDataSet>
 	*/
-	struct dataSet *initialiseDataFromFile(char *file);
+	struct dataSet *initialiseDataSetFromFile(char *file);
 	
 	
 	/*  
-		Function: freeData 
+		Function: freeDataSet 
 
 		Frees data instance.
 
@@ -941,15 +941,15 @@
 	void freeDataSet(struct dataSet *data);
 	
 	/*
-		Function: printData
+		Function: printDataSet
 
-		Prints the input output pairs held by a data structure in a human readable form.  
+		Prints the input output pairs held by a dataSet structure in a human readable form.  
 
 		Parameters:
 			dat - pointer to data structure.
 			
 		See Also:
-			<initialiseDataFromArrays>, <initialiseDataFromFile>, <freeData>
+			<initialiseDataFromArrays>, <initialiseDataFromFile>, <freeDataSet>
 	*/
 	void printDataSet(struct dataSet *data);
 	
