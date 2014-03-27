@@ -64,7 +64,13 @@ First cgp.h must be included to use the CGP-Library. The location of cgp.h and w
 #include "../src/include/cgp.h"  
 (end)
 
-The CGP-Library leaves memory management up to the user so as to allow the user more control. Structures are used to to store information relating to various aspect of the CGP-Library; These structures must be defined by the user but are initialised and free'd using provided functions. The parameters structure contains general information related to the CGP-Library and is used to pass information into other functions without requiring a long series of inputs. The dataSet structure is used to store any data which may be needed when evaluating chromosome fitnesses. For instance in this example it shall be used to store the data points to which CGP must fit an equation. The chromosome structure is used to store all the information relating to a single CGP chromosome instance.  
+The CGP-Library leaves memory management up to the user so as to allow 
+the user more control. Structures are used to to store information 
+relating to various aspect of the CGP-Library; These structures must be 
+defined by the user but are initialised and free'd using provided 
+functions. The <parameters> structure contains general information 
+related to the CGP-Library and is used to pass information into other 
+functions without requiring a long series of inputs. The <dataSet> structure is used to store any data which may be needed when evaluating chromosome fitnesses. For instance in this example it shall be used to store the data points to which CGP must fit an equation. The <chromosome> structure is used to store all the information relating to a single CGP chromosome instance.  
 
 (begin code)
 struct parameters *params = NULL;
@@ -105,7 +111,8 @@ int updateFrequency = 500;
 (end)
 
 Next the parameters structure is initialised with default parameters 
-and the chromosome dimensions defined earlier. 
+and the chromosome dimensions defined earlier. This is achieved using 
+<initialiseParameters>. 
 
 (begin code)
 params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -115,9 +122,10 @@ One of the roles of the parameters is to store a function set
 containing the functions which each node can implement. Newly initialised 
 parameters contain a empty function set and it is up to the user to 
 populate it. The functions are added to the function set using 
-addNodeFunction. 
+addNodeFunction. For a complete list of pre-defined functions see 
+<addNodeFunction>.
 
-The fuctions added here are: addition, subtraction, multiplication, 
+The functions added here are: addition, subtraction, multiplication, 
 division and sine.
 
 (begin code)
@@ -125,21 +133,21 @@ addNodeFunction(params, "add,sub,mul,div,sin");
 (end)
 
 The default target fitness of '0' is altered using 
-setTargetFitness. 
+<setTargetFitness>. 
 
 (begin code)
 setTargetFitness(params, 0.1);
 (end)
 
 The default update frequency of '1' is altered using 
-setUpdateFrequency.
+<setUpdateFrequency>.
 
 (begin code)
 setUpdateFrequency(params, updateFrequency);
 (end)
 
 If the user wishes to inspect the parameters currently set they can be 
-printed to the terminal using printParameters.
+printed to the terminal using <printParameters>.
 
 (begin code)
 printParameters(params);
@@ -179,7 +187,7 @@ contains the number of data samples and how many inputs and outputs
 each sample contains. 
 
 One method of initialising a dataSet structure is to load the dataSet 
-information from a file using initialiseDataSetFromFile which returns 
+information from a file using <initialiseDataSetFromFile> which returns 
 an initialised dataSet structure containing the data in the file 
 specified.
 
@@ -191,7 +199,7 @@ Here we load in a data set containing 101 evenly sampled points from y
 trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 (end)
 
-In order for initialiseDataSetFromFile to parse the data set the file must 
+In order for <initialiseDataSetFromFile> to parse the data set the file must 
 use the following format. Where the first line contains the number of inputs 
 each sample uses followed by the number of outputs each sample uses 
 followed by the total number of samples. The remaining lines each 
@@ -204,21 +212,21 @@ output values. All values must be comma separated.
 >-4.800000,11191.950195,
 >-4.700000,9825.367188,
 
-Now we have set the CGP-Library parameters and gave specified the 
-training data we can run CGP. The runCGP function takes our defined 
+Now we have set the CGP-Library <parameters> and gave specified the 
+training <dataSet> we can run CGP. The <runCGP> function takes our defined 
 parameters, training data and the number of generations allowed before 
-terminating the search. The runCGP function also returns an initialised 
-which represents the best solution to the given task.
+terminating the search. The <runCGP> function also returns an 
+initialised <chromosome> which represents the best solution to the given task.
 
 Whilst CGP is running the current progress will be displayed to the 
-terminal at the rate specified in the parameters.  
+terminal at the rate specified in the <parameters>.  
 
 (begin code)
 chromo = runCGP(params, trainingData, numGens);	
 (end)
 
-To inspect the best solution CGP found the returned chromosome can be 
-printed to the terminal. 
+To inspect the best solution CGP found the returned <chromosome> can be 
+printed to the terminal using <printChromosome>. 
 
 (begin code)
 printChromosome(chromo);
@@ -254,7 +262,7 @@ operation of the evolved program).
 > outputs: 13 
 
 Finally the memory associated with the structures used should be 
-free'd.
+free'd using <freeDataSet>, <freeChromosome> and <freeParameters>
 
 (begin code)	
 freeDataSet(trainingData);

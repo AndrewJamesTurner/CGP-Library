@@ -20,21 +20,15 @@
 	Title: API 
 	
 	Description of all the CGP-Library functions and structures.	
-	
 */
-
 
 #ifndef CGPLIB
 #define CGPLIB
-		
-		
-	
-		
+				
 /*
 	Title: Structures
 	
 	Description of all the structures used by CGP-Library
-	
 */		
 		
 	/*
@@ -61,39 +55,51 @@
 			> reproduction scheme:		mutateRandomParent
 			
 		See Also:
-			<initialiseParameters>, <freeParameters>
+			<initialiseParameters>, <freeParameters>, <printParameters>
 	*/	
 	struct parameters;
 	
 	/*
 		variable: chromosome
+		
+		Stores CGP chromosome instances used by the CGP-Library.
+		
+		See Also:
+			<initialiseChromosome>, <initialiseChromosomeFromFile> <freeChromosome>, <printChromosome>, <executeChromosome>, <mutateChromosome>
+		
 	*/
 	struct chromosome;
 	
 	/*
 		variable: dataSet
+		
+		Stores data which can be used by fitness functions when calculating a chromosomes fitness. Typically contains input output pairs of data used when applying CGP to supervised learning.
+		
+		See Also:
+			<initialiseDataSetFromFile>, <initialiseDataSetFromArrays>, <freeDataSet>, <printDataSet>
 	*/
 	struct dataSet;	
 		
 	/*
 		variable: results
+		
+		
+		
 	*/
 	struct results;
 	
 	
 	
 /*
-	Title: Parameters
+	Title: Parameters Functions
 	
 	Description of all the functions related to CGP-Library parameters
-	
 */		
-	
 	
 	/*
 		Function: initialiseParameters
 
-		Initialises parameters used throughout the CGP-Library. The inputs describe the structure of the chromosomes created when using <initialiseChromosome> or <initialisePopulation>.
+		Initialises parameters used throughout the CGP-Library. The inputs describe the structure of the chromosomes created when using <initialiseChromosome>, <runCGP> or <repeatCGP>.
 
 		Parameters:
 			numInputs - the number of chromosome inputs required. 
@@ -117,7 +123,7 @@
 			> params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity); 
 
 		See Also:
-			<freeParameters>
+			<freeParameters>, <printParameters>
 	*/
 	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
 	
@@ -149,7 +155,7 @@
 	/*
 		Function: addNodeFunction
 
-		Adds pre-made node function(s) to the set of functions made available to chromosome nodes.  
+		Adds pre-defined node function(s) to the set of functions made available to chromosome nodes.  
 	
 		If one function name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
 		
@@ -163,18 +169,36 @@
 		
 			mathematical operations 
 			
-			- add 	- 	summation over all inputs.
-			- sub	-	subtracts all but the first input from the first input
+			- add 		- 	summation over all inputs.
+			- sub		-	subtracts all but the first input from the first input
+			- mul		-	multiplies all of the inputs
+			- div		-	divides the first input by the second and then the third etc
+			- abs		-	the absolute of the first input
+			- sqrt		- 	the square root of the first input
+			- sq		-	the square of the first input
+			- cube		- 	the cube of the first input
+			- exp 		- 	the exponential of the first input
+			- sin		- 	the sine of the first input
+			- cos 		-	the cosine of the first input
+			- tan		-	the tangent of the first input   
 			
 			logic gates
 			
-			- and	-	returns '1' if all inputs are '1', else '0'
-			- nand	-	returns '0' if all inputs are '1', else, '1'
-			- or	-	returns '0' if all inputs are '0', else, '1'
-			- nor	-	returns '1' if all inputs are '0', else, '0'
-			- xor	-	returns '1' if only one of the inputs is '1', else, '0'
-			- xnor	-	returns '0' if only one of the inputs is '1', else, '1'
-			- not	-	returns '1' if first input is '0', else '1'
+			- and		-	returns '1' if all inputs are '1', else '0'
+			- nand		-	returns '0' if all inputs are '1', else, '1'
+			- or		-	returns '0' if all inputs are '0', else, '1'
+			- nor		-	returns '1' if all inputs are '0', else, '0'
+			- xor		-	returns '1' if only one of the inputs is '1', else, '0'
+			- xnor		-	returns '0' if only one of the inputs is '1', else, '1'
+			- not		-	returns '1' if first input is '0', else '1'
+			
+			neuron transfer/activation functions
+			
+			- sig		- 	the logistic sigmoid of the weighted sum of inputs. Output range [0,1]
+			- gauss		-	the Gaussian of the weighted sum of inputs. Output range [0,1]
+			- step		-	the heaviside step function of the weighted sum of inputs. Output range [0,1]
+			- softsign	-	the softsign of the weighted sum of inputs. Output range [-1,1]
+			- tanh		-	the hyperbolic tangent of the weighted sum of inputs. Output range [-1,1]
 			
 		Example:
 			
@@ -262,7 +286,6 @@
 	void printFunctionSet(struct parameters *params);
 	
 	
-	
 	/*
 		Function: setMu
 
@@ -301,7 +324,6 @@
 	void setLambda(struct parameters *params, int lambda);
 	
 	
-	
 	/*
 		Function: setEvolutionaryStrategy
 
@@ -320,8 +342,7 @@
 	*/
 	void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
 	
-	
-	
+
 	/*
 		Function: setMutationRate
 
@@ -613,14 +634,11 @@
 	int getNumOutputs(struct parameters *params);
 	
 	
-	
-	
 /*
-	Title: Chromosome
+	Title: Chromosome Functions
 	
 	Description of all functions and structures relating to chromosomes
 */	
-	
 	
 	/*
 		Function: initialiseChromosome
@@ -844,11 +862,10 @@
 	
 	
 	/*
-	Title: DataSet
+	Title: DataSet Functions
 	
 	Description of all functions and structures relating to data sets
 */
-	
 	
 	/*
 		Function: initialiseDataSetFromArrays
@@ -883,7 +900,7 @@
 			(end)
 
 		See Also:
-			<freeData>, <initialiseDataSetFromFile>, <printDataSet>
+			<freeDataSet>, <initialiseDataSetFromFile>, <printDataSet>
 	*/
 	struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
 	
@@ -930,13 +947,13 @@
 	/*  
 		Function: freeDataSet 
 
-		Frees data instance.
+		Frees dataSet instance.
 
 		Parameters:
-			dat - pointer to data structure.
+			data - pointer to dataSet structure.
 			
 		See Also:
-			<initialiseDataFromArrays>, <initialiseDataFromFile>
+			<initialiseDataSetFromArrays>, <initialiseDataSetFromFile>
 	*/
 	void freeDataSet(struct dataSet *data);
 	
@@ -946,20 +963,32 @@
 		Prints the input output pairs held by a dataSet structure in a human readable form.  
 
 		Parameters:
-			dat - pointer to data structure.
+			data - pointer to dataSet structure.
 			
 		See Also:
-			<initialiseDataFromArrays>, <initialiseDataFromFile>, <freeDataSet>
+			<initialiseDataSetFromArrays>, <initialiseDataSetFromFile>, <freeDataSet>
 	*/
 	void printDataSet(struct dataSet *data);
 	
 	
+	/*
+		Function: saveDataSet
+
+		Saves the given dataSet to a file which can be read using <initialiseDataSetFromFile>.
+
+		Parameters:
+			data - pointer to dataSet structure.
+			fileName - char array giving the location of the dataSet to be saved.
+			
+		See Also:
+			<initialiseDataSetFromFile>, <freeDataSet>
+	*/
 	void saveDataSet(struct dataSet *data, char *fileName);
 	
 	
 	
 /*
-	Title: Results
+	Title: Results Functions
 */	
 	
 	void freeResults(struct results *rels); 
@@ -970,16 +999,55 @@
 	struct chromosome* getChromosome(struct results *rels, int run);
 	
 /*
-	Title: Running CGP
+	Title: CGP Functions
 */
+	
+	/*
+		Function: runCGP
+	
+		Applies CGP to the given task.
+	
+		Returns the best chromosome found after applying CGP to a given task using the specified parameters. Depending upon the update frequency given in parameters (<setUpdateFrequency>) the progress made by CGP will be displayed in the terminal.
+	
+		Note:
+			As runCGP returns an initialised chromosome this should later be free'd using <freeChromosome>. 
+	
+		Parameters:
+			params - pointer to parameters structure.
+			data - pointer to dataSet structure.
+			gens - the number of allowed generations before terminating the search.
+			
+		Returns:	
+			A pointer to an initialised chromosome.
+			
+		See Also:
+			<repeatCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeChromosome>
+	*/	
+	struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int numGens);
 	
 	
 	/*
-		returns an initilised chromosome which shoyulod be freed by the user.
+		Function: repeatCGP
+	
+		Repeatedly applies CGP to the given task.
+	
+		Returns a <results> structure containing the results of applying CGP to the given task multiple times.
+		
+		Note:
+			As repeatCGP returns an initialised results structure this should later be free'd using <freeResults>. 
+	
+		Parameters:
+			params - pointer to parameters structure.
+			data - pointer to dataSet structure.
+			numGens - the number of allowed generations before terminating the search.
+			numRuns - the number of times CGP will be applied to the given task
+			
+		Returns:	
+			A pointer to an initialised results structure.
+			
+		See Also:
+			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults>
 	*/	
-	struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int gens);
-	
-	
 	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
 	
 	
