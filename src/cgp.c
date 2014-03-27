@@ -26,11 +26,11 @@
 #include "include/cgp.h" 
 
 #define FUNCTIONSETSIZE 50
-#define FUNCTIONNAMELENGTH 512
-#define FITNESSFUNCTIONNAMELENGTH 512
-#define MUTATIONTYPENAMELENGTH 512
-#define SELECTIONSCHEMENAMELENGTH 512
-#define REPRODUCTIONSCHEMENAMELENGTH 512
+#define FUNCTIONNAMELENGTH 11
+#define FITNESSFUNCTIONNAMELENGTH 21
+#define MUTATIONTYPENAMELENGTH 21
+#define SELECTIONSCHEMENAMELENGTH 21
+#define REPRODUCTIONSCHEMENAMELENGTH 21
 
 /*
 	Structure definitions 
@@ -311,7 +311,7 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 	/* for each function name */
 	while( record != NULL){
 		
-		strcpy(funcName, record);				
+		strncpy(funcName, record, FUNCTIONNAMELENGTH);				
 		addPresetFuctionToFunctionSet(params,funcName);
 		record = strtok(NULL,",\n");
 				
@@ -672,7 +672,7 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 
 	for(i=0; i<funcSetDest->numFunctions; i++){
 		
-		strcpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i]);	
+		strncpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i], FUNCTIONNAMELENGTH);	
 		funcSetDest->functions[i] = funcSetSrc->functions[i];
 	}
 }
@@ -983,19 +983,19 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	
 			
 	params->mutationType = probabilisticMutation;
-	strcpy(params->mutationTypeName, "probabilistic"); 
+	strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH); 
 		 
 	params->funcSet = malloc(sizeof(struct functionSet));
 	params->funcSet->numFunctions = 0;
 	
 	params->fitnessFunction = supervisedLearning;
-	strcpy(params->fitnessFunctionName, "supervisedLearning");
+	strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
 	
 	params->selectionScheme = pickFittest;
-	strcpy(params->selectionSchemeName, "pickFittest");
+	strncpy(params->selectionSchemeName, "pickFittest", SELECTIONSCHEMENAMELENGTH);
 		
 	params->reproductionScheme = mutateRandomParent;
-	strcpy(params->reproductionSchemeName, "mutateRandomParent"); 
+	strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH); 
 	
 	/* Seed the random number generator */
 	srand(time(NULL));
@@ -1190,16 +1190,16 @@ void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrateg
 
 void setMutationType(struct parameters *params, char *mutationType){
 
-	if(strcmp(mutationType, "probabilistic") == 0){
+	if(strncmp(mutationType, "probabilistic", MUTATIONTYPENAMELENGTH) == 0){
 		
 		params->mutationType = probabilisticMutation;
-		strcpy(params->mutationTypeName, "probabilistic");
+		strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH);
 	}
 	
-	else if(strcmp(mutationType, "point") == 0){
+	else if(strncmp(mutationType, "point", MUTATIONTYPENAMELENGTH) == 0){
 		
 		params->mutationType = pointMutation;
-		strcpy(params->mutationTypeName, "point");
+		strncpy(params->mutationTypeName, "point", MUTATIONTYPENAMELENGTH);
 	}
 	
 	else{
@@ -1260,11 +1260,11 @@ void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(stru
 	
 	if(fitnessFunction == NULL){
 		params->fitnessFunction = supervisedLearning;
-		strcpy(params->fitnessFunctionName, "supervisedLearning");
+		strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
 	}
 	else{
 		params->fitnessFunction = fitnessFunction;
-		strcpy(params->fitnessFunctionName, fitnessFunctionName);
+		strncpy(params->fitnessFunctionName, fitnessFunctionName, FITNESSFUNCTIONNAMELENGTH);
 	}
 }
 
@@ -1283,7 +1283,7 @@ void addNodeFunction(struct parameters *params, char *functionNames){
 	char funcNames[FUNCTIONNAMELENGTH];
 			
 	/* make a local copy of the function names*/
-	strcpy(funcNames, functionNames);
+	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH);
 			
 	/* get the first function name */
 	pch = strtok(funcNames, ",");
@@ -1309,79 +1309,79 @@ void addNodeFunction(struct parameters *params, char *functionNames){
 */
 static void addPresetFuctionToFunctionSet(struct parameters *params, char *functionName){
 	
-	if(strcmp(functionName, "add") == 0){
+	if(strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, add, "add");
 	}
-	else if(strcmp(functionName, "sub") == 0){
+	else if(strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, sub, "sub");
 	}
-	else if(strcmp(functionName, "mul") == 0){
+	else if(strncmp(functionName, "mul", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, mul, "mul");
 	}
-	else if(strcmp(functionName, "div") == 0){
+	else if(strncmp(functionName, "div", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, divide, "div");
 	}
-	else if(strcmp(functionName, "abs") == 0){
+	else if(strncmp(functionName, "abs", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, absolute, "abs");
 	}
-	else if(strcmp(functionName, "sqrt") == 0){
+	else if(strncmp(functionName, "sqrt", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, squareRoot, "sqrt");
 	}
-	else if(strcmp(functionName, "sq") == 0){
+	else if(strncmp(functionName, "sq", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, square, "sq");
 	}
-	else if(strcmp(functionName, "cube") == 0){
+	else if(strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, cube, "cube");
 	}
-	else if(strcmp(functionName, "exp") == 0){
+	else if(strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, exponential, "exp");
 	}
-	else if(strcmp(functionName, "sin") == 0){
+	else if(strncmp(functionName, "sin", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, sine, "sin");
 	}
-	else if(strcmp(functionName, "cos") == 0){
+	else if(strncmp(functionName, "cos", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, cosine, "cos");
 	}
-	else if(strcmp(functionName, "tan") == 0){
+	else if(strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, tangent, "tan");
 	}
 	
 		
-	else if(strcmp(functionName, "and") == 0){
+	else if(strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, and, "and");
 	}	
-	else if(strcmp(functionName, "nand") == 0){
+	else if(strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, nand, "nand");
 	}
-	else if(strcmp(functionName, "or") == 0){
+	else if(strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, or, "or");
 	}	
-	else if(strcmp(functionName, "nor") == 0){
+	else if(strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, nor, "nor");
 	}	
-	else if(strcmp(functionName, "xor") == 0){
+	else if(strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, xor, "xor");
 	}	
-	else if(strcmp(functionName, "xnor") == 0){
+	else if(strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, xnor, "xnor");
 	}	
-	else if(strcmp(functionName, "not") == 0){
+	else if(strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, not, "not");
 	}	
 	
-	else if(strcmp(functionName, "sig") == 0){
+	else if(strncmp(functionName, "sig", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, sigmoid, "sig");
 	}	
-	else if(strcmp(functionName, "gauss") == 0){
+	else if(strncmp(functionName, "gauss", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, gaussian, "gauss");
 	}	
-	else if(strcmp(functionName, "step") == 0){
+	else if(strncmp(functionName, "step", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, step, "step");
 	}	
-	else if(strcmp(functionName, "softsign") == 0){
+	else if(strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, softsign, "softsign");
 	}	
-	else if(strcmp(functionName, "tanh") == 0){
+	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, hyperbolicTangent, "tanh");
 	}	
 	else{
@@ -1410,7 +1410,7 @@ void addNodeFunctionCustom(struct parameters *params, float (*function)(const in
 	params->funcSet->numFunctions++;
 	
 	/* */
-	strcpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName);
+	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName, FUNCTIONNAMELENGTH);
 	
 	/* */
 	params->funcSet->functions[params->funcSet->numFunctions-1] = function;
@@ -1607,11 +1607,6 @@ void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, 
 	
 	chromo->fitness = fitness;
 }
-
-
-
-
-
 
 
 /*
