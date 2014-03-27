@@ -1136,7 +1136,7 @@
 		Note:
 			As repeatCGP returns an initialised results structure this should later be free'd using <freeResults>. 
 	
-		Parameters:
+		Parameters: 
 			params - pointer to parameters structure.
 			data - pointer to dataSet structure.
 			numGens - the number of allowed generations before terminating the search.
@@ -1151,7 +1151,7 @@
 			struct parameters *params;
 			struct dataSet *data;
 			struct results *rels;
-			
+			 
 			params = initialiseParameters(a,b,c,d);
 			addNodeFunction(params, "aaa,bbb,ccc");
 			

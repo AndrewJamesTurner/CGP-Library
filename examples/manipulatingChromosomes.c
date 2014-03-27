@@ -73,7 +73,7 @@ int main(void){
 		// for all chromosomes except the last
 		for(i=0; i<POPULATIONSIZE-1; i++){
 			
-			// copy the chromosome to fittestChromosome if fitter
+			// copy ith chromosome to fittestChromosome if fitter
 			if(getChromosomeFitness(population[i]) < getChromosomeFitness(fittestChromosome)){
 				copyChromosome(fittestChromosome, population[i]);
 			}

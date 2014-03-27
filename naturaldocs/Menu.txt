@@ -58,8 +58,8 @@ Group: Tutorials  {
    File: Creating Data Sets  (no auto-title, /home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CreateDataSet.txt)
    File: Custom Node Functions  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CustomNodeFunctions.txt)
    File: Custom Fitness Function  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/CustomFitnessFunction.txt)
-   File: NeuroEvolution  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt)
    File: Manipulating Chromosomes  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt)
+   File: NeuroEvolution  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt)
    }  # Group: Tutorials
 
 Group: Index  {

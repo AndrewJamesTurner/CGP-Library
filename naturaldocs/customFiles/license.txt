@@ -6,7 +6,7 @@ Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
 
 Licensed under the GNU Lesser General Public License, available at <https://www.gnu.org/licenses/lgpl.html>
 
-(see lgplv3-147x51.png)
+(see lgplv3-147x51.png) 
 
 Title: CGP-Library Documentation 
 
