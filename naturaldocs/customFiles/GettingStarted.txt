@@ -122,8 +122,10 @@ One of the roles of the parameters is to store a function set
 containing the functions which each node can implement. Newly initialised 
 parameters contain a empty function set and it is up to the user to 
 populate it. The functions are added to the function set using 
-addNodeFunction. For a complete list of pre-defined functions see 
-<addNodeFunction>.
+<addNodeFunction>. For a complete list of pre-defined functions see 
+<addNodeFunction>. In order to remove a function from the function set 
+the entire function set must be cleared using <clearFunctionSet> and 
+then the desired functions re-added. 
 
 The functions added here are: addition, subtraction, multiplication, 
 division and sine.

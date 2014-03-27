@@ -1,1 +1,108 @@
-Title: Create Data Set
+Title: Creating Data Sets
+
+Title: The Program
+
+(begin code)
+#include <stdio.h>
+#include <math.h>
+#include "../src/include/cgp.h"  
+
+#define NUMINPUTS 1
+#define NUMOUTPUTS 1
+#define NUMSAMPLES 101
+
+/*
+	Returns x^6 - 2x^4 + x^2
+*/
+float symbolicEq1(float x){
+	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+}
+
+int main(void){
+	
+	int i;	
+	
+	struct dataSet *data;
+	
+	float inputs[NUMSAMPLES][NUMINPUTS];
+	float outputs[NUMSAMPLES][NUMOUTPUTS];
+	
+	float inputTemp;
+	float outputTemp;
+			
+	for(i=0; i<NUMSAMPLES; i++){
+		
+		inputTemp = (i - NUMSAMPLES - 1) / 10.0;
+		outputTemp = symbolicEq1(inputTemp);
+		
+		inputs[i][0] = inputTemp;
+		outputs[i][0] = outputTemp;
+	}
+	
+	data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
+	
+	saveDataSet(data, "symbolic.data");
+	
+	freeDataSet(data);
+	
+	return 1;
+}
+(end)
+
+Title: Stepping Through the Code
+
+(begin code)
+#include <stdio.h>
+#include <math.h>
+#include "../src/include/cgp.h"  
+(end)
+
+(begin code)
+#define NUMINPUTS 1
+#define NUMOUTPUTS 1
+#define NUMSAMPLES 101
+(end)
+
+(begin code)
+float symbolicEq1(float x){
+	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+}
+(end)
+
+(begin code)
+int i;	
+
+struct dataSet *data;
+
+float inputs[NUMSAMPLES][NUMINPUTS];
+float outputs[NUMSAMPLES][NUMOUTPUTS];
+
+float inputTemp;
+float outputTemp;
+(end)
+
+(begin code)
+for(i=0; i<NUMSAMPLES; i++){
+		
+	inputTemp = (i - NUMSAMPLES - 1) / 10.0;
+	outputTemp = symbolicEq1(inputTemp);
+	
+	inputs[i][0] = inputTemp;
+	outputs[i][0] = outputTemp;
+}
+(end)
+
+(begin code)
+data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
+(end)
+
+
+(begin code)
+saveDataSet(data, "symbolic.data");
+(end)
+
+(begin code)
+freeDataSet(data);
+(end)
+
+

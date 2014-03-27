@@ -68,7 +68,7 @@ int main(void){
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.05);
 	
-	setUpdateFrequency(params, -100);
+	setUpdateFrequency(params, 1000);
 	
 	printParameters(params);
 	

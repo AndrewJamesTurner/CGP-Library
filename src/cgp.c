@@ -124,7 +124,7 @@ struct results{
 */
 
 /* chromosome functions */
-static void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
+
 
 /* node functions */
 static struct node *initialiseNode(struct parameters *params, int nodePosition);
@@ -202,6 +202,30 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
 
+
+int getNumChromosomeInputs(struct chromosome *chromo){
+	return chromo->numInputs;
+}
+
+int getNumChromosomeNodes(struct chromosome *chromo){
+	return chromo->numNodes;
+}
+
+int getNumChromosomeOutputs(struct chromosome *chromo){
+	return chromo->numOutputs;
+}
+
+int getNumChromosomeActiveNodes(struct chromosome *chromo){
+	return chromo->numActiveNodes;
+}
+
+int getChromosomeNodeArity(struct chromosome *chromo){
+	return chromo->arity;
+}
+
+
+
+
 void saveChromosome(struct chromosome *chromo, char *file){
 	
 	int i,j;
@@ -273,32 +297,28 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 	record = strtok(line,",");
 	record = strtok(NULL,",");
 	numInputs = atoi(record);
-	printf("numInputs: %d\n", numInputs);
-	
+		
 	/* get num nodes */
 	line = fgets(buffer, sizeof(buffer), fp);
 	if(line == NULL){/*error*/}
 	record = strtok(line,",");
 	record = strtok(NULL,",");
 	numNodes = atoi(record);
-	printf("numNodes: %d\n", numNodes);
-	
+		
 	/* get num outputs */
 	line = fgets(buffer, sizeof(buffer), fp);
 	if(line == NULL){/*error*/}
 	record = strtok(line,",");
 	record = strtok(NULL,",");
 	numOutputs = atoi(record);
-	printf("numOutputs: %d\n", numOutputs);
-	
+		
 	/* get arity */
 	line = fgets(buffer, sizeof(buffer), fp);
 	if(line == NULL){/*error*/}
 	record = strtok(line,",");
 	record = strtok(NULL,",");
 	arity = atoi(record);
-	printf("arity: %d\n", arity);
-	
+		
 	/* initialise parameters  */
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 	
@@ -313,8 +333,7 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 		
 		strncpy(funcName, record, FUNCTIONNAMELENGTH);				
 		addPresetFuctionToFunctionSet(params,funcName);
-		record = strtok(NULL,",\n");
-				
+		record = strtok(NULL,",\n");	
 	}
 		
 	/* initialise chromosome */
@@ -345,7 +364,7 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 		chromo->outputNodes[i] = atoi(record);
 	}
 			
-	free(params);
+	freeParameters(params);
 	
 	return chromo;
 }
@@ -416,7 +435,7 @@ float getAverageActiveNodes(struct results *rels){
 		
 		chromoTemp = rels->bestChromosomes[i];
 
-		avgActiveNodes += getChromosomeNumActiveNodes(chromoTemp);
+		avgActiveNodes += getNumChromosomeActiveNodes(chromoTemp);
 	}
 	
 	avgActiveNodes = avgActiveNodes / rels->numRuns;
@@ -698,12 +717,7 @@ float getChromosomeFitness(struct chromosome *chromo){
 	return chromo->fitness;
 }
 
-/*
 
-*/
-int getChromosomeNumActiveNodes(struct chromosome *chromo){
-	return chromo->numActiveNodes;
-}
 
 
 /*
@@ -1068,7 +1082,7 @@ void freeParameters(struct parameters *params){
 	if(params == NULL){
 		return;
 	}	
-	
+	 
 	free(params->funcSet);
 			
 	free(params);
@@ -1534,7 +1548,7 @@ void freeChromosome(struct chromosome *chromo){
 /*
 
 */
-static void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc){
+void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc){
 
 	int i;
 	
@@ -1692,6 +1706,13 @@ void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs)
 	int nodeInputLocation;
 	int currentActiveNode;
 	int currentActiveNodeFuction;
+	
+	/* error checking */
+	if(chromo == NULL){
+		printf("Error: cannot execute uninitialised chromosome.\n Terminating CGP-Library.\n");
+		exit(0);
+	}
+	
 			
 	/* for all of the active nodes */
 	for(i=0; i<chromo->numActiveNodes; i++){

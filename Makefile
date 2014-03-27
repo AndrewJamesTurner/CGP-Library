@@ -18,6 +18,10 @@ gettingStarted: examples/gettingStarted.c src/cgp.c src/include/cgp.h
 createDataSet: examples/createDataSet.c src/cgp.c src/include/cgp.h
 	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
 
+manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c src/include/cgp.h
+	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+
+
 docs: ./src/include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./src/include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
@@ -26,4 +30,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes symbolic.data

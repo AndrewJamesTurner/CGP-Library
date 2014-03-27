@@ -52,7 +52,7 @@ int main(void){
 		outputs[i][0] = outputTemp;
 	}
 	
-	data = initialiseDataFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
+	data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
 	
 	saveDataSet(data, "symbolic.data");
 	

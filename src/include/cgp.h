@@ -715,7 +715,7 @@
 			The dimensions of the inputs and outputs arrays must match the dimensions of the chromosome inputs and outputs respectively. 
 			
 		Parameters:
-			chromo - pointer to chromosome structure.
+			chromo - pointer to an initialised chromosome structure.
 			inputs - array of floats used as inputs to the chromosome 
 			outputs - array of floats used to store the calculated chromosome outputs
 		
@@ -806,12 +806,93 @@
 	*/
 	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 	
+	
 	/*
-		Function: getChromosomeFitness
-			Returns the fitness of the given chromosome 
+		Function: getNumChromosomeInputs
+			Gets the number of chromosome inputs
 			
 		Parameters:
-			chromo - pointer to chromosome structure.
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			Number number of chromosome inputs
+			
+		See Also:
+			<initialiseChromosome>
+	*/
+	int getNumChromosomeInputs(struct chromosome *chromo);
+
+
+
+	/*
+		Function: getNumChromosomeNodes
+			Gets the number of chromosome nodes
+			
+		Parameters:
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			Number number of chromosome nodes
+			
+		See Also:
+			<initialiseChromosome>
+	*/
+	int getNumChromosomeNodes(struct chromosome *chromo);
+	
+	/*
+		Function: getNumChromosomeActiveNodes
+			Gets the number of chromosome active nodes
+			
+		Parameters:
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			Number number of chromosome active nodes
+			
+		See Also:
+			<initialiseChromosome>
+	*/
+	int getNumChromosomeActiveNodes(struct chromosome *chromo);
+	
+	
+	/*
+		Function: getNumChromosomeOutputs
+			Gets the number of chromosome outputs
+			
+		Parameters:
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			Number number of chromosome outputs
+			
+		See Also:
+			<initialiseChromosome>
+	*/
+	int getNumChromosomeOutputs(struct chromosome *chromo);
+
+
+	/*
+		Function: getChromosomeNodeArity
+			Gets the arity of the chromosome nodes
+			
+		Parameters:
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			Arity of chromosome nodes 
+			
+		See Also:
+			<initialiseChromosome>
+	*/
+	int getChromosomeNodeArity(struct chromosome *chromo);
+	
+	
+	/*
+		Function: getChromosomeFitness
+			Gets the fitness of the given chromosome 
+			
+		Parameters:
+			chromo - pointer to initialised chromosome structure.
 			
 		Returns:
 			The fitness of the given chromosome
@@ -824,44 +905,27 @@
 	
 	/*
 		Function: getChromosomeGenerations
-			Returns the number of generations for which the given chromosome has been trained.
+			Gets the number of generations for which the given chromosome has been trained.
 			
 			If the chromosome has not been trained then -1 is returned.
 			
 		Parameters:
-			chromo - pointer to chromosome structure.
+			chromo - pointer to initialised chromosome structure.
 			
 		Returns:
 			Number of generations for which the given chromosome has been trained
 			
 		See Also:
-			<getChromosomeFitness> <getChromosomeNumActiveNodes>
+			<getChromosomeFitness> <getNumChromosomeActiveNodes>
 	*/
 	int getChromosomeGenerations(struct chromosome *chromo);
 	
 	
-	/*
-		Function: getChromosomeNumActiveNodes
-			Returns the number of active nodes in the given chromosome 
-			
-		Parameters:
-			chromo - pointer to chromosome structure.
-			
-		Returns:
-			Number of active nodes in the given chromosome
-			
-		See Also:
-			<getChromosomeFitness>
-	*/
-	int getChromosomeNumActiveNodes(struct chromosome *chromo);
+	
+	void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
 	
 	
-	
-	
-	
-	
-	
-	/*
+/*
 	Title: DataSet Functions
 	
 	Description of all functions and structures relating to data sets
@@ -991,12 +1055,28 @@
 	Title: Results Functions
 */	
 	
+	
+	/*  
+		Function: freeResults 
+
+		Frees <results> instance.
+
+		Parameters:
+			rels - pointer to results structure.
+			
+		See Also:
+			<getChromosome>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
+	*/
 	void freeResults(struct results *rels); 
+	
+	
+	struct chromosome* getChromosome(struct results *rels, int run);
+	
 	
 	float getAverageFitness(struct results *rels); 
 	float getAverageActiveNodes(struct results *rels);
 	float getAverageGenerations(struct results *rels);
-	struct chromosome* getChromosome(struct results *rels, int run);
+	
 	
 /*
 	Title: CGP Functions
@@ -1019,6 +1099,26 @@
 			
 		Returns:	
 			A pointer to an initialised chromosome.
+		
+		Example:
+		
+			(begin code)
+			struct parameters *params;
+			struct dataSet *data;
+			struct chromosome *chromo;
+			
+			params = initialiseParameters(a,b,c,d);
+			addNodeFunction(params, "aaa,bbb,ccc");
+			
+			data = initialiseDataSetFromFile("file");
+			
+			chromo = runCGP(params, data, 100);
+			
+			freeParameters(params);
+			freeDataSet(data);
+			freeChromosome(chromo);
+			(end)
+		
 			
 		See Also:
 			<repeatCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeChromosome>
@@ -1045,20 +1145,30 @@
 		Returns:	
 			A pointer to an initialised results structure.
 			
+		Example:
+		
+			(begin code)
+			struct parameters *params;
+			struct dataSet *data;
+			struct results *rels;
+			
+			params = initialiseParameters(a,b,c,d);
+			addNodeFunction(params, "aaa,bbb,ccc");
+			
+			data = initialiseDataSetFromFile("file");
+			
+			rels = repeatCGP(params, data, 100, 50);
+			
+			freeParameters(params);
+			freeDataSet(data);
+			freeResults(rels);
+			(end)	
+			
+			
 		See Also:
 			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults>
 	*/	
 	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 #endif 
