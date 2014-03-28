@@ -23,7 +23,7 @@
 #include <math.h>
 #include <float.h>
 
-#include "include/cgp.h" 
+#include "../include/cgp.h" 
 
 #define FUNCTIONSETSIZE 50
 #define FUNCTIONNAMELENGTH 11

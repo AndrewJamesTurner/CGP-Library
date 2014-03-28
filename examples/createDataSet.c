@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../src/include/cgp.h"  
+#include "../include/cgp.h"  
 
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <math.h>
-#include "include/cgp.h" 
+#include "../include/cgp.h" 
 
 float symbolicEq1(float x){
 	return powf(x,6.0) - 2*powf(x,4.0) + powf(x,2.0);

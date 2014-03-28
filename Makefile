@@ -9,21 +9,21 @@ CC=gcc
 	
 CFLAGS= -pedantic -Wall -g 
 
-test: src/test.c src/cgp.c src/include/cgp.h
-	@$(CC) -o test src/test.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+test: src/test.c src/cgp.c include/cgp.h
+	@$(CC) -o test src/test.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
-gettingStarted: examples/gettingStarted.c src/cgp.c src/include/cgp.h
-	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+gettingStarted: examples/gettingStarted.c src/cgp.c include/cgp.h
+	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
-createDataSet: examples/createDataSet.c src/cgp.c src/include/cgp.h
-	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+createDataSet: examples/createDataSet.c src/cgp.c include/cgp.h
+	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
-manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c src/include/cgp.h
-	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c src/include/cgp.h $(CFLAGS) -lm
+manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c include/cgp.h
+	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
 
-docs: ./src/include/cgp.h ./naturaldocs/customFiles/*
-	@naturaldocs -i ./src/include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
+docs: ./include/cgp.h ./naturaldocs/customFiles/*
+	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 so: src/cgp.c
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 

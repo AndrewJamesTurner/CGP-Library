@@ -12,7 +12,7 @@ The program below is provided in the CGP-Library download within /examples/getti
 
 (start code)
 #include <stdio.h>
-#include "../src/include/cgp.h"  
+#include "../include/cgp.h"  
 
 int main(void){
 
@@ -61,7 +61,7 @@ A close look at each line of the example code.
 First cgp.h must be included to use the CGP-Library. The location of cgp.h and where your complier looks for it will depend upon your personal set up.
 
 (begin code)
-#include "../src/include/cgp.h"  
+#include "../include/cgp.h"  
 (end)
 
 The CGP-Library leaves memory management up to the user so as to allow 
