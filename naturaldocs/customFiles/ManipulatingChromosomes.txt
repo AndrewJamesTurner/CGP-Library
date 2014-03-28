@@ -2,11 +2,13 @@ Title: Manipulating Chromosomes
  
 This tutorial introduces some of the operations which can be used to manipulate individual chromosomes. 
 
-These functions are provided for two key reasons.
+These functions are provided for three key reasons.
 
-1) To enables evolved chromosomes to be saved and used later by other programs including their intended application. 
+1) To allow evolved chromosomes to be saved and used later by other programs including their intended application. 
 
-2) To allow users to create their own programs using the same chromosomes as used by CGP-Library. For instance a user may wish to learn about CGP by implementing various functions themselves or they may wish to implement features not currently provided by the CGP-Library. 
+2) To enable users to be able to implement custom selection and reproduction schemes.  
+
+3) To allow users to create their own programs using the same chromosomes as used by the CGP-Library. 
  
 Title: The Program
 
