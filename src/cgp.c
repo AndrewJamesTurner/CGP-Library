@@ -124,7 +124,7 @@ struct results{
 */
 
 /* chromosome functions */
-
+static void setChromosomeActiveNodes(struct chromosome *chromo);
 
 /* node functions */
 static struct node *initialiseNode(struct parameters *params, int nodePosition);
@@ -138,18 +138,18 @@ static int getRandomFunction(int numFunctions);
 static int getRandomChromosomeOutput(int numInputs, int numNodes);
 
 /* active node functions */
-static void setActiveNodes(struct chromosome *chromo);
+
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 
 /* function set functions */
-static void addPresetFuctionToFunctionSet(struct parameters *params, char *functionName);
+static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName);
 
 /* mutation functions  */
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
 
 /* selection scheme functions */
-static void pickFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);	
+static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);	
 
 /* reproduction scheme functions */
 static void mutateRandomParent(struct parameters *params, struct population *pop);
@@ -332,7 +332,13 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 	while( record != NULL){
 		
 		strncpy(funcName, record, FUNCTIONNAMELENGTH);				
-		addPresetFuctionToFunctionSet(params,funcName);
+		if(addPresetFuctionToFunctionSet(params,funcName) == 0){
+			printf("Error: cannot load chromosome which contains custom node functions.\n");
+			printf("Terminating CGP-Library.\n");
+			freeParameters(params);
+			exit(0);
+		}
+			
 		record = strtok(NULL,",\n");	
 	}
 		
@@ -599,7 +605,7 @@ struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int n
 		
 		/* set fitness of the parents */
 		for(i=0; i<params->mu; i++){
-			setActiveNodes(pop->parents[i]);
+			setChromosomeActiveNodes(pop->parents[i]);
 			setChromosomeFitness(params, pop->parents[i], data);
 		}
 	}
@@ -616,7 +622,7 @@ struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int n
 		
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
-			setActiveNodes(pop->children[i]);
+			setChromosomeActiveNodes(pop->children[i]);
 			setChromosomeFitness(params, pop->children[i], data);
 		}
 					
@@ -1007,8 +1013,8 @@ struct parameters *initialiseParameters(const int numInputs, const int numNodes,
 	params->fitnessFunction = supervisedLearning;
 	strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
 	
-	params->selectionScheme = pickFittest;
-	strncpy(params->selectionSchemeName, "pickFittest", SELECTIONSCHEMENAMELENGTH);
+	params->selectionScheme = selectFittest;
+	strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
 		
 	params->reproductionScheme = mutateRandomParent;
 	strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH); 
@@ -1323,7 +1329,9 @@ void addNodeFunction(struct parameters *params, char *functionNames){
 /*
 	used as an interface to adding pre-set node functions
 */
-static void addPresetFuctionToFunctionSet(struct parameters *params, char *functionName){
+static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName){
+	
+	int output = 1;
 	
 	if(strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, add, "add");
@@ -1402,7 +1410,10 @@ static void addPresetFuctionToFunctionSet(struct parameters *params, char *funct
 	}	
 	else{
 		printf("Warning: function '%s' is not known and was not added.\n", functionName);
+		output = 0;
 	}	
+	
+	return output;
 }
 
 /*
@@ -1512,8 +1523,8 @@ struct chromosome *initialiseChromosome(struct parameters *params){
 	/* */
 	copyFuctionSet(chromo->funcSet, params->funcSet);
 		
-	/* */
-	setActiveNodes(chromo);
+	/* set the active nodes in the newly generated chromosome */
+	setChromosomeActiveNodes(chromo);
 	
 	
 	chromo->nodeInputsHold = malloc(params->arity * sizeof(float));
@@ -1618,7 +1629,7 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 	
 	float fitness;
-	
+		
 	fitness = params->fitnessFunction(params, chromo, data);
 	
 	chromo->fitness = fitness;
@@ -1649,7 +1660,7 @@ static void mutateRandomParent(struct parameters *params, struct population *pop
 	Selection scheme which selects the fittest members of the population
 	to be the parents. 
 */
-static void pickFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos ){
+static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos ){
 	
 	int i;
 			
@@ -1862,7 +1873,7 @@ static int getRandomNodeInput(int numChromoInputs, int nodePosition){
 /* 
 	set the active nodes in the given chromosome
 */
-static void setActiveNodes(struct chromosome *chromo){
+static void setChromosomeActiveNodes(struct chromosome *chromo){
 	
 	int i;	
 	
@@ -1967,7 +1978,7 @@ void printChromosome(struct chromosome *chromo){
 	int i,j;			
 				
 	/* set the active nodes in the given chromosome */
-	setActiveNodes(chromo);
+	setChromosomeActiveNodes(chromo);
 										
 	/* for all the chromo inputs*/
 	for(i=0; i<chromo->numInputs; i++){
@@ -2012,6 +2023,8 @@ void printChromosome(struct chromosome *chromo){
 void mutateChromosome(struct parameters *params, struct chromosome *chromo){
 	
 	params->mutationType(params, chromo);
+	
+	setChromosomeActiveNodes(chromo);
 }
 
 
@@ -2545,7 +2558,7 @@ void removeInactiveNodes(struct chromosome *chromo){
 	int originalNumNodes = chromo->numNodes;
 		
 	/* set the active nodes */
-	setActiveNodes(chromo);
+	setChromosomeActiveNodes(chromo);
 	
 	/* for all nodes */
 	for(i=0; i<chromo->numNodes-1; i++){
@@ -2601,7 +2614,7 @@ void removeInactiveNodes(struct chromosome *chromo){
 	chromo->activeNodes = realloc(chromo->activeNodes, chromo->numNodes * sizeof(int));	
 
 	/* set the active nodes */
-	setActiveNodes(chromo);
+	setChromosomeActiveNodes(chromo);
 }
 
 

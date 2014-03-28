@@ -50,7 +50,7 @@ int main(void){
 	mutateChromosome(params,chromoA);
 		
 	copyChromosome(chromoB, chromoA);
-		
+			
 	removeInactiveNodes(chromoB);	
 	
 	printf("chromoA with inactive nodes.\n");

@@ -1,4 +1,4 @@
-Title: Manipulating Chromosomes 
+Title: Manipulating Chromosomes
  
 This tutorial introduces some of the operations which can be used to manipulate individual chromosomes. 
 
@@ -29,8 +29,8 @@ The program below is provided in the CGP-Library download within /examples/manip
 
 int main(void){
 		
-	struct parameters *params = NULL;
-	struct chromosome *chromoA = NULL;
+	struct parameters *params = NULL; 
+	struct chromosome *chromoA = NULL; 
 	struct chromosome *chromoB = NULL;
 	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
@@ -77,19 +77,24 @@ int main(void){
 	freeDataSet(trainingData);
 	freeParameters(params);
 	
-	return 1;
+	return 1; 
 }
 (end)
 
 
 Title: Stepping Through the Code
 
+A close look at each line of the example code.
+
+First standard headers are included along with cgp.h itself.
 
 (begin code)
 #include <stdio.h>
 #include <math.h>
 #include "../include/cgp.h"  
 (end)
+
+A series of macros are uses to reduce the number of variables and to allow the use of arrays rather than pointers.
 
 (begin code)
 #define POPULATIONSIZE 5
@@ -99,6 +104,7 @@ Title: Stepping Through the Code
 #define ARITY 2
 (end)
 
+A number of CGP-Library specific structures are used to store the CGP-LIbrary parameters, a number of chromosomes and a dataSet.
 
 (begin code)
 struct parameters *params = NULL;
@@ -108,40 +114,58 @@ struct chromosome *chromoC = NULL;
 struct dataSet *trainingData = NULL;
 end
 
+Two arrays used to pass information into and out of a chromosome.
+
 (begin code)
 float testInputs[NUMINPUTS];
 float testOutputs[NUMOUTPUTS];
 (end)
+
+In order to initialise the chromosome an initialised parameters structure with a populated function set is required.
 
 (begin code)
 params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 (end)
 
+Here the fitnesses assigned to the chromosomes will use the symbolic.data seen previously in <Getting Started> and <Creating Data Sets> and the standard supervised learning fitness function.
+
 (begin code)
 trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 (end)
+
+Next we initialise two of the three chromosomes using <initialiseChromosome>. The <initialiseChromosome> function returns a pointer to an initialised chromosome using the parameters specified in params.   
 
 (begin code)
 chromoA = initialiseChromosome(params);
 chromoB = initialiseChromosome(params);
 (end)
 
+Once we have an initialised chromosome we can calculate its fitness using <setChromosomeFitness>. The fitness function used is specified in the parameters structure and uses the given dataSet (symbolic). In order to inspect the fitness assigned to the chromosome <getChromosomeFitness> is used. Other information can be accessed from the chromosome using <getNumChromosomeInputs>, <getNumChromosomeNodes>, <getNumChromosomeActiveNodes>, <getNumChromosomeOutputs> and <getChromosomeNodeArity>.
+
 (begin code)
 setChromosomeFitness(params, chromoA, trainingData);
 (end)
+
+Chromosomes can be mutated using <mutateChromosome>. The type and amount of mutation caused is specified in the parameters structure.
 
 (begin code)
 mutateChromosome(params,chromoA);
 (end)
 
+Chromosomes can be copied using <copyChromosome>. Here chromoB is made to be a copy of chromoA.
+
 (begin code)	
 copyChromosome(chromoB, chromoA);
 (end)
 
+CGP chromosomes contain inactive nodes which can be removed using <removeInactiveNodes>. It should be noted that this function causes the number of chromosome nodes to change.
+
 (begin code)
 removeInactiveNodes(chromoB);	
 (end)
+
+To see the effect of <removeInactiveNodes> chromoA and chromoB are printed to the terminal using <printChromosome>. Recall that chromoA and chromoB are identical except chromoB has had its inactive nodes removed.
 
 (begin code)
 printf("chromoA with inactive nodes.\n");
@@ -151,13 +175,15 @@ printf("chromoB without inactive nodes.\n");
 printChromosome(chromoB);
 (end)
 
-(begin code)
-saveChromosome(chromoB, "chromoB.chromo");
-(end)
+Chromosomes can be saved to a file and read back using <saveChromosome> and <initialiseChromosomeFromFile> respectively. Here the chromosome is saved to a file called "chromoB.chromo" and then read back into chromoC. It is important to node that only chromosomes which used node functions provide by the CGP-Library can be loaded using <initialiseChromosomeFromFile>; chromosomes containing custom node functions cannot be loaded. 
 
 (begin code)
+saveChromosome(chromoB, "chromoB.chromo");
+
 chromoC = initialiseChromosomeFromFile("chromoB.chromo");
 (end)
+
+An important property of the chromosomes is than they can be used to implement the functionality  have been evolved do. This is achieved using <executeChromosome>. <executeChromosome> takes the chromosome to be executed, an array of inputs the chromosome will use and an array to store the chromosome outputs. Here the chromosome take the value three as its input and outputs the value the given chromosomes generates with a input of three. 
 
 (begin code)		
 testInputs[0] = 3;
@@ -168,6 +194,9 @@ printf("Applied input: %f\n", testInputs[0]);
 printf("Generated output: %f\n", testOutputs[0]);
 (end)
 
+
+Finally all the structures used must be free'd.
+
 (begin code)
 freeChromosome(chromoA);
 freeChromosome(chromoB);
@@ -177,15 +206,6 @@ freeParameters(params);
 (end)
 
 
-
-
-
-
-
-
-
-
-
-
+And that's it, here we have shown how to generate, mutate, copy, save, load and execute chromosomes. With these functionalities alone it is possible to implement your own version of CGP (if you so desired). It is also possible to take the chromosomes you have evolved towards a given task and use them for their intended application. 
 
 
