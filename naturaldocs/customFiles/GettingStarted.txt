@@ -208,11 +208,12 @@ followed by the total number of samples. The remaining lines each
 describe an individual sample giving the inputs values followed by the 
 output values. All values must be comma separated.
 
->1,1,101,
->-5.000000,14400.000000,
->-4.900000,12712.338867,
->-4.800000,11191.950195,
->-4.700000,9825.367188,
+>1,1,51,
+>-2.500000,172.265625,
+>-2.400000,130.507797,
+>-2.300000,97.357681,
+>-2.200000,71.368713,
+
 
 Now we have set the CGP-Library <parameters> and gave specified the 
 training <dataSet> we can run CGP. The <runCGP> function takes our defined 

@@ -363,6 +363,8 @@ struct chromosome* initialiseChromosomeFromFile(char *file){
 		record = strtok(NULL,",\n");
 		chromo->outputNodes[i] = atoi(record);
 	}
+		
+	fclose(fp);	
 			
 	freeParameters(params);
 	
@@ -1294,10 +1296,10 @@ void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(stru
 void addNodeFunction(struct parameters *params, char *functionNames){
 
 	char *pch;
-	char funcNames[FUNCTIONNAMELENGTH];
+	char funcNames[FUNCTIONNAMELENGTH * FUNCTIONSETSIZE];
 			
 	/* make a local copy of the function names*/
-	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH);
+	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
 			
 	/* get the first function name */
 	pch = strtok(funcNames, ",");
@@ -1966,9 +1968,7 @@ void printChromosome(struct chromosome *chromo){
 				
 	/* set the active nodes in the given chromosome */
 	setActiveNodes(chromo);
-		
-	printf("\n");	
-								
+										
 	/* for all the chromo inputs*/
 	for(i=0; i<chromo->numInputs; i++){
 		printf("(%d):\tinput\n", i);
@@ -2003,7 +2003,7 @@ void printChromosome(struct chromosome *chromo){
 		printf("%d ", chromo->outputNodes[i]);
 	}
 	
-	printf("\n");
+	printf("\n\n");
 }	
 
 /*
@@ -2048,7 +2048,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo){
 	for(i=0; i<numGenesToMutate; i++){
 		
 		/* select a random gene */
-		geneToMutate = rand() % numGenesToMutate;
+		geneToMutate = rand() % numGenes;
 		
 		/* mutate function gene */
 		if(geneToMutate < numFunctionGenes){

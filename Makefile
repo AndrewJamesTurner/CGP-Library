@@ -30,4 +30,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes symbolic.data
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes *.data *.chromo

@@ -21,111 +21,58 @@
 #include "../include/cgp.h"  
 
 #define POPULATIONSIZE 5
+#define NUMINPUTS 1
+#define NUMNODES 8
+#define NUMOUTPUTS 1
+#define ARITY 2
 
 int main(void){
-	
-	int i;
-	
+		
 	struct parameters *params = NULL;
-	struct chromosome *population[POPULATIONSIZE];
-	struct chromosome *fittestChromosome;
+	struct chromosome *chromoA = NULL;
+	struct chromosome *chromoB = NULL;
+	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
+		
+	float testInputs[NUMINPUTS];
+	float testOutputs[NUMOUTPUTS];
 	
-	int numInputs = 1;
-	int numNodes = 30;
-	int numOutputs = 1;
-	int nodeArity = 2;
-	
-	int targetFitness = 1;
-	
-	int maxGens = 5000;
-	int gen;
-	
-	float testInputs[1];
-	float testOutputs[1];
-	
-	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
-	
+	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
-	setTargetFitness(params, targetFitness);
-	setMutationType(params, "point");
-	setMutationRate(params, 0.15);
-	
+		
 	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
-	
-	for(i=0; i<POPULATIONSIZE; i++){
-		population[i] = initialiseChromosome(params);
-	}
-	
-	fittestChromosome = initialiseChromosome(params);
-	
-	// for the number of allowed generations
-	for(gen=0; gen<maxGens; gen++){
 		
-		// set the fitnesses of the population of chromosomes
-		for(i=0; i<POPULATIONSIZE; i++){
-			setChromosomeFitness(params, population[i], trainingData);
-		}
+	chromoA = initialiseChromosome(params);
+	chromoB = initialiseChromosome(params);
+	
+	setChromosomeFitness(params, chromoA, trainingData);
 		
-		// copy over the last chromosome to fittestChromosome
-		copyChromosome(fittestChromosome, population[POPULATIONSIZE - 1]);
+	mutateChromosome(params,chromoA);
 		
-		// for all chromosomes except the last
-		for(i=0; i<POPULATIONSIZE-1; i++){
+	copyChromosome(chromoB, chromoA);
+		
+	removeInactiveNodes(chromoB);	
+	
+	printf("chromoA with inactive nodes.\n");
+	printChromosome(chromoA);
+	
+	printf("chromoB without inactive nodes.\n");
+	printChromosome(chromoB);
+	
+	saveChromosome(chromoB, "chromoB.chromo");
+	
+	chromoC = initialiseChromosomeFromFile("chromoB.chromo");
 			
-			// copy ith chromosome to fittestChromosome if fitter
-			if(getChromosomeFitness(population[i]) < getChromosomeFitness(fittestChromosome)){
-				copyChromosome(fittestChromosome, population[i]);
-			}
-		}
-		
-		// termination condition
-		if(getChromosomeFitness(fittestChromosome) <= targetFitness){
-			break;
-		}
-				
-		// set the first member of the population to be the fittest chromosome
-		copyChromosome(population[0], fittestChromosome);
-		
-		// set remaining member of the population to be mutations of the
-		// fittest chromosome
-		for(i=1; i<POPULATIONSIZE; i++){
-			
-			copyChromosome(population[i], population[0]);
-			mutateChromosome(params, population[i]);
-		}
-	}
-	
-	
-	printf("Fittest chromosome Found has fitness: %f\n", getChromosomeFitness(fittestChromosome));
-	
-	printf("\nFittest chromosome");
-	printChromosome(fittestChromosome);
-	
-	removeInactiveNodes(fittestChromosome);
-		
-	saveChromosome(fittestChromosome, "fittestChromosome.chromo");
-	
-	freeChromosome(fittestChromosome);
-	
-	fittestChromosome = initialiseChromosomeFromFile("fittestChromosome.chromo");
-	
-	printf("\nFittest chromosome without inactive nodes loaded from file.");
-	printChromosome(fittestChromosome);
-	
 	testInputs[0] = 3;
-	executeChromosome(fittestChromosome, testInputs, testOutputs);
 	
-	printf("\n\n");
-	printf("Chromo Input: %f\n", testInputs[0]);
-	printf("Chromo Output: %f\n", testOutputs[0]);
+	executeChromosome(chromoC, testInputs, testOutputs);
 	
+	printf("Applied input: %f\n", testInputs[0]);
+	printf("Generated output: %f\n", testOutputs[0]);
 	
-	for(i=0; i<POPULATIONSIZE; i++){
-		freeChromosome(population[i]);
-	}
-	
-	freeChromosome(fittestChromosome);
+	freeChromosome(chromoA);
+	freeChromosome(chromoB);
+	freeChromosome(chromoC);
 	freeDataSet(trainingData);
 	freeParameters(params);
 	

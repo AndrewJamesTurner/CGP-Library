@@ -410,7 +410,7 @@
 			 	for(i=0; i<8; i++){
 			 		
 			 		// calculate the chromosome outputs for the set of inputs  
-			 		executeChromosome(params, chromo, inputs[i], chromoOutputs);
+			 		executeChromosome(chromo, inputs[i], chromoOutputs);
 			 		
 			 		// If the first chromosome outputs differ from the correct outputs increment the error 
 			 		if(outputs[i][0] != chromoOutputs[0]){
@@ -921,7 +921,9 @@
 	int getChromosomeGenerations(struct chromosome *chromo);
 	
 	
-	
+	/*
+		Function: copyChromosome
+	*/
 	void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
 	
 	

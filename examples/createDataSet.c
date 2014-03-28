@@ -45,7 +45,7 @@ int main(void){
 			
 	for(i=0; i<NUMSAMPLES; i++){
 		
-		inputTemp = (i - NUMSAMPLES - 1) / 10.0;
+		inputTemp = (i * (10.0/(NUMSAMPLES-1))) - 5.0;
 		outputTemp = symbolicEq1(inputTemp);
 		
 		inputs[i][0] = inputTemp;

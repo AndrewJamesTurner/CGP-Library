@@ -1,2 +1,189 @@
 Title: Manipulating Chromosomes 
  
+This tutorial introduces some of the operations which can be used to manipulate individual chromosomes. 
+
+These functions are provided for two key reasons.
+
+1) To enables evolved chromosomes to be saved and used later by other programs including their intended application. 
+
+2) To allow users to create their own programs using the same chromosomes as used by CGP-Library. For instance a user may wish to learn about CGP by implementing various functions themselves or they may wish to implement features not currently provided by the CGP-Library. 
+ 
+Title: The Program
+
+A simple program showcasing a range of chromosome operations. 
+
+The program below is provided in the CGP-Library download within /examples/manipulatingChromosomes.c
+
+(begin code)
+#include <stdio.h>
+#include <math.h>
+#include "../include/cgp.h"  
+
+#define POPULATIONSIZE 5
+#define NUMINPUTS 1
+#define NUMNODES 8
+#define NUMOUTPUTS 1
+#define ARITY 2
+
+int main(void){
+		
+	struct parameters *params = NULL;
+	struct chromosome *chromoA = NULL;
+	struct chromosome *chromoB = NULL;
+	struct chromosome *chromoC = NULL;
+	struct dataSet *trainingData = NULL;
+		
+	float testInputs[NUMINPUTS];
+	float testOutputs[NUMOUTPUTS];
+	
+	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
+	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
+		
+	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+		
+	chromoA = initialiseChromosome(params);
+	chromoB = initialiseChromosome(params);
+	
+	setChromosomeFitness(params, chromoA, trainingData);
+		
+	mutateChromosome(params,chromoA);
+		
+	copyChromosome(chromoB, chromoA);
+		
+	removeInactiveNodes(chromoB);	
+	
+	printf("chromoA with inactive nodes.\n");
+	printChromosome(chromoA);
+	
+	printf("chromoB without inactive nodes.\n");
+	printChromosome(chromoB);
+	
+	saveChromosome(chromoB, "chromoB.chromo");
+	
+	chromoC = initialiseChromosomeFromFile("chromoB.chromo");
+			
+	testInputs[0] = 3;
+	
+	executeChromosome(chromoC, testInputs, testOutputs);
+	
+	printf("Applied input: %f\n", testInputs[0]);
+	printf("Generated output: %f\n", testOutputs[0]);
+	
+	freeChromosome(chromoA);
+	freeChromosome(chromoB);
+	freeChromosome(chromoC);
+	freeDataSet(trainingData);
+	freeParameters(params);
+	
+	return 1;
+}
+(end)
+
+
+Title: Stepping Through the Code
+
+
+(begin code)
+#include <stdio.h>
+#include <math.h>
+#include "../include/cgp.h"  
+(end)
+
+(begin code)
+#define POPULATIONSIZE 5
+#define NUMINPUTS 1
+#define NUMNODES 8
+#define NUMOUTPUTS 1
+#define ARITY 2
+(end)
+
+
+(begin code)
+struct parameters *params = NULL;
+struct chromosome *chromoA = NULL;
+struct chromosome *chromoB = NULL;
+struct chromosome *chromoC = NULL;
+struct dataSet *trainingData = NULL;
+end
+
+(begin code)
+float testInputs[NUMINPUTS];
+float testOutputs[NUMOUTPUTS];
+(end)
+
+(begin code)
+params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
+addNodeFunction(params, "add,sub,mul,sq,cube,sin");
+(end)
+
+(begin code)
+trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+(end)
+
+(begin code)
+chromoA = initialiseChromosome(params);
+chromoB = initialiseChromosome(params);
+(end)
+
+(begin code)
+setChromosomeFitness(params, chromoA, trainingData);
+(end)
+
+(begin code)
+mutateChromosome(params,chromoA);
+(end)
+
+(begin code)	
+copyChromosome(chromoB, chromoA);
+(end)
+
+(begin code)
+removeInactiveNodes(chromoB);	
+(end)
+
+(begin code)
+printf("chromoA with inactive nodes.\n");
+printChromosome(chromoA);
+
+printf("chromoB without inactive nodes.\n");
+printChromosome(chromoB);
+(end)
+
+(begin code)
+saveChromosome(chromoB, "chromoB.chromo");
+(end)
+
+(begin code)
+chromoC = initialiseChromosomeFromFile("chromoB.chromo");
+(end)
+
+(begin code)		
+testInputs[0] = 3;
+
+executeChromosome(chromoC, testInputs, testOutputs);
+
+printf("Applied input: %f\n", testInputs[0]);
+printf("Generated output: %f\n", testOutputs[0]);
+(end)
+
+(begin code)
+freeChromosome(chromoA);
+freeChromosome(chromoB);
+freeChromosome(chromoC);
+freeDataSet(trainingData);
+freeParameters(params);
+(end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
