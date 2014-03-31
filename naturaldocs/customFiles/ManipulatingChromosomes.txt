@@ -29,15 +29,14 @@ The program below is provided in the CGP-Library download within /examples/manip
 
 int main(void){
 		
-	struct parameters *params = NULL; 
-	struct chromosome *chromoA = NULL; 
+	struct parameters *params = NULL;
+	struct chromosome *chromoA = NULL;
 	struct chromosome *chromoB = NULL;
 	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
 		
 	float testInputs[NUMINPUTS];
-	float testOutputs[NUMOUTPUTS];
-	
+		
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 		
@@ -51,7 +50,7 @@ int main(void){
 	mutateChromosome(params,chromoA);
 		
 	copyChromosome(chromoB, chromoA);
-		
+			
 	removeInactiveNodes(chromoB);	
 	
 	printf("chromoA with inactive nodes.\n");
@@ -66,10 +65,10 @@ int main(void){
 			
 	testInputs[0] = 3;
 	
-	executeChromosome(chromoC, testInputs, testOutputs);
+	executeChromosome(chromoC, testInputs);
 	
 	printf("Applied input: %f\n", testInputs[0]);
-	printf("Generated output: %f\n", testOutputs[0]);
+	printf("Generated output: %f\n", getChromosomeOutput(chromoC, 0));
 	
 	freeChromosome(chromoA);
 	freeChromosome(chromoB);
@@ -77,7 +76,7 @@ int main(void){
 	freeDataSet(trainingData);
 	freeParameters(params);
 	
-	return 1; 
+	return 1;
 }
 (end)
 
@@ -94,7 +93,7 @@ First standard headers are included along with cgp.h itself.
 #include "../include/cgp.h"  
 (end)
 
-A series of macros are uses to reduce the number of variables and to allow the use of arrays rather than pointers.
+A series of macros are uses to reduce the number of variables and to allow the use of arrays rather than pointers and malloc.
 
 (begin code)
 #define POPULATIONSIZE 5
@@ -112,23 +111,23 @@ struct chromosome *chromoA = NULL;
 struct chromosome *chromoB = NULL;
 struct chromosome *chromoC = NULL;
 struct dataSet *trainingData = NULL;
-end
+(end)
 
-Two arrays used to pass information into and out of a chromosome.
+Two arrays are used to pass information into and out of chromosomes.
 
 (begin code)
 float testInputs[NUMINPUTS];
 float testOutputs[NUMOUTPUTS];
 (end)
 
-In order to initialise the chromosome an initialised parameters structure with a populated function set is required.
+In order to initialise the chromosomes an initialised parameters structure with a populated function set is required.
 
 (begin code)
 params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 (end)
 
-Here the fitnesses assigned to the chromosomes will use the symbolic.data seen previously in <Getting Started> and <Creating Data Sets> and the standard supervised learning fitness function.
+Here the fitnesses assigned to the chromosomes will use the symbolic.data seen previously in <Getting Started> and <Creating Data Sets>.
 
 (begin code)
 trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
@@ -175,7 +174,7 @@ printf("chromoB without inactive nodes.\n");
 printChromosome(chromoB);
 (end)
 
-Chromosomes can be saved to a file and read back using <saveChromosome> and <initialiseChromosomeFromFile> respectively. Here the chromosome is saved to a file called "chromoB.chromo" and then read back into chromoC. It is important to node that only chromosomes which used node functions provide by the CGP-Library can be loaded using <initialiseChromosomeFromFile>; chromosomes containing custom node functions cannot be loaded. 
+Chromosomes can be saved to a file and read back using <saveChromosome> and <initialiseChromosomeFromFile> respectively. Here chromoB is saved to a file called "chromoB.chromo" and then read back into chromoC. It is important to node that only chromosomes which used node functions provide by the CGP-Library can be loaded using <initialiseChromosomeFromFile>; chromosomes containing custom node functions cannot be loaded. 
 
 (begin code)
 saveChromosome(chromoB, "chromoB.chromo");
@@ -183,15 +182,15 @@ saveChromosome(chromoB, "chromoB.chromo");
 chromoC = initialiseChromosomeFromFile("chromoB.chromo");
 (end)
 
-An important property of the chromosomes is than they can be used to implement the functionality  have been evolved do. This is achieved using <executeChromosome>. <executeChromosome> takes the chromosome to be executed, an array of inputs the chromosome will use and an array to store the chromosome outputs. Here the chromosome take the value three as its input and outputs the value the given chromosomes generates with a input of three. 
+An important property of the chromosomes is than they can be used to implement the functionality they have been evolved to do. This is achieved using <executeChromosome>. <executeChromosome> takes the chromosome to be executed and an array of inputs to be applied and generates the corresponding chromosome outputs. The chromosome outputs are accessed using <getChromosomeOutput>. Here the chromosome take the value three as its input and displays the corresponding chromosome output to the screen.
 
 (begin code)		
 testInputs[0] = 3;
 
-executeChromosome(chromoC, testInputs, testOutputs);
-
+executeChromosome(chromoC, testInputs);
+	
 printf("Applied input: %f\n", testInputs[0]);
-printf("Generated output: %f\n", testOutputs[0]);
+printf("Generated output: %f\n", getChromosomeOutput(chromoC, 0));
 (end)
 
 

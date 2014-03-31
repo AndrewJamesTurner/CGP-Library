@@ -21,6 +21,13 @@ createDataSet: examples/createDataSet.c src/cgp.c include/cgp.h
 manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c include/cgp.h
 	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
+customNodeFunction: examples/customNodeFunction.c src/cgp.c include/cgp.h
+	@$(CC) -o customNodeFunction examples/customNodeFunction.c src/cgp.c include/cgp.h $(CFLAGS) -lm
+
+customFitnessFunction: examples/customFitnessFunction.c src/cgp.c include/cgp.h
+	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c include/cgp.h $(CFLAGS) -lm
+
+
 
 docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
@@ -30,4 +37,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes *.data *.chromo
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction *.data *.chromo

@@ -35,8 +35,7 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 		
 	float testInputs[NUMINPUTS];
-	float testOutputs[NUMOUTPUTS];
-	
+		
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 		
@@ -65,10 +64,10 @@ int main(void){
 			
 	testInputs[0] = 3;
 	
-	executeChromosome(chromoC, testInputs, testOutputs);
+	executeChromosome(chromoC, testInputs);
 	
 	printf("Applied input: %f\n", testInputs[0]);
-	printf("Generated output: %f\n", testOutputs[0]);
+	printf("Generated output: %f\n", getChromosomeOutput(chromoC, 0));
 	
 	freeChromosome(chromoA);
 	freeChromosome(chromoB);

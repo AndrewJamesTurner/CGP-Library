@@ -9,14 +9,77 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 
 
-<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Custom_Node_Functions"></a>Custom Node Functions</h1><div class=CBody></div></div></div>
+<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Custom_Node_Functions"></a>Custom Node Functions</h1><div class=CBody><p>This tutorial introduces how to use custom node transfer functions not provided by CGP-Library.</p><p>Although many node functions are provided by the CGP-Library, see <a href="../files/cgp-h.html#addNodeFunction" class=LFunction id=link1 onMouseOver="ShowTip(event, 'tt1', 'link1')" onMouseOut="HideTip('tt1')">addNodeFunction</a>, it may be the case that the user wishes to use their own custom node functions.&nbsp; This tutorial demonstrates how to add custom node functions to the function set made available to the chromosomes so they can be used by the CGP-Library.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#Custom_Node_Functions" >Custom Node Functions</a></td><td class=SDescription>This tutorial introduces how to use custom node transfer functions not provided by CGP-Library.</td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription>A simple program demonstrating how to create and add a custom nodefunction to the function set.</td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription>When using a custom node function it is essential that the new node function has a prototype of the form</td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><p>A simple program demonstrating how to create and add a custom nodefunction to the function set.</p><p>The program below is provided in the CGP-Library download within /examples/customNodeFunction.c</p><blockquote><pre class="prettyprint">#include &lt;math.h&gt;
+#include &quot;../include/cgp.h&quot;
+
+float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
+
+    int i;
+    float sumOfSqrs = 0;
+    float hypt;
+
+    for(i=0; i&lt;numInputs; i++){
+        sumOfSqrs += powf(inputs[i], 2);
+    }
+
+    hypt = sqrtf(sumOfSqrs);
+
+    return hypt;
+}
+
+
+int main(void){
+
+    struct parameters *params;
+
+    int numInputs = 2;
+    int numNodes = 10;
+    int numOutputs = 1;
+    int arity = 3;
+
+    params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+
+    addNodeFunction(params, &quot;add,sub&quot;);
+
+    addNodeFunctionCustom(params, hypotenuse, &quot;hypt&quot;);
+
+    printFunctionSet(params);
+
+    freeParameters(params);
+
+    return 1;
+}</pre></blockquote></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>When using a custom node function it is essential that the new node function has a prototype of the form</p><blockquote><pre class="prettyprint">float functionName(const int numInputs, const float *inputs, const float *connectionWeights);</pre></blockquote><p>This ensures that the CGP-Library know how to use the custom function.&nbsp; The function inputs are the number of node inputs, an array of the actual node input values and an array of the connection weight associated with each input.&nbsp; The connections weights can be ignored if the custom function is to be used by regular CGP and not CGP applied to neural networks.&nbsp; The output of the custom node function is the output of the node for the applied inputs.</p><p>Here a hypotenuse node function has been defined which returns the hypotenuse of the inputs.&nbsp; The connections weights are not used.</p><blockquote><pre class="prettyprint">float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
+
+    int i;
+    float sumOfSqrs = 0;
+    float hypt;
+
+    for(i=0; i&lt;numInputs; i++){
+        sumOfSqrs += powf(inputs[i], 2);
+    }
+
+    hypt = sqrtf(sumOfSqrs);
+
+    return hypt;
+}</pre></blockquote><p>In order to use our newly defined node function we first need a parameters structure to store the function in the function set.</p><blockquote><pre class="prettyprint">struct parameters *params;
+
+int numInputs = 2;
+int numNodes = 10;
+int numOutputs = 1;
+int arity = 3;
+
+params = initialiseParameters(numInputs, numNodes, numOutputs, arity);</pre></blockquote><p>As usual this parameters structure can contain a function set of pre-defined node functions.</p><blockquote><pre class="prettyprint">addNodeFunction(params, &quot;add,sub&quot;);</pre></blockquote><p>However the newly defined hypotenuse function can also be added using <a href="../files/cgp-h.html#addNodeFunctionCustom" class=LFunction id=link2 onMouseOver="ShowTip(event, 'tt2', 'link2')" onMouseOut="HideTip('tt2')">addNodeFunctionCustom</a>.&nbsp; Where params stores all of the node functions in the function set, hypotenuse is the node function to be added and &ldquo;hypt&rdquo; is the shorthand name of the hypotenuse node function.</p><blockquote><pre class="prettyprint">addNodeFunctionCustom(params, hypotenuse, &quot;hypt&quot;);</pre></blockquote><p>In order to see that the hypotenuse node function has been added the entire function set can be displayed using <a href="../files/cgp-h.html#printFunctionSet" class=LFunction id=link3 onMouseOver="ShowTip(event, 'tt3', 'link3')" onMouseOut="HideTip('tt3')">printFunctionSet</a>.</p><blockquote><pre class="prettyprint">printFunctionSet(params);</pre></blockquote><p>Finally the parameters structure should be free&rsquo;d.</p><blockquote><pre class="prettyprint">freeParameters(params);</pre></blockquote><p>And that&rsquo;s it, the hypotenuse node function has been added to the function set stored in parameters and is now available for use.&nbsp; However it is important to note that any chromosome which uses custom node functions cannot be loaded from a file using <a href="../files/cgp-h.html#initialiseChromosomeFromFile" class=LFunction id=link4 onMouseOver="ShowTip(event, 'tt4', 'link4')" onMouseOut="HideTip('tt4')">initialiseChromosomeFromFile</a>.</p></div></div></div>
 
 </div><!--Content-->
 
 
 
 <!--START_ND_TOOLTIPS-->
-<!--END_ND_TOOLTIPS-->
+<div class=CToolTip id="tt1"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>void addNodeFunction(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>char&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>functionNames</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Adds pre-defined node function(s) to the set of functions made available to chromosome nodes.</div></div><div class=CToolTip id="tt2"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "colspan=5>void addNodeFunctionCustom(</td></tr><tr><td>&nbsp;&nbsp;&nbsp;</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap width=100%>params,</td></tr><tr><td>&nbsp;&nbsp;&nbsp;</td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>float&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap width=100%>(*function)(const int numInputs, const float *inputs, const float *weights),</td></tr><tr><td>&nbsp;&nbsp;&nbsp;</td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>char&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap width=100%>functionName</td></tr><tr><td class="PAfterParameters  prettyprint "colspan=5>)</td></tr></table></td></tr></table></blockquote>Adds a custom node function to the set of functions made available to chromosome nodes.</div></div><div class=CToolTip id="tt3"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>void printFunctionSet(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Prints the contents of the current function set in a human readable form.</div></div><div class=CToolTip id="tt4"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>struct chromosome* initialiseChromosomeFromFile(</td><td class="PType  prettyprint " nowrap>char&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>file</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Initialises a chromosome from a given previously saved chromosome.</div></div><!--END_ND_TOOLTIPS-->
 
 <script language=JavaScript><!--
 if (browserType) {if (browserVer) {document.write("</div>"); }document.write("</div>");}// --></script></body></html>

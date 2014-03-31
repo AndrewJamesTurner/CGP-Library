@@ -1,1 +1,124 @@
 Title: Custom Node Functions  
+
+This tutorial introduces how to use custom node transfer functions not provided by CGP-Library.
+
+Although many node functions are provided by the CGP-Library, see <addNodeFunction>, it may be the case that the user wishes to use their own custom node functions. This tutorial demonstrates how to add custom node functions to the function set made available to the chromosomes so they can be used by the CGP-Library.
+
+Title: The Program
+
+A simple program demonstrating how to create and add a custom nodefunction to the function set.
+
+The program below is provided in the CGP-Library download within /examples/customNodeFunction.c
+
+(begin code)
+#include <math.h>
+#include "../include/cgp.h"  
+
+float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
+	
+	int i;
+	float sumOfSqrs = 0;
+	float hypt;
+	
+	for(i=0; i<numInputs; i++){
+		sumOfSqrs += powf(inputs[i], 2);
+	}
+	
+	hypt = sqrtf(sumOfSqrs);
+	
+	return hypt;
+}
+
+
+int main(void){
+	
+	struct parameters *params;
+	
+	int numInputs = 2;
+	int numNodes = 10;
+	int numOutputs = 1;
+	int arity = 3;
+	
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	
+	addNodeFunction(params, "add,sub");
+
+	addNodeFunctionCustom(params, hypotenuse, "hypt");
+	
+	printFunctionSet(params);
+	
+	freeParameters(params);
+	
+	return 1;
+}
+(end)
+
+
+Title: Stepping Through the Code
+
+When using a custom node function it is essential that the new node function has a prototype of the form
+
+(begin code)
+float functionName(const int numInputs, const float *inputs, const float *connectionWeights);
+(end)
+
+This ensures that the CGP-Library know how to use the custom function. The function inputs are the number of node inputs, an array of the actual node input values and an array of the connection weight associated with each input. The connections weights can be ignored if the custom function is to be used by regular CGP and not CGP applied to neural networks. The output of the custom node function is the output of the node for the applied inputs.
+
+Here a hypotenuse node function has been defined which returns the hypotenuse of the inputs. The connections weights are not used.
+
+(begin code)
+float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
+	
+	int i;
+	float sumOfSqrs = 0;
+	float hypt;
+	
+	for(i=0; i<numInputs; i++){
+		sumOfSqrs += powf(inputs[i], 2);
+	}
+	
+	hypt = sqrtf(sumOfSqrs);
+	
+	return hypt;
+}
+(end)
+
+In order to use our newly defined node function we first need a parameters structure to store the function in the function set.
+
+(begin code)
+struct parameters *params;
+	
+int numInputs = 2;
+int numNodes = 10;
+int numOutputs = 1;
+int arity = 3;
+	
+params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+(end)
+
+As usual this parameters structure can contain a function set of pre-defined node functions.
+
+(begin code)
+addNodeFunction(params, "add,sub");
+(end)
+
+However the newly defined hypotenuse function can also be added using <addNodeFunctionCustom>. Where params stores all of the node functions in the function set, hypotenuse is the node function to be added and "hypt" is the shorthand name of the hypotenuse node function.
+
+(begin code)
+addNodeFunctionCustom(params, hypotenuse, "hypt");
+(end)
+
+In order to see that the hypotenuse node function has been added the entire function set can be displayed using <printFunctionSet>.
+
+(begin code)
+printFunctionSet(params);
+(end)
+
+Finally the parameters structure should be free'd.
+
+(begin code)
+freeParameters(params);
+(end)
+
+And that's it, the hypotenuse node function has been added to the function set stored in parameters and is now available for use. However it is important to note that any chromosome which uses custom node functions cannot be loaded from a file using <initialiseChromosomeFromFile>.
+

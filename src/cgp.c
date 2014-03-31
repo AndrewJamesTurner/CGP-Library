@@ -155,7 +155,7 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 static void mutateRandomParent(struct parameters *params, struct population *pop);
 
 /* fitness function */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
+static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 
 /* node functions defines in CGP-Library */
 static float add(const int numInputs, const float *inputs, const float *connectionWeights);
@@ -223,6 +223,39 @@ int getChromosomeNodeArity(struct chromosome *chromo){
 	return chromo->arity;
 }
 
+
+int getNumDataSetInputs(struct dataSet *data){
+	return data->numInputs;
+}
+
+int getNumDataSetOutputs(struct dataSet *data){
+	return data->numOutputs;
+}
+
+int getNumDataSetSamples(struct dataSet *data){
+	return data->numSamples;
+}
+
+float *getDataSetSampleInputs(struct dataSet *data, int sample){
+	return data->inputData[sample];
+}
+
+float getDataSetSampleInput(struct dataSet *data, int sample, int input){
+	return data->inputData[sample][input];
+}
+
+float *getDataSetSampleOutputs(struct dataSet *data, int sample){
+	return data->outputData[sample];
+}
+
+float getDataSetSampleOutput(struct dataSet *data, int sample, int output){
+	return data->outputData[sample][output];
+}
+
+
+float getChromosomeOutput(struct chromosome *chromo, int output){
+	return chromo->outputValues[output];
+}
 
 
 
@@ -801,7 +834,7 @@ struct dataSet *initialiseDataSetFromFile(char *file){
 		if(lineNum == -1){
 						
 			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
-						
+											
 			data->inputData = malloc(data->numSamples * sizeof(float*));
 			data->outputData = malloc(data->numSamples * sizeof(float*));
 		
@@ -1711,9 +1744,9 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 
 
 /*
-	Executes the given chromosome with the given outputs and placed the outputs in 'outputs'.
+	Executes the given chromosome 
 */
-void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs){
+void executeChromosome(struct chromosome *chromo, float *inputs){
 	
 	int i,j;
 	int nodeInputLocation;
@@ -1775,10 +1808,10 @@ void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs)
 	for(i=0; i<chromo->numOutputs; i++){
 	
 		if(chromo->outputNodes[i] < chromo->numInputs){
-			outputs[i] = inputs[chromo->outputNodes[i]];
+			chromo->outputValues[i] = inputs[chromo->outputNodes[i]];
 		}
 		else{
-			outputs[i] = chromo->nodes[chromo->outputNodes[i] - chromo->numInputs]->output;
+			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - chromo->numInputs]->output;
 		}
 	}
 }
@@ -2620,39 +2653,41 @@ void removeInactiveNodes(struct chromosome *chromo){
 
 /*
 */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *dat){
+static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	int i,j;
 	float error = 0;
 			
 	/* error checking */
-	if(chromo->numInputs != dat->numInputs){
-		printf("Error: the number of chromosome inputs must match the number of inputs specified in the data.\n");
+	if(getNumChromosomeInputs(chromo) != getNumDataSetInputs(data)){
+		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
 
-	if(chromo->numOutputs != dat->numOutputs){
-		printf("Error: the number of chromosome outputs must match the number of outputs specified in the data.\n");
+	if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
+		printf("Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n");
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
 
 	/* for each sample in data */
-	for(i=0 ; i<dat->numSamples; i++){
-	
+	for(i=0 ; i<getNumDataSetSamples(data); i++){
+				
 		/* calculate the chromosome outputs for the set of inputs  */
-		executeChromosome(chromo, dat->inputData[i], chromo->outputValues);
+		executeChromosome(chromo, getDataSetSampleInputs(data, i));
 	
 		/* for each chromosome output */
-		for(j=0; j<chromo->numOutputs; j++){
-				
-			error += fabs(chromo->outputValues[j] - dat->outputData[i][j]);
+		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
+								
+			error += fabs(getChromosomeOutput(chromo, j) - getDataSetSampleOutput(data, i, j));
 		}
 	}
-	
+		
 	return error;
 }
+
+
 /* 
 	returns a random float between [0,1]
 */

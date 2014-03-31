@@ -710,33 +710,56 @@
 	
 	/*
 		Function: executeChromosome
-			Executes the given chromosome producing outputs to for the given inputs.
+			Executes the given chromosome.
 			
-			The dimensions of the inputs and outputs arrays must match the dimensions of the chromosome inputs and outputs respectively. 
+			Executes the given chromosome with the given inputs. The dimensions of the inputs arrays must match the dimensions of the chromosome inputs. The chromosome outputs are then accessed using <getChromosomeOutput>.
 			
 		Parameters:
 			chromo - pointer to an initialised chromosome structure.
 			inputs - array of floats used as inputs to the chromosome 
-			outputs - array of floats used to store the calculated chromosome outputs
-		
+					
 		Example:
 		
-			for a chromosome with three inputs and two outputs.
+			for a chromosome with three inputs and one outputs.
 		
 			(begin code)
 			struct parameters *params;
 			struct chromosome *chromo;
 			
 			float inputs[3] = {1,2,3};
-			float outputs[2];
-			
-			params = initialiseParameters(3,10,2,2);
+						
+			params = initialiseParameters(3,10,1,2);
 			chromo = initialiseChromosome(params);
 			
-			executeChromosome(chromo, inputs, outputs);
+			executeChromosome(chromo, inputs);
+			
+			printf("Output: %f\n", getChromosomeOutput(chromo, 0));
+			
 			(end)
+		
+		See Also:
+				<getChromosomeOutput>
+			
 	*/
-	void executeChromosome(struct chromosome *chromo, float *inputs, float *outputs);
+	void executeChromosome(struct chromosome *chromo, float *inputs);
+	
+	
+	
+	/*
+		Function: getChromosomeOutput
+			gets the outputs of the given chromosome.
+			
+			After a given chromosome has been executed using <executeChromosome> the chromosome outputs are made available using <getChromosomeOutput>. 
+			
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+				output - The index of the output to be retrieved  
+						
+		See Also:
+				<executeChromosome>
+	*/
+	float getChromosomeOutput(struct chromosome *chromo, int output);
+	
 	
 	
 	/*
@@ -930,7 +953,6 @@
 	
 	
 	
-	
 /*
 	Title: DataSet Functions
 	
@@ -1055,6 +1077,23 @@
 	*/
 	void saveDataSet(struct dataSet *data, char *fileName);
 	
+	
+	
+	int getNumDataSetInputs(struct dataSet *data);
+
+	int getNumDataSetOutputs(struct dataSet *data);
+
+	int getNumDataSetSamples(struct dataSet *data);
+	
+	
+	
+	float *getDataSetSampleInputs(struct dataSet *data, int sample);
+
+	float getDataSetSampleInput(struct dataSet *data, int sample, int input);
+	
+	float *getDataSetSampleOutputs(struct dataSet *data, int sample);
+
+	float getDataSetSampleOutput(struct dataSet *data, int sample, int output);
 	
 	
 /*

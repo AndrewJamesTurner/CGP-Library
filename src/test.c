@@ -13,7 +13,7 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 	float i;
 	float error = 0;
 	float chromoInputs[1];	
-	float chromoOutputs[1];	
+	/*float chromoOutputs[1];	*/
 						
 	if(getNumInputs(params) != 1){
 		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome input; not %d\n", getNumInputs(params));
@@ -31,9 +31,10 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 		chromoInputs[0] = i;
 		
 		/* calculate the chromosome outputs for the set of inputs  */
-		executeChromosome(chromo, chromoInputs, chromoOutputs);
+		executeChromosome(chromo, chromoInputs);
 		
-		error = fabs(symbolicEq1(i) - chromoOutputs[0]);
+				
+		error += fabs(symbolicEq1(i) - getChromosomeOutput(chromo, 0) /*chromoOutputs[0]*/);
 	}				
 					
 	return error;
@@ -46,13 +47,14 @@ int main(void){
 	struct parameters *params = NULL;
 	/*struct results *rels = NULL;*/
 	struct chromosome *chromo = NULL;
+	struct dataSet *data;
 		
 	int numInputs = 1;
-	int numNodes = 20;
+	int numNodes = 50;
 	int numOutputs = 1;
-	int nodeArity = 3;
+	int nodeArity = 2;
 	
-	int numGens = 5000;
+	int numGens = 10000;
 	/*int numRuns = 10;*/
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -61,9 +63,11 @@ int main(void){
 			
 	setTargetFitness(params, 0.1);		
 			
-	addNodeFunction(params, "add,sub,mul,div,sin,cos");
+	addNodeFunction(params, "add,sub,mul,sin");
 		
-	setFitnessFunction(params, symbolicRegression1, "symBol1" );
+	/*setFitnessFunction(params, symbolicRegression1, "symBol1" );*/
+	
+	data = initialiseDataSetFromFile("./examples/symbolic.data");
 	
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.05);
@@ -73,13 +77,13 @@ int main(void){
 	printParameters(params);
 	
 	
-	chromo = runCGP(params, NULL, numGens);	
+	chromo = runCGP(params, data, numGens);	
 	
 	printChromosome(chromo);
 	removeInactiveNodes(chromo);
 	printChromosome(chromo);
 	
-	setChromosomeFitness(params, chromo, NULL);
+	setChromosomeFitness(params, chromo, data);
 	printf("\n%f\n", getChromosomeFitness(chromo));
 	
 	/*	
@@ -90,11 +94,11 @@ int main(void){
 	chromo = loadChromosome("test.chromo");
 	printChromosome(chromo);		
 		*/	
-	free(chromo);		
+	freeChromosome(chromo);		
 	/*freeResults(rels);*/
 	freeParameters(params);		
 		
-		
+	freeDataSet(data);
 		
 		
 	/*printFunctionSet(params);*/	
