@@ -28,7 +28,7 @@
 /*
 	Title: Structures
 	
-	Description of all the structures used by CGP-Library
+	Description of all the structures used by CGP-Library../t	
 */		
 		
 	/*
@@ -47,12 +47,13 @@
 			> evolutionary strategy:	+ 
 			> mutation rate:			0.05
 			> connection weight range:	1 
-			> maximum generations:		10000
-			> update frequency:			100
+			> update frequency:			1
 			> mutation type:			probabilistic
 			> fitness function: 		supervisedLearning
 			> selection scheme:			pickHighest
-			> reproduction scheme:		mutateRandomParent
+			> reproduction scheme:		mutateRandomParent 
+			
+			For information on probabilistic and other available mutation types see <setMutationType>. The supervisedLearning fitness function assigns the sum of the absolute difference between all actual and desired outputs for all data samples. This fitness function can be changed using <setFitnessFunction>. The pickHighest selection scheme selects the fittest members of the population to become the parents each generation. The mutateRandomParent reproduction scheme create the children by mutating randomly selected parents. 
 			
 		See Also:
 			<initialiseParameters>, <freeParameters>, <printParameters>
@@ -83,6 +84,12 @@
 	/*
 		variable: results 
 		
+		Stores the the best chromosome found on each run when using <repeatCGP>
+		
+		See Also:
+		
+			<repeatCGP>, <freeResults>, <getChromosome>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations> 
+		
 	*/
 	struct results;
 	
@@ -111,14 +118,17 @@
 		Example:
 			
 			Initialising parameters
-			> struct parameters *params;
-			>
-			> int numInputs = 3;
-			> int numNodes = 10;
-			> int numOutputs = 2;
-			> int nodeArity = 2;		
-			>
-			> params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity); 
+			
+			(begin code)
+			struct parameters *params;
+			
+			int numInputs = 3;
+			int numNodes = 10;
+			int numOutputs = 2;
+			int nodeArity = 2;		
+			
+			params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity); 
+			(end)
 
 		See Also:
 			<freeParameters>, <printParameters>
@@ -217,7 +227,10 @@
 		Adds a custom node function to the set of functions made available to chromosome nodes.  
 	
 		The custom fitness function must take the form
-		> float (*nodeFunctionName)(const int numInputs, const float *inputs, const float *weights)
+		
+		(begin code)
+		float nodeFunctionName(const int numInputs, const float *inputs, const float *weights);
+		(end)
 	
 		where the user replaces 'nodeFunctionName' with their own function name.
 	
@@ -693,7 +706,7 @@
 			chromo - pointer to chromosome structure.
 			
 		See Also:
-			<initialiseChromosome>
+			<initialiseChromosome>, <initialiseChromosomeFromFile>
 	*/
 	void freeChromosome(struct chromosome *chromo);
 	
@@ -831,6 +844,24 @@
 	
 	
 	/*
+		Function: copyChromosome
+		
+		Copies the contents of one chromoosme into the other.
+		
+		In order for copy chromosome to opperate correctly the dimensions of the chromosomes must match i.e. the number of inputs, nodes, outputs and node arity must be the same.
+		
+		Parameters:
+			chromoDest - pointer to an initialised chromosome to be copied too
+			chromoSrc - pointer to an initialised chromosome to be copied from
+			
+		See Also:
+			<initialiseChromosome>
+			
+	*/
+	void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
+	
+	
+	/*
 		Function: getNumChromosomeInputs
 			Gets the number of chromosome inputs
 			
@@ -921,7 +952,7 @@
 			The fitness of the given chromosome
 			
 		See Also:
-			<setChromosomeFitness> <getChromosomeGenerations> <getChromosomeNumActiveNodes>
+			<setChromosomeFitness> <getChromosomeGenerations> <getNumChromosomeActiveNodes>
 	*/
 	float getChromosomeFitness(struct chromosome *chromo);
 	
@@ -944,10 +975,7 @@
 	int getChromosomeGenerations(struct chromosome *chromo);
 	
 	
-	/*
-		Function: copyChromosome
-	*/
-	void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
+	
 	
 	
 	
@@ -1127,20 +1155,78 @@
 	int getNumDataSetSamples(struct dataSet *data);
 	
 	
-	
+	/*
+		Function: getDataSetSampleInputs
+			Gets the dataSet inputs for the given sample index
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			sample - index of the sample inputs
+			
+		Returns:
+			Pointer to array containing the sample inputs
+			
+		See Also:
+			<getDataSetSampleInput>, <getDataSetSampleOutputs>, <getDataSetSampleOutput>
+	*/
 	float *getDataSetSampleInputs(struct dataSet *data, int sample);
 
+
+	/*
+		Function: getDataSetSampleInput
+			Gets the dataSet input for the given sample index and input index
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			sample - index of the sample inputs
+			input - index of the input for the given sample
+			
+		Returns:
+			The given input value for the given input for the given sample
+			
+		See Also:
+			<getDataSetSampleInputs>, <getDataSetSampleOutput>, <getDataSetSampleOutputs>
+	*/
 	float getDataSetSampleInput(struct dataSet *data, int sample, int input);
 	
+	
+	/*
+		Function: getDataSetSampleOutputs
+			Gets the dataSet outputs for the given sample index
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			sample - index of the sample outputs
+			
+		Returns:
+			Pointer to array containing the sample outputs
+			
+		See Also:
+			<getDataSetSampleOutput>, <getDataSetSampleinputs>, <getDataSetSampleinput>
+	*/
 	float *getDataSetSampleOutputs(struct dataSet *data, int sample);
 
+	/*
+		Function: getDataSetSampleOutput
+			Gets the dataSet output for the given sample index and output index
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			sample - index of the sample inputs
+			output - index of the output for the given sample
+			
+		Returns:
+			The given output value for the given output for the given sample
+			
+		See Also:
+			<getDataSetSampleOutputs>, <getDataSetSampleInputt>, <getDataSetSampleInputss>
+	*/
 	float getDataSetSampleOutput(struct dataSet *data, int sample, int output);
 	
 	
 /*
 	Title: Results Functions
 */	
-	
 	
 	/*  
 		Function: freeResults 
@@ -1151,17 +1237,73 @@
 			rels - pointer to results structure.
 			
 		See Also:
-			<getChromosome>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
+			<getChromosome>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
 	*/
 	void freeResults(struct results *rels); 
 	
-	
+	/*
+		Function: getChromosome
+			Gets the best chromosome found on the given run in results.
+			
+		Parameters:
+			rels - pointer to an initialised results structure.
+			run - the run for which the chromosome is got
+			
+		Returns:
+			Pointer to an initialised chromosome structure
+			
+		See Also:
+			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+	*/
 	struct chromosome* getChromosome(struct results *rels, int run);
 	
+	/*
+		Function: getResultsAverageFitness
+			Gets the average fitness of the best chromosome found for each run in results.
+			
+		Parameters:
+			rels - pointer to an initialised results structure.
+			
+		Returns:
+			The average fitness of the best chromosome found for each run in results. 
+			
+		See Also:
+			<repeatCGP>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+	*/
+	float getResultsAverageFitness(struct results *rels); 
 	
-	float getAverageFitness(struct results *rels); 
-	float getAverageActiveNodes(struct results *rels);
-	float getAverageGenerations(struct results *rels);
+	
+	/*
+		Function: getResultsAverageActiveNodes
+			Gets the average number of active nodes of the best chromosome found for each run in results.
+			
+		Parameters:
+			rels - pointer to an initialised results structure.
+			
+		Returns:
+			The average number of active nodes of the best chromosome found for each run in results. 
+			
+		See Also:
+			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageGenerations>
+
+	*/
+	float getResultsAverageActiveNodes(struct results *rels);
+	
+	/*
+		Function: getResultsAverageGenerations
+			Gets the average number generations required to find the best best chromosome for each run in results.
+			
+		Parameters:
+			rels - pointer to an initialised results structure.
+			
+		Returns:
+			The average number generations required to find the best chromosome found for each run in results. 
+			
+		See Also:
+			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>
+
+	*/
+	float getResultsAverageGenerations(struct results *rels);
 	
 	
 /*
@@ -1255,6 +1397,30 @@
 			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults> 
 	*/	
 	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
+	
+
+/*
+	Title: Other
+*/
+	
+	/*
+		Function: setRandomNumberSeed
+			Sets the seed used by the random number generator in CGP-Library.
+			
+			By default the current time is used as the random number seed. When a random number seed is specified the CGP-Library will produce the same results if used in the same way.
+			
+		Note:
+			<setRandomNumberSeed> *must* be called *after* <initialiseParameters> otherwise the time will be used as the random number seed.
+			
+		Parameters:
+			seed - the random number seed to be used
+			
+		See Also:
+			<initialiseParameters>
+	*/
+	void setRandomNumberSeed(unsigned int seed);
+	
+	
 	
 
 #endif 

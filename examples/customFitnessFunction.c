@@ -17,6 +17,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "../include/cgp.h"  
 
@@ -43,16 +44,16 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 	for(i=0; i<getNumDataSetSamples(data); i++){
 	
 		/* calculate the chromosome outputs for the set of inputs  */
-		executeChromosome(chromo, getDataSetSampleInputs(data, i), chromo->outputValues);
+		executeChromosome(chromo, getDataSetSampleInputs(data, i));
 	
 		/* for each chromosome output */
-		for(j=0; j<chromo->numOutputs; j++){
+		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
 				
-			squareError += powf(chromo->outputValues[j] - dat->outputData[i][j], 2);
+			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
 		}
 	}
 	
-	return squareError / (dat->numSamples * dat->numOutputs);
+	return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
 }
 
 
@@ -67,12 +68,21 @@ int main(void){
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 	
-	addNodeFunction(params, "add,sub");
+	setRandomNumberSeed(123456789);	
+	
+	addNodeFunction(params, "add,sub,mul,sq,sin");
 
 	setFitnessFunction(params, meanSquareError, "MSE");
 	
 	printParameters(params);
 	
+	struct dataSet *data = initialiseDataSetFromFile("./examples/symbolic.data");
+	
+	struct chromosome *chromo = runCGP(params, data, 10000);
+	
+	
+	freeChromosome(chromo);
+	freeDataSet(data);
 	freeParameters(params);
 	
 	return 1;

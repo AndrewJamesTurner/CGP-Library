@@ -202,6 +202,10 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
 
+void setRandomNumberSeed(unsigned int seed){
+	srand(seed);
+}
+
 
 int getNumChromosomeInputs(struct chromosome *chromo){
 	return chromo->numInputs;
@@ -465,7 +469,7 @@ void freeResults(struct results *rels){
 	returns the average number of chromosome active nodes from repeated 
 	run results specified in rels.
 */
-float getAverageActiveNodes(struct results *rels){
+float getResultsAverageActiveNodes(struct results *rels){
 	
 	int i;
 	float avgActiveNodes = 0;
@@ -488,7 +492,7 @@ float getAverageActiveNodes(struct results *rels){
 	returns the average chromosome fitness from repeated 
 	run results specified in rels.
 */
-float getAverageFitness(struct results *rels){
+float getResultsAverageFitness(struct results *rels){
 	
 	int i;
 	float avgFit = 0;
@@ -510,7 +514,7 @@ float getAverageFitness(struct results *rels){
 /*
 	returns the number of generations used by each run  specified in rels.
 */
-float getAverageGenerations(struct results *rels){
+float getResultsAverageGenerations(struct results *rels){
 	
 	int i;
 	float avgGens = 0;
@@ -567,7 +571,7 @@ struct results* repeatCGP(struct parameters *params, struct dataSet *data, int n
 	}
 	
 	printf("----------------------------------------------------\n");
-	printf("AVG\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));	
+	printf("AVG\t%f\t%f\t%f\n", getResultsAverageFitness(rels), getResultsAverageGenerations(rels), getResultsAverageActiveNodes(rels));	
 	printf("----------------------------------------------------\n");
 	
 	/* restore the original value for the update frequency */	
@@ -1598,11 +1602,30 @@ void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc)
 
 	int i;
 	
-	/* copy num inputs, nodes, output and arity */
-	chromoDest->numInputs = chromoSrc->numInputs;
-	chromoDest->numNodes = chromoSrc->numNodes;
-	chromoDest->numOutputs = chromoSrc->numOutputs;
-	chromoDest->arity = chromoSrc->arity;
+	/* error checking  */
+	if(chromoDest->numInputs != chromoSrc->numInputs){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome inputs do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+	
+	if(chromoDest->numNodes != chromoSrc->numNodes){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome nodes do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+	
+	if(chromoDest->numOutputs != chromoSrc->numOutputs){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome outputs do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+	
+	if(chromoDest->arity != chromoSrc->arity){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The arity of the chromosome nodes do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
 	
 	
 	/* copy nodes */
