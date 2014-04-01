@@ -1,6 +1,6 @@
 Title: Custom Fitness Function 
 
-This tutorial introduces how to use a custom fitness function along side the CGP-Library.
+This tutorial introduces how to use a custom fitness function with the CGP-Library.
 
 Although the default supervisedLearning is suitable for generic application of CGP towards supervised learning tasks there are circumstances where the user may wish to change the default fitness function.
 
