@@ -9,7 +9,66 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 
 
-<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Custom_Fitness_Function"></a>Custom Fitness Function</h1><div class=CBody></div></div></div>
+<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Custom_Fitness_Function"></a>Custom Fitness Function</h1><div class=CBody><p>This tutorial introduces how to use a custom fitness function along side the CGP-Library.</p><p>Although the default supervisedLearning is suitable for generic application of CGP towards supervised learning tasks there are circumstances where the user may wish to change the default fitness function.</p><p>1) The user wishes to use a different measure than that used by supervisedLearning (the sum of the absolute difference between actual and desired outputs).</p><p>2) The user may wish to apply CGP towards non supervised learning tasks (e.g. reinforcement learning) which require an entirely different style of fitness function.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#Custom_Fitness_Function" >Custom Fitness Function</a></td><td class=SDescription>This tutorial introduces how to use a custom fitness function along side the CGP-Library.</td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription></td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription></td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &quot;../include/cgp.h&quot;
+
+
+float meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+    int i,j;
+    float squareError = 0;
+
+    if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
+        printf(&quot;Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n&quot;);
+        printf(&quot;Terminating.\n&quot;);
+        exit(0);
+    }
+
+    if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
+        printf(&quot;Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n&quot;);
+        printf(&quot;Terminating.\n&quot;);
+        exit(0);
+    }
+
+    for(i=0; i&lt;getNumDataSetSamples(data); i++){
+
+        executeChromosome(chromo, getDataSetSampleInputs(data, i));
+
+        for(j=0; j&lt;getNumChromosomeOutputs(chromo); j++){
+
+            squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+        }
+    }
+
+    return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
+}
+
+
+int main(void){
+
+    struct parameters *params;
+
+    int numInputs = 2;
+    int numNodes = 10;
+    int numOutputs = 1;
+    int arity = 3;
+
+    params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+
+    setFitnessFunction(params, meanSquareError, &quot;MSE&quot;);
+
+    printParameters(params);
+
+    freeParameters(params);
+
+    return 1;
+}</pre></blockquote></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody></div></div></div>
 
 </div><!--Content-->
 

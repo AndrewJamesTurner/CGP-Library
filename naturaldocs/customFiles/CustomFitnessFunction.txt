@@ -1,1 +1,74 @@
 Title: Custom Fitness Function 
+
+This tutorial introduces how to use a custom fitness function along side the CGP-Library.
+
+Although the default supervisedLearning is suitable for generic application of CGP towards supervised learning tasks there are circumstances where the user may wish to change the default fitness function.
+
+1) The user wishes to use a different measure than that used by supervisedLearning (the sum of the absolute difference between actual and desired outputs).
+
+2) The user may wish to apply CGP towards non supervised learning tasks (e.g. reinforcement learning) which require an entirely different style of fitness function.
+
+Title: The Program 
+
+(begin code)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "../include/cgp.h"  
+
+
+float meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+	
+	int i,j;
+	float squareError = 0;
+			
+	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
+		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
+		printf("Terminating.\n");
+		exit(0);
+	}
+
+	if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
+		printf("Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n");
+		printf("Terminating.\n");
+		exit(0);
+	}
+
+	for(i=0; i<getNumDataSetSamples(data); i++){
+	
+		executeChromosome(chromo, getDataSetSampleInputs(data, i));
+	
+		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
+				
+			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+		}
+	}
+	
+	return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
+}
+
+
+int main(void){
+	
+	struct parameters *params;
+	
+	int numInputs = 2;
+	int numNodes = 10;
+	int numOutputs = 1;
+	int arity = 3;
+		
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	
+	setFitnessFunction(params, meanSquareError, "MSE");
+	
+	printParameters(params);
+		
+	freeParameters(params);
+		
+	return 1;
+}
+
+(end)
+
+Title: Stepping Through the Code

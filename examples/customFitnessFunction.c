@@ -27,26 +27,22 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 	int i,j;
 	float squareError = 0;
 			
-	/* error checking */
 	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
 		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
-		printf("Terminating CGP-Library.\n");
+		printf("Terminating.\n");
 		exit(0);
 	}
 
 	if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
 		printf("Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n");
-		printf("Terminating CGP-Library.\n");
+		printf("Terminating.\n");
 		exit(0);
 	}
 
-	/* for each sample in data */
 	for(i=0; i<getNumDataSetSamples(data); i++){
 	
-		/* calculate the chromosome outputs for the set of inputs  */
 		executeChromosome(chromo, getDataSetSampleInputs(data, i));
 	
-		/* for each chromosome output */
 		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
 				
 			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
@@ -68,25 +64,12 @@ int main(void){
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 	
-	setRandomNumberSeed(123456789);	
-	
-	addNodeFunction(params, "add,sub,mul,sq,sin");
-
 	setFitnessFunction(params, meanSquareError, "MSE");
 	
 	printParameters(params);
-	
-	struct dataSet *data = initialiseDataSetFromFile("./examples/symbolic.data");
-	
-	struct chromosome *chromo = runCGP(params, data, 10000);
-	
-	
-	freeChromosome(chromo);
-	freeDataSet(data);
+		
 	freeParameters(params);
-	
-	return 1;
-	
+		
 	return 1;
 }
 
