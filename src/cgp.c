@@ -1981,7 +1981,7 @@ void printParameters(struct parameters *params){
 	printf("---------------------------------------------------\n");
 	printf("                   Parameters                      \n");
 	printf("---------------------------------------------------\n");
-	printf("evolutionaryStrategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printf("Evolutionary Strategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
 	printf("Mutation Type:\t\t\t%s\n", params->mutationTypeName);
 	printf("Mutation rate:\t\t\t%f\n", params->mutationRate);
 	printf("Connection weights range:\t+/- %f\n", params->connectionWeightRange);

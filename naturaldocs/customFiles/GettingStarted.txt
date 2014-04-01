@@ -163,7 +163,7 @@ contains the the functions we specified.
 > ---------------------------------------------------
 >                   Parameters                      
 > ---------------------------------------------------
-> evolutionaryStrategy:			(1+4)-ES
+> Evolutionary Strategy:		(1+4)-ES
 > Mutation Type:				probabilistic
 > Mutation rate:				0.050000
 > Connection weights range:		+/- 1.000000

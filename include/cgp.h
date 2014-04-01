@@ -44,9 +44,9 @@
 		
 			> mu:						1
 			> lambda:					4
-			> evolutionary strategy:	+ (mu+lambda)-ES
+			> evolutionary strategy:	+ 
 			> mutation rate:			0.05
-			> connection weight range:	1 +/- 
+			> connection weight range:	1 
 			> maximum generations:		10000
 			> update frequency:			100
 			> mutation type:			probabilistic
@@ -81,9 +81,7 @@
 	struct dataSet;	
 		
 	/*
-		variable: results
-		
-		
+		variable: results 
 		
 	*/
 	struct results;
@@ -381,10 +379,13 @@
 
 		Set custom fitness function. 
 		
-		The custom fitness function must take the form:
-		> float functionName(struct parameters *params, struct chromosome *chromo, struct data *dat)
+		The custom fitness function prototype must take the form
 		
-		If the fitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning. 
+		(begin code)
+		float functionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+		(end)
+		
+		If the setFitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning. 
 
 		Parameters:
 			params - pointer to parameters structure.
@@ -400,7 +401,6 @@
 			
 			int i;
 			float error = 0;
-			float chromoOutputs[8];	
 			
 			// full adder truth table
 			float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
@@ -409,16 +409,16 @@
 			 	//for each line in the truth table 				
 			 	for(i=0; i<8; i++){
 			 		
-			 		// calculate the chromosome outputs for the set of inputs  
-			 		executeChromosome(chromo, inputs[i], chromoOutputs);
+			 		// calculate the chromosome outputs for each set of inputs  
+			 		executeChromosome(chromo, inputs[i]);
 			 		
 			 		// If the first chromosome outputs differ from the correct outputs increment the error 
-			 		if(outputs[i][0] != chromoOutputs[0]){
+			 		if(outputs[i][0] != getChromosomeOutput(chromo, 0) ){
 			 			error++;
 			 		}
 			 		
 			 		// If the second chromosome outputs differ from the correct outputs increment the error 
-			 		if(outputs[i][1] != chromoOutputs[1]){
+			 		if(outputs[i][1] != getChromosomeOutput(chromo, 1) ){
 			 			error++;
 			 		}
 			 	}				
@@ -1078,11 +1078,52 @@
 	void saveDataSet(struct dataSet *data, char *fileName);
 	
 	
-	
+	/*
+		Function: getNumDataSetInputs
+			Gets the number of dataSet inputs
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			
+		Returns:
+			Number number of dataSet inputs
+			
+		See Also:
+			<getNumDataSetOutputs>, <getNumDataSetSamples>
+	*/
 	int getNumDataSetInputs(struct dataSet *data);
 
+
+
+	/*
+		Function: getNumDataSetOutputs
+			Gets the number of dataSet outputs
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			
+		Returns:
+			Number number of dataSet outputs
+			
+		See Also:
+			<getNumDataSetInputs>, <getNumDataSetSamples>
+	*/
 	int getNumDataSetOutputs(struct dataSet *data);
 
+
+	/*
+		Function: getNumDataSetSamples
+			Gets the number of samples in the given dataSet
+			
+		Parameters:
+			data - pointer to an initialised dataSet structure.
+			
+		Returns:
+			Number number of dataSet samples
+			
+		See Also:
+			<getNumDataSetInputs>, <getNumDataSetOutputs>
+	*/
 	int getNumDataSetSamples(struct dataSet *data);
 	
 	
