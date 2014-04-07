@@ -977,6 +977,8 @@ void saveDataSet(struct dataSet *data, char *fileName){
 		
 		fprintf(fp, "\n");
 	}
+	
+	fclose(fp);
 }
 
 
