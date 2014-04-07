@@ -23,6 +23,7 @@
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
 #define NUMSAMPLES 101
+#define INPUTRANGE 10.0
 
 /*
 	Returns x^6 - 2x^4 + x^2
@@ -45,7 +46,7 @@ int main(void){
 			
 	for(i=0; i<NUMSAMPLES; i++){
 		
-		inputTemp = (i * (10.0/(NUMSAMPLES-1))) - 5.0;
+		inputTemp = (i * (INPUTRANGE/(NUMSAMPLES-1))) - INPUTRANGE/2;
 		outputTemp = symbolicEq1(inputTemp);
 		
 		inputs[i][0] = inputTemp;
@@ -53,7 +54,7 @@ int main(void){
 	}
 	
 	data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
-	
+		
 	saveDataSet(data, "symbolic.data");
 	
 	freeDataSet(data);

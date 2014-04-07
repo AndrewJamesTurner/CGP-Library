@@ -1,6 +1,14 @@
 Title: Creating Data Sets  
 
+This tutorial demonstrates how to create the files used by <initialiseDataSetFromFile> to initialise <dataSet> structures.
+
+The <dataSet> structures are used to pass training data into the CGP-Library when using the default supervised learning fitness function. The <dataSet> structures can also be used by custom fitness functions as demonstrated in <Custom Fitness Function>.
+
 Title: The Program 
+
+A simple program which demonstarates how to create custom dataSet files by producing the symbolic regression dataSet file used in the <Getting Started> tutorial.
+
+The program below is provided in the CGP-Library download within /examples/createDataSet.c
 
 (begin code)
 #include <stdio.h>
@@ -10,6 +18,7 @@ Title: The Program
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
 #define NUMSAMPLES 101
+#define INPUTRANGE 10.0
 
 /*
 	Returns x^6 - 2x^4 + x^2
@@ -32,7 +41,7 @@ int main(void){
 			
 	for(i=0; i<NUMSAMPLES; i++){
 		
-		inputTemp = (i * (10.0/(NUMSAMPLES-1))) - 5.0;
+		inputTemp = (i * (INPUTRANGE/(NUMSAMPLES-1))) - INPUTRANGE/2;
 		outputTemp = symbolicEq1(inputTemp);
 		
 		inputs[i][0] = inputTemp;
@@ -51,17 +60,24 @@ int main(void){
 
 Title: Stepping Through the Code
 
+First standard header files are used along with cgp.h.
+
 (begin code)
 #include <stdio.h>
 #include <math.h>
 #include "../include/cgp.h"  
 (end)
 
+A number of #defines are used to keep the main function neat. The NUMINPUTS and NUMOUTPUTS describe how many inputs and outputs each sample in the <dataSet> will have. The NUMSAMPLES give the number of samples to be in the created <dataSet>. The INPUTRANGE specified the range of values the input values will take (+/- 5).
+
 (begin code)
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
 #define NUMSAMPLES 101
+#define INPUTRANGE 10.0
 (end)
+
+The data stored in the <dataSet> structures can come from any source but in this tutorial they shall be generated using the following function. The function returns x^6-2x^4+x^2 for a given input x.
 
 (begin code)
 float symbolicEq1(float x){
@@ -69,9 +85,11 @@ float symbolicEq1(float x){
 }
 (end)
 
-(begin code)
-int i;	
+Within the main function a few variables are used including a <dataSet> structure. This <dataSet> structure will be populated with values before being save to a file.
 
+The inputs and outputs arrays are used to store the input output pairs to be stored in the <dataSet> structure with inputTemp and outputTemp used to store intermediate values.
+
+(begin code)
 struct dataSet *data;
 
 float inputs[NUMSAMPLES][NUMINPUTS];
@@ -81,10 +99,12 @@ float inputTemp;
 float outputTemp;
 (end)
 
+The following loop calculates 101 input values over the range +/- 5. The corresponding output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the inputs and outputs array. Note is is important that the first array dimension indexes the sample and the second the respective input or output.
+
 (begin code)
 for(i=0; i<NUMSAMPLES; i++){
 		
-	inputTemp = (i * (10.0/(NUMSAMPLES-1))) - 5.0;
+	inputTemp = (i * (INPUTRANGE/(NUMSAMPLES-1))) - INPUTRANGE/2;
 	outputTemp = symbolicEq1(inputTemp);
 	
 	inputs[i][0] = inputTemp;
@@ -92,17 +112,25 @@ for(i=0; i<NUMSAMPLES; i++){
 }
 (end)
 
+Using these arrays containing each smaples input(s) and output(s) we can initialise a <dataSet> using <initialiseDataSetFromArrays>. Where <initialiseDataSetFromArrays> takes the number of inputs, outputs and samples along with a pointer to the first element in the inputs and outputs arrays. Note again the structure of the arrays, they must be in this form. Once the <dataSet> has been initialised it can be printed to the terminal for inspection using <printDataSet>.
+
 (begin code)
 data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
 (end)
 
+Now we have an initialised <dataSet> it can be saved to a file using <saveDataSet>. Where <saveDataSet> takes the <dataSet> to be saved and the location to save the file. Once saved the <dataSet> can be later used to initialise a new <dataSet> using <initialiseDataSetFromFile> as seen in the <Getting Started> tutorial. 
 
 (begin code)
 saveDataSet(data, "symbolic.data");
 (end)
 
+Finally the <dataSet> used should be free'd.
+
 (begin code)
 freeDataSet(data);
 (end)
+
+And that's it, <dataSets> can be initialised from arrays using <initialiseDataSetFromArrays> (provided the arrays are in the right form) and then saved to a file using <saveDataSet> to be read in again later. 
+
 
 
