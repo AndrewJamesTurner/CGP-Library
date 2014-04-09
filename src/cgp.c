@@ -1342,6 +1342,27 @@ DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFun
 }
 
 
+
+
+
+/*
+	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
+	then the default selectFittest selection scheme is used.
+*/
+DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos), char *selectionSchemeName){
+
+	if(selectionScheme == NULL){
+		params->selectionScheme = selectFittest;
+		strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
+	}
+	else{
+		params->selectionScheme = selectionScheme;
+		strncpy(params->selectionSchemeName, selectionSchemeName, SELECTIONSCHEMENAMELENGTH);
+	}
+}
+
+
+
 /*
 	Sets the given function set to contain the per-set functions
 	given in the char array. The function names must be comma separated

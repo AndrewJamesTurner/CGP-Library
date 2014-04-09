@@ -48,7 +48,7 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 1000;
+	int numGens = 10;
 	/*int numRuns = 10;*/
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -66,6 +66,8 @@ int main(void){
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.05);
 	
+	setSelectionScheme(params, NULL, "temp");
+	
 	setUpdateFrequency(params, -2);
 	
 	printParameters(params);
@@ -81,7 +83,7 @@ int main(void){
 	printf("\n%f\n", getChromosomeFitness(chromo));
 	
 	
-	rels = repeatCGP(params, data, numGens, 10);	
+	rels = repeatCGP(params, data, numGens, 3);	
 	
 	
 	
