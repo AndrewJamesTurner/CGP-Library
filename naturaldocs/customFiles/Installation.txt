@@ -13,11 +13,11 @@ For instance #include "cgp.h" and then compile your program similar too
 
 Standard:
 
-A more standard way of using libraries is to install them system wide for use by any program. For this the library must be compiled into a system specific shared library file and then installed.
+A more standard way of using libraries is to link against them. For this the library must be compiled into a system specific shared library file.
 
 Ubuntu:
 
-To generate the shared object (.so) open a terminal in the CGP-Library directory and run
+To compile the shared object (.so) open a terminal in the CGP-Library directory and run
 
     >$ make so
     
@@ -37,10 +37,12 @@ Finally update the system so it knows about libcgp.so
 
     >$ sudo ldconfig
     
-Once CGP-Library has been installed it can be accessed by #include <cgp.h> in your project and linking using the -lcgp flag. Similar too
+Once CGP-Library has been installed it can be used by #include <cgp.h> in your project and linking against the .so using the -lcgp compiler flag. Similar too
 
     >$ gcc yourFiles.c -lcgp
 
 Windows:
 
-Mac:
+For windows the .dll has been pre-compiled. So the complier should be linked to the provided CGP-Library.dll; how this is done is IDE dependant. Then simply #include "cgp.h". 
+
+
