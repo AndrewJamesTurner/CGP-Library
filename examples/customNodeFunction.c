@@ -3,7 +3,7 @@
 	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published 
+    it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -17,44 +17,44 @@
 */
 
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../include/cgp.h"
 
 float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
-	
+
 	int i;
 	float sumOfSqrs = 0;
 	float hypt;
-	
+
 	for(i=0; i<numInputs; i++){
 		sumOfSqrs += powf(inputs[i], 2);
 	}
-	
+
 	hypt = sqrtf(sumOfSqrs);
-	
+
 	return hypt;
 }
 
 
 int main(void){
-	
+
 	struct parameters *params;
-	
+
 	int numInputs = 2;
 	int numNodes = 10;
 	int numOutputs = 1;
 	int arity = 3;
-		
+
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
-	
+
 	addNodeFunction(params, "add,sub");
 
 	addNodeFunctionCustom(params, hypotenuse, "hypt");
-	
+
 	printFunctionSet(params);
-	
+
 	freeParameters(params);
-	
-	return 1;
+
+	return 0;
 }
 
 

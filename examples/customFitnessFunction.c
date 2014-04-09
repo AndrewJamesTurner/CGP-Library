@@ -3,7 +3,7 @@
 	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published 
+    it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -19,14 +19,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../include/cgp.h"
 
 
 float meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
-	
+
 	int i,j;
 	float squareError = 0;
-			
+
 	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
 		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
 		printf("Terminating.\n");
@@ -40,37 +40,37 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 	}
 
 	for(i=0; i<getNumDataSetSamples(data); i++){
-	
+
 		executeChromosome(chromo, getDataSetSampleInputs(data, i));
-	
+
 		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
-				
+
 			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
 		}
 	}
-	
+
 	return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
 }
 
 
 int main(void){
-	
+
 	struct parameters *params;
-	
+
 	int numInputs = 2;
 	int numNodes = 10;
 	int numOutputs = 1;
 	int arity = 3;
-		
+
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
-	
+
 	setFitnessFunction(params, meanSquareError, "MSE");
-	
+
 	printParameters(params);
-		
+
 	freeParameters(params);
-		
-	return 1;
+
+	return 0;
 }
 
 

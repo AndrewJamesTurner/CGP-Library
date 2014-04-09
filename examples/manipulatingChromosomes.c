@@ -3,7 +3,7 @@
 	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published 
+    it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../include/cgp.h"
 
 #define POPULATIONSIZE 5
 #define NUMINPUTS 1
@@ -27,53 +27,53 @@
 #define ARITY 2
 
 int main(void){
-		
+
 	struct parameters *params = NULL;
 	struct chromosome *chromoA = NULL;
 	struct chromosome *chromoB = NULL;
 	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
-		
+
 	float testInputs[NUMINPUTS];
-		
+
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
-		
+
 	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
-		
+
 	chromoA = initialiseChromosome(params);
 	chromoB = initialiseChromosome(params);
-	
+
 	setChromosomeFitness(params, chromoA, trainingData);
-		
+
 	mutateChromosome(params,chromoA);
-		
+
 	copyChromosome(chromoB, chromoA);
-			
-	removeInactiveNodes(chromoB);	
-	
+
+	removeInactiveNodes(chromoB);
+
 	printf("chromoA with inactive nodes.\n");
 	printChromosome(chromoA);
-	
+
 	printf("chromoB without inactive nodes.\n");
 	printChromosome(chromoB);
-	
+
 	saveChromosome(chromoB, "chromoB.chromo");
-	
+
 	chromoC = initialiseChromosomeFromFile("chromoB.chromo");
-			
+
 	testInputs[0] = 3;
-	
+
 	executeChromosome(chromoC, testInputs);
-	
+
 	printf("Applied input: %f\n", testInputs[0]);
 	printf("Generated output: %f\n", getChromosomeOutput(chromoC, 0));
-	
+
 	freeChromosome(chromoA);
 	freeChromosome(chromoB);
 	freeChromosome(chromoC);
 	freeDataSet(trainingData);
 	freeParameters(params);
-	
-	return 1;
+
+	return 0;
 }

@@ -3,7 +3,7 @@
 	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published 
+    it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../include/cgp.h"
 
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
@@ -33,31 +33,31 @@ float symbolicEq1(float x){
 }
 
 int main(void){
-	
+
 	int i;
-		
+
 	struct dataSet *data;
-	
+
 	float inputs[NUMSAMPLES][NUMINPUTS];
 	float outputs[NUMSAMPLES][NUMOUTPUTS];
-	
+
 	float inputTemp;
 	float outputTemp;
-			
+
 	for(i=0; i<NUMSAMPLES; i++){
-		
+
 		inputTemp = (i * (INPUTRANGE/(NUMSAMPLES-1))) - INPUTRANGE/2;
 		outputTemp = symbolicEq1(inputTemp);
-		
+
 		inputs[i][0] = inputTemp;
 		outputs[i][0] = outputTemp;
 	}
-	
+
 	data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
-		
+
 	saveDataSet(data, "symbolic.data");
-	
+
 	freeDataSet(data);
-	
-	return 1;
+
+	return 0;
 }
