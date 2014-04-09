@@ -23,10 +23,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DNO_DLL" />
 				</Compiler>
-				<Linker>
-					<Add library="./CGP-Library.dll" />
-				</Linker>
 			</Target>
 			<Target title="createDataSet">
 				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
@@ -37,7 +35,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customFitnessFunction">
@@ -49,7 +47,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customNodeFunction">
@@ -61,7 +59,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="manipulatingChromosomes">
@@ -73,7 +71,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 		</Build>
@@ -104,6 +102,7 @@
 		<Unit filename="src/cgp.c">
 			<Option compilerVar="CC" />
 			<Option target="createDLL" />
+			<Option target="gettingStarted" />
 		</Unit>
 		<Extensions>
 			<code_completion />
