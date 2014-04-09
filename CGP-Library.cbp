@@ -36,7 +36,7 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library=".\CGP-Library.dll" />
+					<Add library="./CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customFitnessFunction">
@@ -49,7 +49,7 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library=".\CGP-Library.dll" />
+					<Add library="./CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customNodeFunction">
@@ -62,7 +62,7 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library=".\CGP-Library.dll" />
+					<Add library="./CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="manipulatingChromosomes">
@@ -74,7 +74,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library=".\CGP-Library.dll" />
+					<Add library="./CGP-Library.dll" />
 				</Linker>
 			</Target>
 		</Build>

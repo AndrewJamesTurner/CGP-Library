@@ -171,20 +171,17 @@ static float exponential(const int numInputs, const float *inputs, const float *
 static float sine(const int numInputs, const float *inputs, const float *connectionWeights);
 static float cosine(const int numInputs, const float *inputs, const float *connectionWeights);
 static float tangent(const int numInputs, const float *inputs, const float *connectionWeights);
-
 static float nand(const int numInputs, const float *inputs, const float *connectionWeights);
 static float or(const int numInputs, const float *inputs, const float *connectionWeights);
 static float nor(const int numInputs, const float *inputs, const float *connectionWeights);
 static float xor(const int numInputs, const float *inputs, const float *connectionWeights);
 static float xnor(const int numInputs, const float *inputs, const float *connectionWeights);
 static float not(const int numInputs, const float *inputs, const float *connectionWeights);
-
 static float sigmoid(const int numInputs, const float *inputs, const float *connectionWeights);
 static float gaussian(const int numInputs, const float *inputs, const float *connectionWeights);
 static float step(const int numInputs, const float *inputs, const float *connectionWeights);
 static float softsign(const int numInputs, const float *inputs, const float *connectionWeights);
 static float hyperbolicTangent(const int numInputs, const float *inputs, const float *connectionWeights);
-
 
 /* other */
 static float randFloat(void);
@@ -201,16 +198,23 @@ int getNumberOfGenerations(struct population *pop);
 struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
-
+/*
+	Sets the random number seed
+*/
 DLL_EXPORT void setRandomNumberSeed(unsigned int seed){
 	srand(seed);
 }
 
-
+/*
+	Gets the number of chromosome inputs
+*/
 DLL_EXPORT int getNumChromosomeInputs(struct chromosome *chromo){
 	return chromo->numInputs;
 }
 
+/*
+	Gets the number of chromosome nodes
+*/
 DLL_EXPORT int getNumChromosomeNodes(struct chromosome *chromo){
 	return chromo->numNodes;
 }
@@ -261,8 +265,9 @@ DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output){
 	return chromo->outputValues[output];
 }
 
-
-
+/*
+	Saves the given chromosome in a form which can be read in later
+*/
 DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
 
 	int i,j;
@@ -277,6 +282,7 @@ DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
 		return;
 	}
 
+	/* save meta information */
 	fprintf(fp, "numInputs,%d\n", chromo->numInputs);
 	fprintf(fp, "numNodes,%d\n", chromo->numNodes);
 	fprintf(fp, "numOutputs,%d\n", chromo->numOutputs);
@@ -289,6 +295,7 @@ DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
 	}
 	fprintf(fp, "\n");
 
+	/* save the chromosome structure */
 	for(i=0; i<chromo->numNodes; i++){
 
 		fprintf(fp, "%d\n", chromo->nodes[i]->function);
@@ -305,6 +312,9 @@ DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
 	fclose(fp);
 }
 
+/*
+	Reads in saved chromosomes 
+*/
 DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 
 	FILE *fp;
@@ -369,6 +379,8 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 	while( record != NULL){
 
 		strncpy(funcName, record, FUNCTIONNAMELENGTH);
+		
+		/* can only load functions defined within CGP-Library */
 		if(addPresetFuctionToFunctionSet(params,funcName) == 0){
 			printf("Error: cannot load chromosome which contains custom node functions.\n");
 			printf("Terminating CGP-Library.\n");
@@ -414,22 +426,29 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 	return chromo;
 }
 
-
+/*
+	Sets the target fitness
+*/
 DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness){
-
-	/* error checking */
-
-
 	params->targetFitness = targetFitness;
 }
 
 /*
+	Sets the update frequency in generations 
 */
 DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency){
-	params->updateFrequency = updateFrequency;
+	
+	if(updateFrequency < 0){
+		printf("Warning: update frequency of %d is invalid. Update frequency must be >= 0. Update frequency is left unchanged as %d.\n", updateFrequency, params->updateFrequency);
+	}
+	else{
+		params->updateFrequency = updateFrequency;
+	}
 }
 
-
+/*
+	initialises a results structure
+*/
 struct results* initialiseResults(struct parameters *params, int numRuns){
 
 	int i;
@@ -448,6 +467,9 @@ struct results* initialiseResults(struct parameters *params, int numRuns){
 	return rels;
 }
 
+/*
+	free a initialised results structure 
+*/
 DLL_EXPORT void freeResults(struct results *rels){
 
 	int i;
@@ -465,6 +487,12 @@ DLL_EXPORT void freeResults(struct results *rels){
 	free(rels);
 }
 
+
+DLL_EXPORT int getNumChromosomes(struct results *rels){
+	return rels->numRuns;
+}
+
+
 /*
 	returns the average number of chromosome active nodes from repeated
 	run results specified in rels.
@@ -476,14 +504,14 @@ DLL_EXPORT float getResultsAverageActiveNodes(struct results *rels){
 	struct chromosome *chromoTemp;
 
 
-	for(i=0; i<rels->numRuns; i++){
+	for(i=0; i<getNumChromosomes(rels); i++){
 
 		chromoTemp = rels->bestChromosomes[i];
 
 		avgActiveNodes += getNumChromosomeActiveNodes(chromoTemp);
 	}
 
-	avgActiveNodes = avgActiveNodes / rels->numRuns;
+	avgActiveNodes = avgActiveNodes / getNumChromosomes(rels);
 
 	return avgActiveNodes;
 }
@@ -499,14 +527,14 @@ DLL_EXPORT float getResultsAverageFitness(struct results *rels){
 	struct chromosome *chromoTemp;
 
 
-	for(i=0; i<rels->numRuns; i++){
+	for(i=0; i<getNumChromosomes(rels); i++){
 
 		chromoTemp = rels->bestChromosomes[i];
 
 		avgFit += getChromosomeFitness(chromoTemp);
 	}
 
-	avgFit = avgFit / rels->numRuns;
+	avgFit = avgFit / getNumChromosomes(rels);
 
 	return avgFit;
 }
@@ -521,18 +549,21 @@ DLL_EXPORT float getResultsAverageGenerations(struct results *rels){
 	struct chromosome *chromoTemp;
 
 
-	for(i=0; i<rels->numRuns; i++){
+	for(i=0; i<getNumChromosomes(rels); i++){
 
 		chromoTemp = rels->bestChromosomes[i];
 
 		avgGens += getChromosomeGenerations(chromoTemp);
 	}
 
-	avgGens = avgGens / rels->numRuns;
+	avgGens = avgGens / getNumChromosomes(rels);
 
 	return avgGens;
 }
 
+/*
+	returns the number of generations required to find the given chromosome 
+*/
 DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo){
 	return chromo->generation;
 }
@@ -642,15 +673,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 		/* set fitness of the parents */
 		for(i=0; i<params->mu; i++){
-			setChromosomeActiveNodes(pop->parents[i]);
 			setChromosomeFitness(params, pop->parents[i], data);
 		}
 	}
 
+	/* show the user whats going on */
 	if(params->updateFrequency != 0){
-
 		printf("\n-- Starting CGP --\n\n");
-
 		printf("Gen\tfitness\n");
 	}
 
@@ -659,13 +688,12 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
-			setChromosomeActiveNodes(pop->children[i]);
 			setChromosomeFitness(params, pop->children[i], data);
 		}
 
 		/* check termination conditions */
 		bestChromo = getFittestChromosome(pop);
-		if(bestChromo->fitness <= params->targetFitness){
+		if(getChromosomeFitness(bestChromo) <= params->targetFitness){
 
 			if(params->updateFrequency != 0){
 				printf("%d\t%f - Solution Found\n", gen, bestChromo->fitness);
@@ -674,10 +702,10 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			break;
 		}
 
-
 		/*
 			Set the chromosomes which will be used by the selection scheme
-			dependant upon the evolutionary strategy
+			dependant upon the evolutionary strategy. i.e. '+' all are used
+			by selection scheme, ',' only the children are.
 		*/
 		for(i=0; i<numCandidateChromos; i++){
 
@@ -689,17 +717,15 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			}
 		}
 
-		/* select the parents */
+		/* select the parents from the candidateChromos */
 		params->selectionScheme(params, pop->parents, candidateChromos, numCandidateChromos);
-
-
 
 		/* */
 		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
 			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
 		}
 
-		/* create the children */
+		/* create the children from the parents */
 		params->reproductionScheme(params, pop);
 	}
 
@@ -709,27 +735,22 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 	pop->trainedGenerations = gen;
 
-
 	bestChromo = getFittestChromosome(pop);
 	bestChromo->generation = gen;
 	copyChromosome(chromo, bestChromo);
-
-
 
 	for(i=0; i<numCandidateChromos; i++){
 		freeChromosome(candidateChromos[i]);
 	}
 	free(candidateChromos);
 
-
 	freePopulation(pop);
-
 
 	return chromo;
 }
 
 
-/* */
+/* copies the contents of funcSetSrc to funcSetDest */
 static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc){
 
 	int i;
@@ -745,8 +766,6 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 }
 
 
-
-
 /*
 	Returns the number of generations the given population
 	was ran for before terminating the search
@@ -756,16 +775,12 @@ int getNumberOfGenerations(struct population *pop){
 }
 
 
-
-
 /*
 	return the fitness of the given chromosome
 */
 DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo){
 	return chromo->fitness;
 }
-
-
 
 
 /*
@@ -805,8 +820,6 @@ struct chromosome *getFittestChromosome(struct population *pop){
 
 	return bestChromo;
 }
-
-
 
 
 /*
@@ -890,7 +903,10 @@ DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char *file){
 
 
 /*
-
+	Initialises data structure and assigns values of given arrays
+	arrays must take the form
+	inputs[numSamples][numInputs]
+	outputs[numSamples][numOutputs]
 */
 DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
 
@@ -926,7 +942,7 @@ DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOut
 
 
 /*
-
+	frees given dataSet
 */
 DLL_EXPORT void freeDataSet(struct dataSet *data){
 
@@ -948,7 +964,7 @@ DLL_EXPORT void freeDataSet(struct dataSet *data){
 }
 
 /*
-
+	saves dataset to file
 */
 DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName){
 
@@ -983,8 +999,6 @@ DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName){
 
 	fclose(fp);
 }
-
-
 
 
 
@@ -1039,7 +1053,6 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 
 	params->updateFrequency = 1;
 
-
 	setNumInputs(params, numInputs);
 	setNumNodes(params, numNodes);
 	setNumOutputs(params, numOutputs);
@@ -1069,13 +1082,14 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 
 
 /*
-
+	sets num chromosome inputs in parameters
 */
 DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 
 	/* error checking */
 	if(numInputs < 0){
-		printf("Warning: number of chromosome inputs cannot be negative; %d is invalid.\n", numInputs);
+		printf("Error: number of chromosome inputs cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
+		exit(0);
 	}
 
 	params->numInputs = numInputs;
@@ -1083,26 +1097,28 @@ DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 
 
 /*
-
+	sets num chromosome nodes in parameters
 */
 DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
 
 	/* error checking */
 	if(numNodes < 0){
-		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\n", numNodes);
+		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
+		exit(0);
 	}
 
 	params->numNodes = numNodes;
 }
 
 /*
-
+	sets num chromosome outputs in parameters
 */
 DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs){
 
 	/* error checking */
 	if(numOutputs < 0){
-		printf("Warning: number of chromosome outputs cannot be less than one; %d is invalid.\n", numOutputs);
+		printf("Warning: number of chromosome outputs cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", numOutputs);
+		exit(0);
 	}
 
 	params->numOutputs = numOutputs;
@@ -1110,13 +1126,14 @@ DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs){
 
 
 /*
-
+	sets chromosome arity in parameters
 */
 DLL_EXPORT void setArity(struct parameters *params, int arity){
 
 	/* error checking */
 	if(arity < 0){
-		printf("Warning: node arity cannot be less than one; %d is invalid.\n", arity);
+		printf("Warning: node arity cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", arity);
+		exit(0);
 	}
 
 	params->arity = arity;
@@ -1134,10 +1151,8 @@ DLL_EXPORT void freeParameters(struct parameters *params){
 	}
 
 	free(params->funcSet);
-
 	free(params);
 }
-
 
 
 /*
@@ -1171,7 +1186,7 @@ struct population *initialisePopulation(struct parameters *params){
 }
 
 /*
-
+	free the given population
 */
 void freePopulation(struct population *pop){
 
@@ -1189,7 +1204,6 @@ void freePopulation(struct population *pop){
 	for(i=0; i < pop->lambda; i++){
 		freeChromosome(pop->children[i]);
 	}
-
 
 	free(pop->parents);
 	free(pop->children);
@@ -1251,7 +1265,9 @@ DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutio
 }
 
 
-
+/*
+	sets the mutation type in params
+*/
 DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
 
 	if(strncmp(mutationType, "probabilistic", MUTATIONTYPENAMELENGTH) == 0){
@@ -1297,13 +1313,6 @@ DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weight
 }
 
 
-
-
-
-
-
-
-
 /*
 */
 DLL_EXPORT int getNumInputs(struct parameters *params){
@@ -1331,9 +1340,6 @@ DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFun
 		strncpy(params->fitnessFunctionName, fitnessFunctionName, FITNESSFUNCTIONNAMELENGTH);
 	}
 }
-
-
-
 
 
 /*
@@ -1690,6 +1696,8 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	float fitness;
+
+	setChromosomeActiveNodes(chromo);
 
 	fitness = params->fitnessFunction(params, chromo, data);
 

@@ -27,14 +27,12 @@ customNodeFunction: examples/customNodeFunction.c src/cgp.c include/cgp.h
 customFitnessFunction: examples/customFitnessFunction.c src/cgp.c include/cgp.h
 	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
-
-
 docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
-so: src/cgp.c
-	@$(CC) -c -fpic src/cgp.c $(CFLAGS) 
-	@gcc -shared -o libcgp.so cgp.o -lm
+so: src/cgp.c 
+	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
+	@gcc -shared -o libcgp.so cgp.o -lm -O3
 
 clean:
 	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction *.data *.chromo *.depend *.layout *.exe

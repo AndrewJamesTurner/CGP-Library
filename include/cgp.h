@@ -611,58 +611,6 @@
 	DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency);
 
 
-
-	/*
-		Function: getMu
-
-		Gets the value of mu current set in the given parameters.
-
-		Parameters:
-			params - pointer to parameters structure.
-
-		Returns:
-			The value of mu in the given parameters.
-
-		See Also:
-			<setMu>
-	*/
-	DLL_EXPORT int getMu(struct parameters *params);
-
-
-		/*
-		Function: getNumInputs
-
-		Gets the number of chromosome inputs current set in the given parameters.
-
-		Parameters:
-			params - pointer to parameters structure.
-
-		Returns:
-			The number of chromosome inputs current set in the given parameters
-
-		See Also:
-			<setNumInputs>
-	*/
-	DLL_EXPORT int getNumInputs(struct parameters *params);
-
-
-	/*
-		Function: getNumOutputs
-
-		Gets the number of chromosome output current set in the given parameters.
-
-		Parameters:
-			params - pointer to parameters structure.
-
-		Returns:
-			The number of chromosome output current set in the given parameters
-
-		See Also:
-			<setNumOutputs>
-	*/
-	DLL_EXPORT int getNumOutputs(struct parameters *params);
-
-
 /*
 	Title: Chromosome Functions
 
@@ -1272,6 +1220,21 @@
 			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
 	*/
 	DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run);
+	
+	/*
+		Function: getNumChromosomes
+			Gets number of chromosomes stored in the given results structure.
+
+		Parameters:
+			rels - pointer to an initialised results structure.
+			
+		Returns:
+			The number of chromosomes stored in the given results structure
+
+		See Also:
+			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+	*/
+	DLL_EXPORT int getNumChromosomes(struct results *rels);
 
 	/*
 		Function: getResultsAverageFitness

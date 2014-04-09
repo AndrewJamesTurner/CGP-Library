@@ -15,15 +15,7 @@ float symbolicRegression1(struct parameters *params, struct chromosome *chromo, 
 	float chromoInputs[1];	
 	/*float chromoOutputs[1];	*/
 						
-	if(getNumInputs(params) != 1){
-		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome input; not %d\n", getNumInputs(params));
-		exit(0);
-	}				
-		
-	if(getNumOutputs(params) != 1){
-		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome output; not %d\n", getNumOutputs(params));
-		exit(0);
-	}		
+	
 					
 	/* for each line in the truth table */				
 	for(i=-5; i<=5; i=i+0.1){
@@ -49,12 +41,14 @@ int main(void){
 	struct chromosome *chromo = NULL;
 	struct dataSet *data;
 		
+	struct results *rels;	
+		
 	int numInputs = 1;
 	int numNodes = 50;
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 10000;
+	int numGens = 1000;
 	/*int numRuns = 10;*/
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -72,7 +66,7 @@ int main(void){
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.05);
 	
-	setUpdateFrequency(params, 1000);
+	setUpdateFrequency(params, -2);
 	
 	printParameters(params);
 	
@@ -85,6 +79,12 @@ int main(void){
 	
 	setChromosomeFitness(params, chromo, data);
 	printf("\n%f\n", getChromosomeFitness(chromo));
+	
+	
+	rels = repeatCGP(params, data, numGens, 10);	
+	
+	
+	
 	
 	/*	
 	printf("\n");
@@ -100,6 +100,7 @@ int main(void){
 		
 	freeDataSet(data);
 		
+	freeResults(rels);	
 		
 	/*printFunctionSet(params);*/	
 		
