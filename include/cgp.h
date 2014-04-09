@@ -25,8 +25,9 @@
 #ifndef CGPLIB
 #define CGPLIB
 
-
-#if  defined(_WIN32) && defined(BUILD_DLL)
+#if defined(_WIN32) && defined(NO_DLL)
+	#define DLL_EXPORT
+#elif  defined(_WIN32) && defined(BUILD_DLL)
     #define DLL_EXPORT __declspec(dllexport)
 #elif defined(_WIN32) && !defined(BUILD_DLL)
     #define DLL_EXPORT __declspec(dllimport)
@@ -64,7 +65,7 @@
 			> selection scheme:			pickHighest
 			> reproduction scheme:		mutateRandomParent
 
-			For information on probabilistic and other available mutation types see <setMutationType>. The supervisedLearning fitness function assigns the sum of the absolute difference between all actual and desired outputs for all data samples. This fitness function can be changed using <setFitnessFunction>. The pickHighest selection scheme selects the fittest members of the population to become the parents each generation. The mutateRandomParent reproduction scheme create the children by mutating randomly selected parents.
+			For information on probabilistic and other available mutation types see <setMutationType>. The supervisedLearning fitness function assigns the sum of the absolute difference between all actual and target outputs. This fitness function can be changed using <setFitnessFunction>. The pickHighest selection scheme selects the fittest members of the population to become the parents each generation. The mutateRandomParent reproduction scheme create the children by mutating randomly selected parents.
 
 		See Also:
 			<initialiseParameters>, <freeParameters>, <printParameters>
@@ -409,7 +410,7 @@
 		float functionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 		(end)
 
-		If the setFitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning.
+		If the fitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning fitness function; See <parameters>
 
 		Parameters:
 			params - pointer to parameters structure.
@@ -418,7 +419,7 @@
 
 		Example:
 
-			Defining a custom fitness function, full adder
+			Defining a custom fitness function, full adder. Note that the <dataSet> does not have to be used.
 
 			(begin code)
 			float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
@@ -456,6 +457,10 @@
 			struct parameters *params = initialiseParameters();
 			setFitnessFuction(params, fullAdder, "fullAdder");
 			(end)
+	
+		See Also:
+			<executeChromosome>, <getChromosomeOutput>
+		
 	*/
 	DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 

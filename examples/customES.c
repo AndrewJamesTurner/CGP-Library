@@ -126,5 +126,5 @@ int main(void){
 	freeDataSet(trainingData);
 	freeParameters(params);
 	
-	return 1;
+	return 0;
 }
