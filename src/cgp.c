@@ -1343,8 +1343,6 @@ DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFun
 
 
 
-
-
 /*
 	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
 	then the default selectFittest selection scheme is used.
@@ -1360,6 +1358,26 @@ DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionSc
 		strncpy(params->selectionSchemeName, selectionSchemeName, SELECTIONSCHEMENAMELENGTH);
 	}
 }
+
+
+/*
+	sets the reproduction scheme used to select the parents from the candidate chromosomes. If the reproductionScheme is NULL
+	then the default mutateRandomParent selection scheme is used.
+*/
+/*
+DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct population *pop), char *reproductionSchemeName){
+
+	if(reproductionScheme == NULL){
+		params->reproductionScheme = mutateRandomParent;
+		strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
+	}
+	else{
+		params->reproductionScheme = reproductionScheme;
+		strncpy(params->reproductionSchemeName, reproductionSchemeName, REPRODUCTIONSCHEMENAMELENGTH);
+	}
+}
+*/
+
 
 
 

@@ -466,7 +466,7 @@
 
 
 	/*
-	Function: setSelectionScheme
+		Function: setSelectionScheme
 	*/
 	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos), char *selectionSchemeName);
 
