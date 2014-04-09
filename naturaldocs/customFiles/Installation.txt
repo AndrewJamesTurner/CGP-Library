@@ -10,7 +10,7 @@ For instance #include "cgp.h" and then compile your program similar too
 
     >$ gcc yourFiles.c cgp.c cgp.h -D NO_DLL
 
-
+ 
 Standard:
 
 The standard method of using libraries is to link against the compiled library. For this the library must be compiled into a system specific shared library file.

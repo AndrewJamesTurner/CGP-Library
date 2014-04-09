@@ -48,9 +48,9 @@ Footer: Copyright (C) 2014 Andrew James Turner
 
 
 File: About  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/About.txt)
+File: Download  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/Download.txt)
 File: Licenses  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/license.txt)
 File: API  (/home/andy/Desktop/CGP-Library/include/cgp.h)
-File: Source Code  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/SourceCode.txt)
 
 Group: Tutorials  {
 
@@ -59,6 +59,7 @@ Group: Tutorials  {
    File: Creating Data Sets  (no auto-title, /home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CreateDataSet.txt)
    File: Custom Node Functions  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomNodeFunctions.txt)
    File: Custom Fitness Function  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomFitnessFunction.txt)
+   File: Average Behaviour  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/AverageBehaviour.txt)
    File: Manipulating Chromosomes  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt)
    File: NeuroEvolution  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt)
    }  # Group: Tutorials

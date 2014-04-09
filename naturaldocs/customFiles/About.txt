@@ -1,1 +1,28 @@
 Title: About  
+
+CGP-Library is a Cartesian Genetic Programming implementation designed to be simple to use whilst being highly extendible. Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>.
+
+Intended Use:
+
+CGP-Library was designed with three use cases in mind
+
+1) Teaching and learning about CGP
+
+2) Undertaking academic research into CGP
+
+3) Using CGP for real world applications
+
+As a result the basic use of CGP-Library is very simple (see <Getting Started>) but is also highly customisable and extendible.
+
+Tutorials:
+
+A number of tutorials are provided to walk you though using the CGG-Library. For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a project is also provided which contains all of the tutorial source files. 
+
+Although the tutorials cover basic and advance usage they do not cover every function described in the <API>.
+
+Open Source:
+
+CGP-Library is open source'd under the LGPL, which means you have access to the source files as well as the complied library. See <Licenses> for more details. The CGP-Library project is hosted on github at <https://github.com/AndrewJamesTurner/CGP-Library>.
+
+(see github.jpg)
+
