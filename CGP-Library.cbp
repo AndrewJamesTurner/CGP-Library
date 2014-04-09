@@ -27,43 +27,46 @@
 				</Compiler>
 			</Target>
 			<Target title="createDataSet">
-				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
+				<Option output="createDataSet" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customFitnessFunction">
-				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
+				<Option output="customFitnessFunction" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customNodeFunction">
-				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
+				<Option output="customNodeFunctions" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="manipulatingChromosomes">
-				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
+				<Option output="manipluatingChromosomes" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -101,8 +104,6 @@
 		<Unit filename="include/cgp.h" />
 		<Unit filename="src/cgp.c">
 			<Option compilerVar="CC" />
-			<Option target="createDLL" />
-			<Option target="gettingStarted" />
 		</Unit>
 		<Extensions>
 			<code_completion />
