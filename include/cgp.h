@@ -457,10 +457,10 @@
 			struct parameters *params = initialiseParameters();
 			setFitnessFuction(params, fullAdder, "fullAdder");
 			(end)
-	
+
 		See Also:
 			<executeChromosome>, <getChromosomeOutput>
-		
+
 	*/
 	DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 
