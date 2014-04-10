@@ -14,7 +14,7 @@ Title: The Program
 
 A simple program showcasing a range of chromosome operations. 
 
-The program below is provided in the CGP-Library download within /examples/manipulatingChromosomes.c
+The program below is provided in the CGP-Library download within /examples/manipulatingChromosomes.c and is included in the code:blocks project.
 
 (begin code)
 #include <stdio.h>

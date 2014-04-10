@@ -127,7 +127,7 @@ struct results{
 static void setChromosomeActiveNodes(struct chromosome *chromo);
 
 /* node functions */
-static struct node *initialiseNode(struct parameters *params, int nodePosition);
+static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
 static void freeNode(struct node *n);
 static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 
@@ -312,6 +312,78 @@ DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
 	fclose(fp);
 }
 
+
+/*
+	Returns a pointer to an initialised chromosome with values obeying the given parameters.
+*/
+DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
+
+	struct chromosome *chromo;
+	int i;
+
+	/* check that funcSet contains functions*/
+	if(params->funcSet->numFunctions < 1){
+		printf("Error: chromosome not initialised due to empty functionSet.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
+
+	/* allocate memory for chromosome */
+	chromo = malloc(sizeof(struct chromosome));
+
+	/* allocate memory for nodes */
+	chromo->nodes = malloc(params->numNodes * sizeof(struct node));
+
+	/* allocate memory for outputNodes matrix */
+	chromo->outputNodes = malloc(params->numOutputs * sizeof(int));
+
+	/* allocate memory for active nodes matrix */
+	chromo->activeNodes = malloc(params->numNodes * sizeof(int));
+
+	/* allocate memory for chromosome outputValues */
+	chromo->outputValues = malloc(params->numOutputs * sizeof(float));
+
+	/* Initialise each of the chromosomes nodes */
+	for(i=0; i<params->numNodes; i++){
+		chromo->nodes[i] = initialiseNode(params->numInputs, params->arity, params->funcSet->numFunctions, params->connectionWeightRange, i);
+	}
+
+	/* set each of the chromosomes outputs */
+	for(i=0; i<params->numOutputs; i++){
+		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes);
+	}
+
+	/* Add all nodes to the active node matrix */
+	for(i=0; i<params->numNodes; i++){
+		chromo->activeNodes[i] = i;
+	}
+
+	/* set the number of inputs, nodes and outputs */
+	chromo->numInputs = params->numInputs;
+	chromo->numNodes = params->numNodes;
+	chromo->numOutputs = params->numOutputs;
+	chromo->arity = params->arity;
+
+	/* set the number of active node to the number of nodes (all active) */
+	chromo->numActiveNodes = params->numNodes;
+
+	/* */
+	chromo->fitness = -1;
+
+	/*  */
+	chromo->funcSet = malloc(sizeof(struct functionSet));
+
+	/* */
+	copyFuctionSet(chromo->funcSet, params->funcSet);
+
+	/* set the active nodes in the newly generated chromosome */
+	setChromosomeActiveNodes(chromo);
+
+
+	chromo->nodeInputsHold = malloc(params->arity * sizeof(float));
+
+	return chromo;
+}
+
 /*
 	Reads in saved chromosomes 
 */
@@ -425,6 +497,71 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 
 	return chromo;
 }
+
+/*
+	Returns a pointer to an initialised chromosome with values obeying the given parameters.
+*/
+DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromosome *chromo){
+
+	struct chromosome *chromoNew;
+	int i;
+
+	/* check that funcSet contains functions*/
+	if(chromo == NULL){
+		printf("Error: cannot initialise chromosome from uninitialised chromosome.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
+
+	/* allocate memory for chromosome */
+	chromoNew = malloc(sizeof(struct chromosome));
+
+	/* allocate memory for nodes */
+	chromoNew->nodes = malloc(chromo->numNodes * sizeof(struct node));
+
+	/* allocate memory for outputNodes matrix */
+	chromoNew->outputNodes = malloc(chromo->numOutputs * sizeof(int));
+
+	/* allocate memory for active nodes matrix */
+	chromoNew->activeNodes = malloc(chromo->numNodes * sizeof(int));
+
+	/* allocate memory for chromosome outputValues */
+	chromoNew->outputValues = malloc(chromo->numOutputs * sizeof(float));
+
+	/* Initialise each of the chromosomes nodes */
+	for(i=0; i<chromo->numNodes; i++){
+		chromoNew->nodes[i] = initialiseNode(chromo->numInputs, chromo->arity, chromo->funcSet->numFunctions, 0, i);
+		copyNode(chromoNew->nodes[i], chromo->nodes[i]);
+	}
+
+	/* set each of the chromosomes outputs */
+	for(i=0; i<chromo->numOutputs; i++){
+		chromoNew->outputNodes[i] = chromo->outputNodes[i];
+	}
+
+	/* set the number of inputs, nodes and outputs */
+	chromoNew->numInputs = chromo->numInputs;
+	chromoNew->numNodes = chromo->numNodes;
+	chromoNew->numOutputs = chromo->numOutputs;
+	chromoNew->arity = chromo->arity;
+
+	
+	/* */
+	chromoNew->fitness = chromo->fitness;
+
+	/*  */
+	chromoNew->funcSet = malloc(sizeof(struct functionSet));
+
+	/* */
+	copyFuctionSet(chromoNew->funcSet, chromo->funcSet);
+
+	/* set the active nodes in the newly generated chromosome */
+	setChromosomeActiveNodes(chromoNew);
+
+	chromoNew->nodeInputsHold = malloc(chromo->arity * sizeof(float));
+
+	return chromoNew;
+}
+
 
 /*
 	Sets the target fitness
@@ -573,9 +710,19 @@ DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo){
 */
 DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run){
 
-	/* do some error checking */
+	struct chromosome *chromo;
 
-	return rels->bestChromosomes[run];
+	/* do some error checking */
+	if(rels == NULL){
+		printf("Error: cannot get best chromosome from uninitialised results.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
+
+
+	chromo = initialiseChromosomeFromChromosome(rels->bestChromosomes[run]);
+
+
+	return chromo;
 }
 
 
@@ -603,7 +750,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 
 	printf("----------------------------------------------------\n");
 	printf("AVG\t%f\t%f\t%f\n", getResultsAverageFitness(rels), getResultsAverageGenerations(rels), getResultsAverageActiveNodes(rels));
-	printf("----------------------------------------------------\n");
+	printf("----------------------------------------------------\n\n");
 
 	/* restore the original value for the update frequency */
 	params->updateFrequency = updateFrequency;
@@ -1548,76 +1695,7 @@ DLL_EXPORT void printFunctionSet(struct parameters *params){
 	printf(" (%d)\n", params->funcSet->numFunctions);
 }
 
-/*
-	Returns a pointer to an initialised chromosome with values obeying the given parameters.
-*/
-DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 
-	struct chromosome *chromo;
-	int i;
-
-	/* check that funcSet contains functions*/
-	if(params->funcSet->numFunctions < 1){
-		printf("Error: chromosome not initialised due to empty functionSet.\nTerminating CGP-Library.\n");
-		exit(0);
-	}
-
-	/* allocate memory for chromosome */
-	chromo = malloc(sizeof(struct chromosome));
-
-	/* allocate memory for nodes */
-	chromo->nodes = malloc(params->numNodes * sizeof(struct node));
-
-	/* allocate memory for outputNodes matrix */
-	chromo->outputNodes = malloc(params->numOutputs * sizeof(int));
-
-	/* allocate memory for active nodes matrix */
-	chromo->activeNodes = malloc(params->numNodes * sizeof(int));
-
-	/* allocate memory for chromosome outputValues */
-	chromo->outputValues = malloc(params->numOutputs * sizeof(float));
-
-	/* Initialise each of the chromosomes nodes */
-	for(i=0; i<params->numNodes; i++){
-		chromo->nodes[i] = initialiseNode(params, i);
-	}
-
-	/* set each of the chromosomes outputs */
-	for(i=0; i<params->numOutputs; i++){
-		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes);
-	}
-
-	/* Add all nodes to the active node matrix */
-	for(i=0; i<params->numNodes; i++){
-		chromo->activeNodes[i] = i;
-	}
-
-	/* set the number of inputs, nodes and outputs */
-	chromo->numInputs = params->numInputs;
-	chromo->numNodes = params->numNodes;
-	chromo->numOutputs = params->numOutputs;
-	chromo->arity = params->arity;
-
-	/* set the number of active node to the number of nodes (all active) */
-	chromo->numActiveNodes = params->numNodes;
-
-	/* */
-	chromo->fitness = -1;
-
-	/*  */
-	chromo->funcSet = malloc(sizeof(struct functionSet));
-
-	/* */
-	copyFuctionSet(chromo->funcSet, params->funcSet);
-
-	/* set the active nodes in the newly generated chromosome */
-	setChromosomeActiveNodes(chromo);
-
-
-	chromo->nodeInputsHold = malloc(params->arity * sizeof(float));
-
-	return chromo;
-}
 
 /*
 	Frees the memory associated with the given chromosome structure
@@ -1896,7 +1974,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs){
 	returns a pointer to an initialised node. Initialised means that necessary
 	memory has been allocated and values set.
 */
-static struct node *initialiseNode(struct parameters *params, int nodePosition){
+static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition){
 
 	struct node *n;
 	int i;
@@ -1905,26 +1983,26 @@ static struct node *initialiseNode(struct parameters *params, int nodePosition){
 	n = malloc(sizeof(struct node));
 
 	/* allocate memory for the node's inputs and connection weights */
-	n->inputs = malloc(params->arity * sizeof(int));
-	n->weights = malloc(params->arity * sizeof(float));
+	n->inputs = malloc(arity * sizeof(int));
+	n->weights = malloc(arity * sizeof(float));
 
 	/* set the node's function */
-	n->function = getRandomFunction(params->funcSet->numFunctions);
+	n->function = getRandomFunction(numFunctions);
 
 	/* set as active by default */
 	n->active = 1;
 
 	/* set the nodes inputs and connection weights */
-	for(i=0; i<params->arity; i++){
-		n->inputs[i] = getRandomNodeInput(params->numInputs,nodePosition);
-		n->weights[i] = getRandomConnectionWeight(params->connectionWeightRange);
+	for(i=0; i<arity; i++){
+		n->inputs[i] = getRandomNodeInput(numInputs,nodePosition);
+		n->weights[i] = getRandomConnectionWeight(connectionWeightRange);
 	}
 
 	/* */
 	n->output = 0;
 
 	/* */
-	n->arity = params->arity;
+	n->arity = arity;
 
 	return n;
 }

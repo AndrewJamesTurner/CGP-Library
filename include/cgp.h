@@ -86,7 +86,9 @@
 	/*
 		variable: dataSet
 
-		Stores data which can be used by fitness functions when calculating a chromosomes fitness. Typically contains input output pairs of data used when applying CGP to supervised learning.
+		Stores a data set which can be used by the fitness function when calculating a chromosomes fitness. 
+		
+		Typically contains input output pairs of data used when applying CGP to supervised learning.
 
 		See Also:
 			<initialiseDataSetFromFile>, <initialiseDataSetFromArrays>, <freeDataSet>, <printDataSet>
@@ -634,7 +636,7 @@
 			A pointer to an initialised chromosome structure.
 
 		See Also:
-			<freeChromosome>, <initialiseChromosomeFromFile>, <printChromosome>
+			<freeChromosome>, <initialiseChromosomeFromFile>, <initialiseChromosomeFromChromosome>
 	*/
 	DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params);
 
@@ -662,10 +664,25 @@
 			(end)
 
 		See Also:
-			<freeChromosome>, <saveChromosome>
+			<freeChromosome>, <initialiseChromosome>, <initialiseChromosomeFromChromosome>,
 	*/
 	DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file);
 
+	/*
+		Function: initialiseChromosomeFromChromosome
+		
+		Initialises a chromosome from a given chromosome.
+		
+		Parameters:
+			chromo - pointer to an initialised chromosome structure.
+			
+		Returns:
+			A pointer to an initialised chromosome structure.
+			
+		See Also:
+			<freeChromosome>, <initialiseChromosome>, <initialiseChromosomeFromFile>
+	*/
+	DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromosome *chromo);
 
 	/*
 		Function: freeChromosome
@@ -673,7 +690,7 @@
 			Frees chromosome instance.
 
 		Parameters:
-			chromo - pointer to chromosome structure.
+			chromo - pointer to an initialised chromosome structure.
 
 		See Also:
 			<initialiseChromosome>, <initialiseChromosomeFromFile>
@@ -962,14 +979,21 @@
 
 		Initialises a data structures using the given input output pairs.
 
-		The data structures can be used by the fitness functions.
+		The given arrays containing the input output pairs must take the form
+		
+		(begin code)
+		float inputs[numSamples][numInputs]
+		float outputs[numSamples][numOutputs]
+		(end)
+		
+		Where the numInputs and numOutputs are the number of inputs and outputs per sample.
 
 		Parameters:
 			numInputs - number of inputs per data sample
 			numOutputs - number of outputs per data sample
 			numSamples - number of data samples
-			inputs - pointer to the inputs to be stored in the data structure
-			outputs - pointer to the outputs to be stored in the data structure
+			inputs - pointer to the first element in the inputs to be stored to the data structure
+			outputs - pointer to the first element in outputs to be stored to the data structure
 
 		Returns:
 			A pointer to an initialised dataSet structure.
@@ -1000,7 +1024,7 @@
 
 		Initialises a data structures using the given file.
 
-		The data structures can be used by the fitness functions.
+		The file must be in the correct format.
 
 		Parameters:
 			file - the location of the file to be loaded into the data structure
@@ -1213,14 +1237,14 @@
 
 	/*
 		Function: getChromosome
-			Gets the best chromosome found on the given run in results.
+			Gets a copy of the best chromosome found on the given run in results.
 
 		Parameters:
 			rels - pointer to an initialised results structure.
 			run - the run for which the chromosome is got
 
 		Returns:
-			Pointer to an initialised chromosome structure
+			Pointer to an initialised chromosome structure.
 
 		See Also:
 			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>

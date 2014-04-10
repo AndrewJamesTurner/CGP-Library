@@ -8,7 +8,7 @@ Title: The Program
 
 A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.
 
-The program below is provided in the CGP-Library download within /examples/gettingStarted.c
+The program below is provided in the CGP-Library download within /examples/gettingStarted.c and is included in the code:blocks project.
 
 (start code)
 #include <stdio.h>
