@@ -102,7 +102,7 @@
 
 		See Also:
 
-			<repeatCGP>, <freeResults>, <getChromosome>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+			<repeatCGP>, <freeResults>, <getChromosome>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
 
 	*/
 	struct results;
@@ -323,9 +323,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			mu - The value of mu to be set.
-
-		See Also:
-			<getMu>
 	*/
 	DLL_EXPORT void setMu(struct parameters *params, int mu);
 
@@ -342,9 +339,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			lambda - The value of lambda to be set.
-
-		See Also:
-			<getLambda>
 	*/
 	DLL_EXPORT void setLambda(struct parameters *params, int lambda);
 
@@ -361,9 +355,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			evolutionaryStrategy - The evolutionary strategy to be set.
-
-		See Also:
-			<getEvolutionaryStrategy>
 	*/
 	DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
 
@@ -381,8 +372,6 @@
 			params - pointer to parameters structure.
 			mutationRate - The value of the mutation rate to be set.
 
-		See Also:
-			<getMutationRate>
 	*/
 	DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate);
 
@@ -395,9 +384,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			weightRange - The connection weight range to be set. (the range is +/- weightRange)
-
-		See Also:
-			<getConnectionWeightRange>
 	*/
 	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weightRange);
 
@@ -485,9 +471,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			numInputs - The number of chromosome inputs to be set.
-
-		See Also:
-			<getNumInputs>
 	*/
 	DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs);
 
@@ -504,9 +487,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			nodes - The number of chromosome nodes to be set.
-
-		See Also:
-			<getNumNodes>
 	*/
 	DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes);
 
@@ -522,9 +502,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			numOutputs - The number of chromosome outputs to be set.
-
-		See Also:
-			<getNumOutputs>
 	*/
 	DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs);
 
@@ -541,9 +518,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			arity - The chromosome node arity to be set.
-
-		See Also:
-			<getArity>
 	*/
 	DLL_EXPORT void setArity(struct parameters *params, int arity);
 
@@ -558,28 +532,8 @@
 		Parameters:
 			params - pointer to parameters structure.
 			targetFitness - The target fitness to be set.
-
-		See Also:
-			<getTargetFitness>
 	*/
 	DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness);
-
-
-	/*
-		Function: setTargetFitness
-
-			Sets the target fitness used when running CGP.
-
-			In all cases lower fitness values are used to represent fitter chromosomes.
-
-		Parameters:
-			params - pointer to parameters structure.
-			targetFitness - The target fitness to be set.
-
-		See Also:
-			<getTargetFitness>
-	*/
-
 
 	/*
 		Function: setMutationType
@@ -593,8 +547,6 @@
 			params - pointer to parameters structure.
 			mutationType - char array specifying the mutation type.
 
-		See Also:
-			<getMutationType>
 	*/
 	DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType);
 
@@ -612,9 +564,6 @@
 		Parameters:
 			params - pointer to parameters structure.
 			updateFrequency - update frequency in generations.
-
-		See Also:
-			<getUpdateFrequency> <runCGP>
 	*/
 	DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency);
 
@@ -1196,7 +1145,7 @@
 			Pointer to array containing the sample outputs
 
 		See Also:
-			<getDataSetSampleOutput>, <getDataSetSampleinputs>, <getDataSetSampleinput>
+			<getDataSetSampleOutput>, <getDataSetSampleInputs>, <getDataSetSampleInput>
 	*/
 	DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample);
 
@@ -1213,7 +1162,7 @@
 			The given output value for the given output for the given sample
 
 		See Also:
-			<getDataSetSampleOutputs>, <getDataSetSampleInputt>, <getDataSetSampleInputss>
+			<getDataSetSampleOutputs>, <getDataSetSampleInput>, <getDataSetSampleInputs>
 	*/
 	DLL_EXPORT float getDataSetSampleOutput(struct dataSet *data, int sample, int output);
 
@@ -1226,18 +1175,20 @@
 		Function: freeResults
 
 		Frees <results> instance.
+		
+		An initialised <results> structure is returned from <repeatCGP> when applied CGP to a task multiple times in order to assess average behaviour.
 
 		Parameters:
 			rels - pointer to results structure.
 
 		See Also:
-			<getChromosome>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+			<repeatCGP>
 	*/
 	DLL_EXPORT void freeResults(struct results *rels);
 
 	/*
 		Function: getChromosome
-			Gets a copy of the best chromosome found on the given run in results.
+			Gets a copy of the best chromosome found on the given run in an initialised <results> structure.
 
 		Parameters:
 			rels - pointer to an initialised results structure.
@@ -1247,7 +1198,7 @@
 			Pointer to an initialised chromosome structure.
 
 		See Also:
-			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
 	DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run);
 	
@@ -1262,12 +1213,12 @@
 			The number of chromosomes stored in the given results structure
 
 		See Also:
-			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
 	DLL_EXPORT int getNumChromosomes(struct results *rels);
 
 	/*
-		Function: getResultsAverageFitness
+		Function: getAverageFitness
 			Gets the average fitness of the best chromosome found for each run in results.
 
 		Parameters:
@@ -1277,13 +1228,13 @@
 			The average fitness of the best chromosome found for each run in results.
 
 		See Also:
-			<repeatCGP>, <getResultsAverageActiveNodes>, <getResultsAverageGenerations>
+			<repeatCGP>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
-	DLL_EXPORT float getResultsAverageFitness(struct results *rels);
+	DLL_EXPORT float getAverageFitness(struct results *rels);
 
 
 	/*
-		Function: getResultsAverageActiveNodes
+		Function: getAverageActiveNodes
 			Gets the average number of active nodes of the best chromosome found for each run in results.
 
 		Parameters:
@@ -1293,13 +1244,13 @@
 			The average number of active nodes of the best chromosome found for each run in results.
 
 		See Also:
-			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageGenerations>
+			<repeatCGP>, <getAverageFitness>, <getAverageGenerations>
 
 	*/
-	DLL_EXPORT float getResultsAverageActiveNodes(struct results *rels);
+	DLL_EXPORT float getAverageActiveNodes(struct results *rels);
 
 	/*
-		Function: getResultsAverageGenerations
+		Function: getAverageGenerations
 			Gets the average number generations required to find the best best chromosome for each run in results.
 
 		Parameters:
@@ -1309,10 +1260,10 @@
 			The average number generations required to find the best chromosome found for each run in results.
 
 		See Also:
-			<repeatCGP>, <getResultsAverageFitness>, <getResultsAverageActiveNodes>
+			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>
 
 	*/
-	DLL_EXPORT float getResultsAverageGenerations(struct results *rels);
+	DLL_EXPORT float getAverageGenerations(struct results *rels);
 
 
 /*

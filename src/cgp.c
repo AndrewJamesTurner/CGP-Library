@@ -634,7 +634,7 @@ DLL_EXPORT int getNumChromosomes(struct results *rels){
 	returns the average number of chromosome active nodes from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getResultsAverageActiveNodes(struct results *rels){
+DLL_EXPORT float getAverageActiveNodes(struct results *rels){
 
 	int i;
 	float avgActiveNodes = 0;
@@ -657,7 +657,7 @@ DLL_EXPORT float getResultsAverageActiveNodes(struct results *rels){
 	returns the average chromosome fitness from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getResultsAverageFitness(struct results *rels){
+DLL_EXPORT float getAverageFitness(struct results *rels){
 
 	int i;
 	float avgFit = 0;
@@ -679,7 +679,7 @@ DLL_EXPORT float getResultsAverageFitness(struct results *rels){
 /*
 	returns the number of generations used by each run  specified in rels.
 */
-DLL_EXPORT float getResultsAverageGenerations(struct results *rels){
+DLL_EXPORT float getAverageGenerations(struct results *rels){
 
 	int i;
 	float avgGens = 0;
@@ -749,7 +749,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 	}
 
 	printf("----------------------------------------------------\n");
-	printf("AVG\t%f\t%f\t%f\n", getResultsAverageFitness(rels), getResultsAverageGenerations(rels), getResultsAverageActiveNodes(rels));
+	printf("AVG\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));
 	printf("----------------------------------------------------\n\n");
 
 	/* restore the original value for the update frequency */

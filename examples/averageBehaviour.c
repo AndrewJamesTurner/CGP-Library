@@ -51,7 +51,7 @@ int main(void){
 
 	rels = repeatCGP(params, trainingData, numGens, numRuns);
 
-	averageFitness = getResultsAverageFitness(rels);
+	averageFitness = getAverageFitness(rels);
 
 	printf("The average chromosome fitness is: %d\n", averageFitness);
 
