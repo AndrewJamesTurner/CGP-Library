@@ -911,12 +911,6 @@
 	DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo);
 
 
-
-
-
-
-
-
 /*
 	Title: DataSet Functions
 
