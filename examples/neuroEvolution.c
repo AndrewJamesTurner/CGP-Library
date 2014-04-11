@@ -23,11 +23,11 @@
 float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	float i;
-		
+
 	float error = 0;
 	float range = 6;
 	float stepSize = 0.5;
-	
+
 	float inputs[1];
 
 	for(i=0; i<range; i += stepSize){
@@ -56,7 +56,7 @@ int main(void){
 	int numGens = 25000;
 	float targetFitness = 0.5;
 	int updateFrequency = 500;
-	
+
 	float weightRange = 5;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -64,12 +64,12 @@ int main(void){
 	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
-	
+
 	setConnectionWeightRange(params, weightRange);
 
 	setFitnessFunction(params, sinWave, "sinWave");
 
-	addNodeFunction(params, "tanh, softsign");
+	addNodeFunction(params, "tanh,softsign");
 
 	chromo = runCGP(params, NULL, numGens);
 

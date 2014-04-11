@@ -65,7 +65,7 @@ int main(void){
 
 	setFitnessFunction(params, sinWave, "sinWave");
 
-	addNodeFunction(params, "tanh, softsign");
+	addNodeFunction(params, "tanh,softsign");
 
 	chromo = runCGP(params, NULL, numGens);
 
@@ -126,7 +126,7 @@ setFitnessFunction(params, sinWave, "sinWave");
 In previous tutorials the node functions used have been standard genetic programming functions, here however we shall be using neuron transfer functions. The neuron transfer functions selected are hyperbolic tangent and soft sign. Both hyperbolic tangent and soft sign functions produce outputs in the range [-1,1] which is suited to our sinWave fitness function.
 
 (begin code)
-addNodeFunction(params, "tanh, softsign");
+addNodeFunction(params, "tanh,softsign");
 (end)
 
 Now when we use <runCGP> or <repeatCGP> the CGP-Library shall be evolving Artificial Neural Networks!

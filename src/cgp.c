@@ -1544,7 +1544,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
 
 	/* get the first function name */
-	pch = strtok(funcNames, ",");
+	pch = strtok(funcNames, ", ");
 
 	/* while the function names char array contains function names */
 	while (pch != NULL){
@@ -1553,7 +1553,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 		addPresetFuctionToFunctionSet(params, pch);
 
 		/* get the next function name */
-		pch = strtok(NULL, ",");
+		pch = strtok(NULL, ", ");
 	}
 
 	/* if the function set is empty give warning */
@@ -1639,7 +1639,7 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 		addNodeFunctionCustom(params, step, "step");
 	}
 	else if(strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, softsign, "softsign");
+		addNodeFunctionCustom(params, softsign, "soft");
 	}
 	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, hyperbolicTangent, "tanh");
@@ -2739,8 +2739,6 @@ static float sumWeigtedInputs(const int numInputs, const float *inputs, const fl
 }
 
 
-
-
 /*
 	removes the inactive nodes from the given chromosome
 */
@@ -2773,15 +2771,13 @@ DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
 					}
 				}
 			}
-
-
-			/* */
+			
+			/* for the number of chromosome outputs */
 			for(j=0; j<chromo->numOutputs; j++){
 
 				if(chromo->outputNodes[j] >= i + chromo->numInputs){
 					chromo->outputNodes[j]--;
 				}
-
 			}
 
 			/* de-increment the number of nodes */
@@ -2791,7 +2787,6 @@ DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
 			i--;
 		}
 	}
-
 
 	for(i=chromo->numNodes; i<originalNumNodes; i++){
 		freeNode(chromo->nodes[i]);
@@ -2812,6 +2807,8 @@ DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
 
 
 /*
+	The default fitness function used by CGP-Library.
+	Simply assigns an error of the sum of the absolute differences between the target and actual outputs
 */
 static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
