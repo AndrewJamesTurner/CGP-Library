@@ -2,7 +2,7 @@ Title: Average Behaviour
 
 This tutorial introduces the use of <repeatCGP> to assess the average behaviour of CGP towards a given application rather than a one-off instance.
 
-This tutorial closely follows the <Getting Started> tutorial and it is recommended that you follow that tutorial first.
+This tutorial closely follows the <Getting Started> tutorial and it is recommended that you read that tutorial first.
 
 Title: The Program
 

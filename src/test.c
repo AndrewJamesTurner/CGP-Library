@@ -48,8 +48,8 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 10;
-	/*int numRuns = 10;*/
+	int numGens = 10000;
+	int numRuns = 10;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -58,6 +58,8 @@ int main(void){
 	setTargetFitness(params, 0.1);		
 			
 	addNodeFunction(params, "add,sub,mul,sin");
+		
+	setEvolutionaryStrategy(params, '+');	
 		
 	/*setFitnessFunction(params, symbolicRegression1, "symBol1" );*/
 	
@@ -68,7 +70,7 @@ int main(void){
 	
 	setSelectionScheme(params, NULL, "temp");
 	
-	setUpdateFrequency(params, -2);
+	setUpdateFrequency(params, 100);
 	
 	printParameters(params);
 	
@@ -83,7 +85,7 @@ int main(void){
 	printf("\n%f\n", getChromosomeFitness(chromo));
 	
 	
-	rels = repeatCGP(params, data, numGens, 3);	
+	rels = repeatCGP(params, data, numGens, numRuns);	
 	
 	
 	

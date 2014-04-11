@@ -62,7 +62,7 @@ struct parameters{
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
 	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
-	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
+	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
 	void (*reproductionScheme)(struct parameters *params, struct population *pop);
 	char reproductionSchemeName[REPRODUCTIONSCHEMENAMELENGTH];
@@ -149,7 +149,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
 
 /* selection scheme functions */
-static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos);
+static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 
 /* reproduction scheme functions */
 static void mutateRandomParent(struct parameters *params, struct population *pop);
@@ -706,7 +706,7 @@ DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo){
 }
 
 /*
-	returns a pointer to the best chromosomes found on the given run in rels.
+	returns a pointer to a copy of the best chromosomes found on the given run in rels.
 */
 DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run){
 
@@ -718,9 +718,7 @@ DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run){
 		exit(0);
 	}
 
-
 	chromo = initialiseChromosomeFromChromosome(rels->bestChromosomes[run]);
-
 
 	return chromo;
 }
@@ -767,8 +765,6 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	/* */
 	struct chromosome *chromo;
 	struct chromosome *bestChromo;
-
-	/* */
 	struct population *pop;
 
 	/* storage for chromosomes used by selection scheme */
@@ -778,34 +774,40 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	/* error checking */
 	if(numGens < 0){
 		printf("Error: %d generations is invalid. The number of generations must be >= 0.\n Terminating CGP-Library.\n", numGens);
+		exit(0);
 	}
 
 	if(data != NULL && params->numInputs != data->numInputs){
 
-		printf("Warning: The number of inputs specified in the data (%d) do not match the number of inputs specified in the parameters (%d). Setting the number of inputs specified in the parameters to be that specified in the data.\n", data->numInputs, params->numInputs);
-
-		params->numInputs = data->numInputs;
+		printf("Error: The number of inputs specified in the data (%d) does not match the number of inputs specified in the parameters (%d).\n", data->numInputs, params->numInputs);
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+		
 	}
 
 	if(data != NULL && params->numOutputs != data->numOutputs){
 
-		printf("Warning: The number of outputs specified in the data (%d) do not match the number of outputs specified in the parameters (%d). Setting the number of outputs specified in the parameters to be that specified in the data.\n", data->numOutputs, params->numOutputs);
-
-		params->numInputs = data->numInputs;
+		printf("Warning: The number of outputs specified in the data (%d) does not match the number of outputs specified in the parameters (%d).\n", data->numOutputs, params->numOutputs);
+		printf("Terminating CGP-Library.\n");
+		exit(0);
 	}
 
-	/* */
+	/* initialise the chromosome to be returned */
 	chromo = initialiseChromosome(params);
 
-	/* */
+	/* initialise the population to be evolved */
 	pop = initialisePopulation(params);
 
 	/* determine the size of the Candidate Chromos based on the evolutionary Strategy */
 	if(params->evolutionaryStrategy == '+'){
 		numCandidateChromos = params->mu + params->lambda;
 	}
-	else{
+	else if(params->evolutionaryStrategy == ','){
 		numCandidateChromos = params->lambda;
+	}
+	else{
+		printf("Error: the evolutionary strategy '%c' is not known.\nTerminating CGP-Library.\n", params->evolutionaryStrategy);
+		exit(0);
 	}
 
 	/* initialise the candidateChromos */
@@ -815,15 +817,11 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		candidateChromos[i] = initialiseChromosome(params);
 	}
 
-	/* if using '+' evolutionary strategy */
-	if(params->evolutionaryStrategy == '+'){
-
-		/* set fitness of the parents */
-		for(i=0; i<params->mu; i++){
-			setChromosomeFitness(params, pop->parents[i], data);
-		}
+	/* set fitness of the parents */
+	for(i=0; i<params->mu; i++){
+		setChromosomeFitness(params, pop->parents[i], data);
 	}
-
+	
 	/* show the user whats going on */
 	if(params->updateFrequency != 0){
 		printf("\n-- Starting CGP --\n\n");
@@ -865,9 +863,9 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		}
 
 		/* select the parents from the candidateChromos */
-		params->selectionScheme(params, pop->parents, candidateChromos, numCandidateChromos);
+		params->selectionScheme(params, pop->parents, candidateChromos, params->mu, numCandidateChromos);
 
-		/* */
+		/* display progress to the user at the update frequency specified */
 		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
 			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
 		}
@@ -876,16 +874,20 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		params->reproductionScheme(params, pop);
 	}
 
+	/* deal with formatting for displaying progress */
     if(params->updateFrequency != 0){
         printf("\n");
     }
 
+	/* store the number of generations evolved for */
 	pop->trainedGenerations = gen;
 
+	/* get the fittest chromosome form the evolutionary run */
 	bestChromo = getFittestChromosome(pop);
 	bestChromo->generation = gen;
 	copyChromosome(chromo, bestChromo);
 
+	/* free the used chromosomes and population */
 	for(i=0; i<numCandidateChromos; i++){
 		freeChromosome(candidateChromos[i]);
 	}
@@ -1494,7 +1496,7 @@ DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFun
 	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
 	then the default selectFittest selection scheme is used.
 */
-DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos), char *selectionSchemeName){
+DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName){
 
 	if(selectionScheme == NULL){
 		params->selectionScheme = selectFittest;
@@ -1846,13 +1848,13 @@ static void mutateRandomParent(struct parameters *params, struct population *pop
 	Selection scheme which selects the fittest members of the population
 	to be the parents.
 */
-static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos ){
+static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos ){
 
 	int i;
 
 	sortChromosomeArray(candidateChromos, numCandidateChromos);
 
-	for(i=0; i<params->mu; i++){
+	for(i=0; i<numParents; i++){
 
 		copyChromosome(parents[i], candidateChromos[i]);
 	}
@@ -1899,12 +1901,17 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 /*
 	Executes the given chromosome
 */
-DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs){
+DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs){
 
 	int i,j;
 	int nodeInputLocation;
 	int currentActiveNode;
 	int currentActiveNodeFuction;
+
+	const int numInputs = chromo->numInputs;
+	const int numActiveNodes = chromo->numActiveNodes;
+	const int numOutputs = chromo->numOutputs;
+	const int arity = chromo->arity;
 
 	/* error checking */
 	if(chromo == NULL){
@@ -1914,22 +1921,22 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs){
 
 
 	/* for all of the active nodes */
-	for(i=0; i<chromo->numActiveNodes; i++){
+	for(i=0; i<numActiveNodes; i++){
 
 		/* get the index of the current active node */
 		currentActiveNode = chromo->activeNodes[i];
 
 		/* for each of the active nodes inputs */
-		for(j=0; j<chromo->arity; j++){
+		for(j=0; j<arity; j++){
 
 			/* gather the nodes inputs */
 			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
 
-			if(nodeInputLocation < chromo->numInputs){
+			if(nodeInputLocation < numInputs){
 				chromo->nodeInputsHold[j] = inputs[nodeInputLocation];
 			}
 			else{
-				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - chromo->numInputs]->output;
+				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - numInputs]->output;
 			}
 		}
 
@@ -1937,7 +1944,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs){
 		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
 
 		/* calculate the output of the active node under evaluation */
-		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](chromo->arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
 
 
 		/* prevent float form going to inf and -inf */
@@ -1957,14 +1964,14 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs){
 		}
 	}
 
-	/* Set the chromosome outputs */
-	for(i=0; i<chromo->numOutputs; i++){
+	/* Set the chromosome outputs */ 
+	for(i=0; i<numOutputs; i++){
 
-		if(chromo->outputNodes[i] < chromo->numInputs){
+		if(chromo->outputNodes[i] < numInputs){
 			chromo->outputValues[i] = inputs[chromo->outputNodes[i]];
 		}
 		else{
-			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - chromo->numInputs]->output;
+			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - numInputs]->output;
 		}
 	}
 }

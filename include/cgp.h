@@ -40,7 +40,7 @@
 /*
 	Title: Structures
 
-	Description of all the structures used by CGP-Library../t
+	Description of all the structures used by CGP-Library.
 */
 
 	/*
@@ -456,7 +456,7 @@
 	/*
 		Function: setSelectionScheme
 	*/
-	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numCandidateChromos), char *selectionSchemeName);
+	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
 
 
 	/*
@@ -690,7 +690,7 @@
 				<getChromosomeOutput>
 
 	*/
-	DLL_EXPORT void executeChromosome(struct chromosome *chromo, float *inputs);
+	DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs);
 
 
 

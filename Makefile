@@ -10,7 +10,7 @@ CC=gcc
 CFLAGS= -pedantic -Wall -g 
 
 test: src/test.c src/cgp.c include/cgp.h
-	@$(CC) -o test src/test.c src/cgp.c include/cgp.h $(CFLAGS) -lm
+	@$(CC) -o test src/test.c src/cgp.c include/cgp.h $(CFLAGS) -lm -pg -O3
 
 gettingStarted: examples/gettingStarted.c src/cgp.c include/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c include/cgp.h $(CFLAGS) -lm
@@ -27,6 +27,9 @@ customNodeFunction: examples/customNodeFunction.c src/cgp.c include/cgp.h
 customFitnessFunction: examples/customFitnessFunction.c src/cgp.c include/cgp.h
 	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
+customSelectionScheme: examples/customSelectionScheme.c src/cgp.c include/cgp.h
+	@$(CC) -o customSelectionScheme examples/customSelectionScheme.c src/cgp.c include/cgp.h $(CFLAGS) -lm
+
 averageBehaviour: examples/averageBehaviour.c src/cgp.c include/cgp.h
 	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
@@ -38,4 +41,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm -O3
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction averageBehaviour *.data *.chromo *.depend *.layout *.exe
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme averageBehaviour *.data *.chromo *.depend *.layout *.exe
