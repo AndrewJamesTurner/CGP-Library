@@ -1,1 +1,141 @@
 Title: NeuroEvolution  
+
+This tutorial introduces using the CGP-Library as a NeuroEvolutionary training method.
+
+NeuroEvolution is the application of Evolutionary Algorithms towards the training of artificial neural networks. In the case of CGP it is referred to as Cartesian Genetic Programming of Artificial Neural Networks (CGPANN).
+
+If you have been wondering why the CGP-Library contains connection weights which have previously been ignored, this is why. If you intend to use CGP-Library for NeuroEvolution is is advised that you read the <Getting Started> and <Custom Fitness Function> tutorials first.
+
+Title: The Program
+
+A simple program using demonstrating the use of the CGP-Library towards NeuroEvolution.
+
+The program below is provided in the CGP-Library download within /examples/neuroEvolution.c and is included in the code:blocks project.
+
+(begin code)
+#include <stdio.h>
+#include <math.h>
+#include "../include/cgp.h"
+
+float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+	float i;
+		
+	float error = 0;
+	float range = 6;
+	float stepSize = 0.5;
+	
+	float inputs[1];
+
+	for(i=0; i<range; i += stepSize){
+
+		inputs[0] = i;
+
+		executeChromosome(chromo, inputs);
+
+		error += fabs(getChromosomeOutput(chromo, 0) - sin(i));
+	}
+	return error;
+}
+
+
+int main(void){
+
+	struct parameters *params = NULL;
+	struct chromosome *chromo = NULL;
+
+	int numInputs = 1;
+	int numNodes = 20;
+	int numOutputs = 1;
+	int nodeArity = 5;
+
+	int numGens = 25000;
+	float targetFitness = 0.5;
+	int updateFrequency = 500;
+	
+	float weightRange = 5;
+
+	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+
+	setTargetFitness(params, targetFitness);
+
+	setUpdateFrequency(params, updateFrequency);
+	
+	setConnectionWeightRange(params, weightRange);
+
+	setFitnessFunction(params, sinWave, "sinWave");
+
+	addNodeFunction(params, "tanh, softsign");
+
+	chromo = runCGP(params, NULL, numGens);
+
+	printChromosome(chromo);
+
+	freeChromosome(chromo);
+	freeParameters(params);
+
+	return 0;
+}
+(end)
+
+Title: Stepping Through the Code
+
+A close look at each line of the example code.
+
+Artificial neural networks typically output values between [0,1] or [-1,1] therefore the <dataSet> used should contain outputs with these ranges or a custom fitness function should be defined with accommodates these output ranges. Here a custom fitness function shall be described. See <Custom Fitness Function> for further details on defining custom fitness functions.
+
+The custom fitness function defined here assesses how accurately the given chromosome implements a sin wave. 
+
+(begin code)
+float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+float i;
+	
+float error = 0;
+float range = 6;
+float stepSize = 0.5;
+
+float inputs[1];
+
+for(i=0; i<range; i += stepSize){
+
+	inputs[0] = i;
+
+	executeChromosome(chromo, inputs);
+
+	error += fabs(getChromosomeOutput(chromo, 0) - sin(i));
+}
+return error;
+}
+(end)
+
+In the main function a <parameters> and <chromosome> structure are defined. The <parameters> structure is then initialised and various attributes are set. 
+
+Of these attributes the connection weight range is set using <setConnectionWeightRange>. Where the second parameter gives the connection weight range in the form of +/- connection weight range. The connection weight range gives the range of values which each connection weight can take.
+
+(begin code)
+setConnectionWeightRange(params, weightRange);
+(end)
+
+Next we change the default fitness function to be our custom sinWave fitness function.
+
+(begin code)
+setFitnessFunction(params, sinWave, "sinWave");
+(end)
+
+In previous tutorials the node functions used have been standard genetic programming functions, here however we shall be using neuron transfer functions. The neuron transfer functions selected are hyperbolic tangent and soft sign. Both hyperbolic tangent and soft sign functions produce outputs in the range [-1,1] which is suited to our sinWave fitness function.
+
+(begin code)
+addNodeFunction(params, "tanh, softsign");
+(end)
+
+Now when we use <runCGP> or <repeatCGP> the CGP-Library shall be evolving Artificial Neural Networks!
+
+(begin code)
+chromo = runCGP(params, NULL, numGens);
+(end)
+
+And that's it, by using neuron transfer function and selecting suitable fitness functions the CGP-Library can be easily used for NeuroEvolution.   
+
+
+

@@ -33,6 +33,11 @@ customSelectionScheme: examples/customSelectionScheme.c src/cgp.c include/cgp.h
 averageBehaviour: examples/averageBehaviour.c src/cgp.c include/cgp.h
 	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c include/cgp.h $(CFLAGS) -lm
 
+neuroEvolution: examples/neuroEvolution.c src/cgp.c include/cgp.h
+	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c include/cgp.h $(CFLAGS) -lm
+
+
+
 docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
@@ -41,4 +46,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm -O3
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme averageBehaviour *.data *.chromo *.depend *.layout *.exe
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe

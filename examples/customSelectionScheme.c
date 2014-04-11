@@ -20,9 +20,6 @@
 #include <stdlib.h>
 #include "../include/cgp.h"
 
-/*
-	tournament selection scheme
-*/
 void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
 
 	int i;
@@ -43,7 +40,6 @@ void tournament(struct parameters *params, struct chromosome **parents, struct c
 		}		
 	}
 }
-
 
 int main(void){
 	

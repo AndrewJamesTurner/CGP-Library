@@ -1,12 +1,143 @@
 Title: Custom Selection Scheme
 
+This tutorial introduces the use of custom selection schemes.
 
+By default CGP-Library uses the select fittest selection schemes which simply selects the n best members of the candidate chromosomes to become the parents. This tutorial will demonstrate how to define and use alternative custom selection schemes. 
 
 Title: The Program 
 
+A simple program showing how to uses a custom tournament selection scheme.
 
+The program below is provided in the CGP-Library download within /examples/customSelectionScheme.c and is included in the code:blocks project.
+
+(begin code)
+#include <stdio.h>
+#include <stdlib.h>
+#include "../include/cgp.h"
+
+void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
+
+	int i;
+	
+	struct chromosome *candidateA;
+	struct chromosome *candidateB;
+	
+	for(i=0; i<numParents; i++){
+			
+		candidateA = candidateChromos[rand() % numCandidateChromos];
+		candidateB = candidateChromos[rand() % numCandidateChromos];
+		
+		if(getChromosomeFitness(candidateA) <= getChromosomeFitness(candidateB)){
+			copyChromosome(parents[i], candidateA);
+		}
+		else{
+			copyChromosome(parents[i], candidateB);
+		}		
+	}
+}
+
+int main(void){
+	
+	struct parameters *params = NULL;
+	struct dataSet *trainingData = NULL;
+	struct chromosome *chromo = NULL;
+	
+	int numInputs = 1;
+	int numNodes = 50;
+	int numOutputs = 1;
+	int arity = 2;
+	
+	float targetFitness = 0.1;
+	int updateFrequency = 1000;
+	int numGens = 10000;
+	
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	
+	addNodeFunction(params, "add,sub,mul,div,sin");
+	
+	setTargetFitness(params, targetFitness);
+
+    setUpdateFrequency(params, updateFrequency); 
+	
+	setSelectionScheme(params, tournament, "tournament");
+	
+	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	
+	chromo = runCGP(params, trainingData, numGens);
+	
+	freeChromosome(chromo);
+	freeDataSet(trainingData);
+	freeParameters(params);
+	
+	return 0;
+}
+(end)
 
 Title: Stepping Through the Code
+
+A close look at each line of the example code.
+
+First standard headers and cgp.h are included.  
+
+(begin code)
+#include <stdio.h>
+#include <stdlib.h>
+#include "../include/cgp.h"
+(end)
+
+Next we defined our custom selection scheme to be used. 
+
+The custom selection scheme prototype must take the following form. Where params is a pointer to an initialised <parameters> structure, parents is a pointer to an array of <chromosomes> which will contain the parents when the selection scheme terminates, candidateChromos is a pointer to an array of <chromosomes> which contains the <chromosomes> from which the parents will be selected, numParents give the number of parent <chromosomes> to be selected and numCandidateChromos gives the number of candidate <chromosomes> to pick from.
+
+(begin code)
+void selectionSchemeName(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
+(end)
+
+Here a tournament selection scheme is defined which uses a tournament size of two. candidateA and candidateB are used to point to two randomly selected <chromosomes> from the candidate <chromosomes>. The fitter of the two randomly selected <chromosomes> is then copied into the array of parent <chromosomes> using <copyChromosome>.
+
+(begin code)
+void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
+
+	int i;
+	
+	struct chromosome *candidateA;
+	struct chromosome *candidateB;
+	
+	for(i=0; i<numParents; i++){
+			
+		candidateA = candidateChromos[rand() % numCandidateChromos];
+		candidateB = candidateChromos[rand() % numCandidateChromos];
+		
+		if(getChromosomeFitness(candidateA) <= getChromosomeFitness(candidateB)){
+			copyChromosome(parents[i], candidateA);
+		}
+		else{
+			copyChromosome(parents[i], candidateB);
+		}		
+	}
+}
+(end)
+
+
+Much of the main function has been introduced in the <Getting Started> tutorial and is not re-described here. 
+
+In order to use our new tournament selection scheme it must be set in the <parameters> structure using <setSelectionScheme>. Where the first variable is the <parameters> structure where the selection scheme will be set, the second is our custom selection scheme and the third is the name of the selection scheme.
+
+Now when <runCGP> or <repeatCGP> is called the our custom selection scheme will be used in place of the default select fittest.
+
+(begin code)
+setSelectionScheme(params, tournament, "tournament");
+(end)
+
+
+And that's it, in order to used custom selection it must be defined using the specific prototype and then added as the use selection scheme using <setSelectionScheme>. In order to revert back to the default  select fittest selection scheme then called <setSelectionScheme> with the selection scheme variable set as NULL.
+
+
+
+
+
+
+
 
 
 

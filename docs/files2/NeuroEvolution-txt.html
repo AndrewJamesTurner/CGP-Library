@@ -9,14 +9,99 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 
 
-<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="NeuroEvolution"></a>NeuroEvolution</h1><div class=CBody></div></div></div>
+<div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="NeuroEvolution"></a>NeuroEvolution</h1><div class=CBody><p>This tutorial introduces using the CGP-Library as a NeuroEvolutionary training method.</p><p>NeuroEvolution is the application of Evolutionary Algorithms towards the training of artificial neural networks.&nbsp; In the case of CGP it is referred to as Cartesian Genetic Programming of Artificial Neural Networks (CGPANN).</p><p>If you were wondering why the CGP-Library contains connection weights this is why.&nbsp; If you intend to use CGP-Library for NeuroEvolution is is advised that you read the <a href="GettingStarted-txt.html#Getting_Started" class=LSection id=link1 onMouseOver="ShowTip(event, 'tt1', 'link1')" onMouseOut="HideTip('tt1')">Getting Started</a> and <a href="CustomFitnessFunction-txt.html#Custom_Fitness_Function" class=LSection id=link2 onMouseOver="ShowTip(event, 'tt2', 'link2')" onMouseOut="HideTip('tt2')">Custom Fitness Function</a> tutorials first.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#NeuroEvolution" >NeuroEvolution</a></td><td class=SDescription>This tutorial introduces using the CGP-Library as a NeuroEvolutionary training method.</td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription>A simple program using demonstrating the use of the CGP-Library towards NeuroEvolution.</td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription>A close look at each line of the example code.</td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><p>A simple program using demonstrating the use of the CGP-Library towards NeuroEvolution.</p><p>The program below is provided in the CGP-Library download within /examples/neuroEvolution.c and is included in the code:blocks project.</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &quot;../include/cgp.h&quot;
+
+float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+    float i;
+
+    float error = 0;
+    float range = 6;
+    float stepSize = 0.5;
+
+    float inputs[1];
+
+    for(i=0; i&lt;range; i += stepSize){
+
+        inputs[0] = i;
+
+        executeChromosome(chromo, inputs);
+
+        error += fabs(getChromosomeOutput(chromo, 0) - sin(i));
+    }
+    return error;
+}
+
+
+int main(void){
+
+    struct parameters *params = NULL;
+    struct chromosome *chromo = NULL;
+
+    int numInputs = 1;
+    int numNodes = 20;
+    int numOutputs = 1;
+    int nodeArity = 5;
+
+    int numGens = 25000;
+    float targetFitness = 0.5;
+    int updateFrequency = 500;
+
+    float weightRange = 5;
+
+    params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+
+    setTargetFitness(params, targetFitness);
+
+    setUpdateFrequency(params, updateFrequency);
+
+    setConnectionWeightRange(params, weightRange);
+
+    setFitnessFunction(params, sinWave, &quot;sinWave&quot;);
+
+    addNodeFunction(params, &quot;tanh, softsign&quot;);
+
+    chromo = runCGP(params, NULL, numGens);
+
+    printChromosome(chromo);
+
+    freeChromosome(chromo);
+    freeParameters(params);
+
+    return 0;
+}</pre></blockquote></div></div></div>
+
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.</p><p>Artificial neural networks typically output values between [0,1] or [-1,1] therefore the <a href="../files/cgp-h.html#dataSet" class=LVariable id=link3 onMouseOver="ShowTip(event, 'tt3', 'link3')" onMouseOut="HideTip('tt3')">dataSet</a> used should contain outputs with these ranges or a custom fitness function should be defined with accommodates these output ranges.&nbsp; Here a custom fitness function shall be described.&nbsp; See <a href="CustomFitnessFunction-txt.html#Custom_Fitness_Function" class=LSection id=link4 onMouseOver="ShowTip(event, 'tt2', 'link4')" onMouseOut="HideTip('tt2')">Custom Fitness Function</a> for further details on defining custom fitness functions.</p><p>The custom fitness function defined here assesses how accurately the given chromosome implements a sin wave.</p><blockquote><pre class="prettyprint">float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+float i;
+
+float error = 0;
+float range = 6;
+float stepSize = 0.5;
+
+float inputs[1];
+
+for(i=0; i&lt;range; i += stepSize){
+
+    inputs[0] = i;
+
+    executeChromosome(chromo, inputs);
+
+    error += fabs(getChromosomeOutput(chromo, 0) - sin(i));
+}
+return error;
+}</pre></blockquote><p>In the main function a <a href="../files/cgp-h.html#parameters" class=LVariable id=link5 onMouseOver="ShowTip(event, 'tt4', 'link5')" onMouseOut="HideTip('tt4')">parameters</a> and <a href="../files/cgp-h.html#chromosome" class=LVariable id=link6 onMouseOver="ShowTip(event, 'tt5', 'link6')" onMouseOut="HideTip('tt5')">chromosome</a> structure are defined.&nbsp; The <a href="../files/cgp-h.html#parameters" class=LVariable id=link7 onMouseOver="ShowTip(event, 'tt4', 'link7')" onMouseOut="HideTip('tt4')">parameters</a> structure is then initialised and various attributes are set.</p><p>Of these attributes the connection weight range is set using <a href="../files/cgp-h.html#setConnectionWeightRange" class=LFunction id=link8 onMouseOver="ShowTip(event, 'tt6', 'link8')" onMouseOut="HideTip('tt6')">setConnectionWeightRange</a>.&nbsp; Where the second parameter gives the connection weight range in the form of +/- connection weight range.&nbsp; The connection weight range give the range of values which each connection weight can take.</p><blockquote><pre class="prettyprint">setConnectionWeightRange(params, weightRange);</pre></blockquote><p>Next we change the default fitness function to be our custom sinWave fitness function.</p><blockquote><pre class="prettyprint">setFitnessFunction(params, sinWave, &quot;sinWave&quot;);</pre></blockquote><p>In previous tutorials the node functions used has been standard genetic programming functions, here however we shall be using neuron transfer functions.&nbsp; The neuron transfer functions used are hyperbolic tangent and soft sign.&nbsp; Both hyperbolic tangent and soft sign produce outputs in the range [-1,1] which is suited to our sinWave fitness function.</p><blockquote><pre class="prettyprint">addNodeFunction(params, &quot;tanh, softsign&quot;);</pre></blockquote><p>Now when we use <a href="../files/cgp-h.html#runCGP" class=LFunction id=link9 onMouseOver="ShowTip(event, 'tt7', 'link9')" onMouseOut="HideTip('tt7')">runCGP</a> the CGP-Library shall be evolving Artificial Neural Networks!</p><blockquote><pre class="prettyprint">chromo = runCGP(params, NULL, numGens);</pre></blockquote><p>And that&rsquo;s it, by using neuron transfer function and selecting suitable fitness functions the CGP-Library can be easily used for NeuroEvolution.</p></div></div></div>
 
 </div><!--Content-->
 
 
 
 <!--START_ND_TOOLTIPS-->
-<!--END_ND_TOOLTIPS-->
+<div class=CToolTip id="tt1"><div class=CSection>This tutorial introduces and steps though a simple program which uses the CGP-Library to solve a simple symbolic regression problem.</div></div><div class=CToolTip id="tt2"><div class=CSection>This tutorial introduces how to use a custom fitness functions with the CGP-Library.</div></div><div class=CToolTip id="tt3"><div class=CVariable><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td class="prettyprint">struct dataSet</td></tr></table></blockquote>Stores a data set which can be used by the fitness function when calculating a chromosomes fitness.</div></div><div class=CToolTip id="tt4"><div class=CVariable><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td class="prettyprint">struct parameters</td></tr></table></blockquote>Stores general parameters used by the CGP-Library.</div></div><div class=CToolTip id="tt5"><div class=CVariable><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td class="prettyprint">struct chromosome</td></tr></table></blockquote>Stores CGP chromosome instances used by the CGP-Library.</div></div><div class=CToolTip id="tt6"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>DLL_EXPORT void setConnectionWeightRange(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>float&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap>weightRange</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Sets the connection weight range in the given parameters. </div></div><div class=CToolTip id="tt7"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>DLL_EXPORT struct chromosome* runCGP(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>dataSet&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>data,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>int&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap>numGens</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Applies CGP to the given task.</div></div><!--END_ND_TOOLTIPS-->
 
 <script language=JavaScript><!--
 if (browserType) {if (browserVer) {document.write("</div>"); }document.write("</div>");}// --></script></body></html>
