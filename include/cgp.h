@@ -391,19 +391,21 @@
 		Function: setFitnessFunction
 
 		Set custom fitness function.
+		
+		By default the CGP-Library used a generic supervised learning fitness function where the fitness assigned to each chromosome is the sum of the absolute differences between the actual and target outputs defined in the given <dataSet>. <setFitnessFunction> is used to redefine the fitness function to be one of the users design.
 
-		The custom fitness function prototype must take the form
+		All custom fitness function prototype must take the following form. Where params is a <parameters> structure, chromo is the <chromosome> to be assigned a fitness and data is a <dataSet> which may be used by the custom fitness function.
 
 		(begin code)
 		float functionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 		(end)
 
-		If the fitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning fitness function; See <parameters>
-
 		Parameters:
 			params - pointer to parameters structure.
 			fitnessFunction - the custom fitness function
 			fitnessFunctionName - name of custom fitness function
+			
+			If the fitnessFunction parameter is set as NULL, the fitness function will be reset to the default supervised learning fitness function.
 
 		Example:
 
@@ -442,12 +444,10 @@
 
 			Setting the new custom fitness function as the fitness function to be used
 			(begin code)
-			struct parameters *params = initialiseParameters();
 			setFitnessFuction(params, fullAdder, "fullAdder");
 			(end)
 
-		See Also:
-			<executeChromosome>, <getChromosomeOutput>
+		
 
 	*/
 	DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
@@ -455,6 +455,64 @@
 
 	/*
 		Function: setSelectionScheme
+		
+			Sets custom selection scheme.
+		
+			By default the selection scheme used by CGP-Library is select fittest, where the fittest members of the candidate chromosomes are always selected as the parents. This type of selection scheme is commonly used by CGP. <setSelectionScheme> is used to redefine the selection scheme to be one of the users design.
+		
+			The custom selection scheme prototype must take the following form. Where params is a <parameters> structure, parents is an array of <chromosomes> used to store the selected parents, candidateChromos is an array of <chromosomes> containing the pool of <chromosomes> to select the parent from, numParents is the number of parents to be selected and numCandidateChromos is the number of candidate <chromosomes>.
+
+			(begin code)
+			void selectionSchemeNmes(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
+			(end)
+		
+		Parameters:
+		
+			params - pointer to parameters structure
+			selectionScheme - the custom selection scheme
+			selectionSchemeName - name of custom selection scheme
+		
+			If the selectionScheme parameter is set as NULL, the selection scheme will be reset to the default select fittest selection scheme.		
+		
+		Example:
+		
+			Defining a custom selection scheme, tournament selection.
+			
+			(begin code)
+			void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
+
+				int i;
+				
+				// two chromosome pointers to point to the chromosomes in the torment
+				struct chromosome *candidateA;
+				struct chromosome *candidateB;
+				
+				// for the number of required parents
+				for(i=0; i<numParents; i++){
+						
+					// randomly select chromosomes for tournament 	
+					candidateA = candidateChromos[rand() % numCandidateChromos];
+					candidateB = candidateChromos[rand() % numCandidateChromos];
+					
+					// choose the fittest chromosome to become a parent
+					if(getChromosomeFitness(candidateA) <= getChromosomeFitness(candidateB)){
+						copyChromosome(parents[i], candidateA);
+					}
+					else{
+						copyChromosome(parents[i], candidateB);
+					}		
+				}
+			}
+			(end)
+			
+			Setting the new custom selection scheme as the selection scheme to be used
+			
+			(begin code)
+			setSelectionScheme(params, tournament, "tournament");
+			(end)
+			
+		See Also:
+			<setFitnessFunction>	
 	*/
 	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
 
@@ -465,12 +523,16 @@
 			Sets the number of chromosome inputs in the given parameters.
 
 			The given number of chromosome inputs is also parsed to ensure a valid number of chromosome inputs.
-			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give a
-			warning is displayed but the number of chromosome inputs *is changed*.
+			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give an error is displayed
+			and CGP-Library terminates.
 
 		Parameters:
 			params - pointer to parameters structure.
 			numInputs - The number of chromosome inputs to be set.
+		
+		See Also:
+			<setNumNodes>, <setNumOutputs>, <setArity>
+			
 	*/
 	DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs);
 
@@ -481,12 +543,15 @@
 			Sets the number of chromosome nodes in the given parameters.
 
 			The given number of chromosome nodes is also parsed to ensure a valid number of chromosome nodes.
-			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give a
-			warning is displayed but the number of chromosome nodes *is changed*.
+			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give an error is displayed
+			and CGP-Library terminates.
 
 		Parameters:
 			params - pointer to parameters structure.
 			nodes - The number of chromosome nodes to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumOutputs>, <setArity>
 	*/
 	DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes);
 
@@ -496,12 +561,15 @@
 			Sets the number of chromosome outputs in the given parameters.
 
 			The given number of chromosome outputs is also parsed to ensure a valid number of chromosome outputs.
-			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give a
-			warning is displayed but the number of chromosome outputs *is changed*.
+			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give an error is displayed
+			and CGP-Library terminates.
 
 		Parameters:
 			params - pointer to parameters structure.
 			numOutputs - The number of chromosome outputs to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumNodes>, <setArity>
 	*/
 	DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs);
 
@@ -512,12 +580,15 @@
 			Sets the arity of the chromosome nodes in the given parameters.
 
 			The given arity for each chromosome node is also parsed to ensure a valid chromosome node arity.
-			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give a
-			warning is displayed but the chromosome node arity  *is changed*.
+			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give an error is displayed
+			and CGP-Library terminates.
 
 		Parameters:
 			params - pointer to parameters structure.
 			arity - The chromosome node arity to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumNodes>, <setNumOutputs>
 	*/
 	DLL_EXPORT void setArity(struct parameters *params, int arity);
 
@@ -540,8 +611,9 @@
 
 			Sets the mutation methods used when mutating chromosomes.
 
-			There are two mutation type options: the default "probabilistic" and "point".
-			If a invalid mutation type is given a warning is displayed and the mutation type is left unchanged.
+			There are two mutation type options: the default "probabilistic" mutation and "point" mutation. Where "probabilistic" mutates each chromosome give with a given probability and "point" mutation always mutates a fixed randomly selected proportion of the chromosome.
+			
+			If an invalid mutation type is given a warning is displayed and the mutation type is left unchanged.
 
 		Parameters:
 			params - pointer to parameters structure.
