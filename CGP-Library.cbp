@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="createDLL">
-				<Option output="CGP-Library" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="1" extension_auto="1" />
+				<Option output="CGP-Library" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -77,10 +77,34 @@
 					<Add library="./CGP-Library.dll" />
 				</Linker>
 			</Target>
+			<Target title="averageBehaviour">
+				<Option output="averageBehaviour" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DNO_DLL" />
+				</Compiler>
+			</Target>
+			<Target title="customSelectionScheme">
+				<Option output="customSelectionScheme" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DNO_DLL" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="examples/averageBehaviour.c">
+			<Option compilerVar="CC" />
+			<Option target="averageBehaviour" />
+		</Unit>
 		<Unit filename="examples/createDataSet.c">
 			<Option compilerVar="CC" />
 			<Option target="createDataSet" />
@@ -92,6 +116,10 @@
 		<Unit filename="examples/customNodeFunction.c">
 			<Option compilerVar="CC" />
 			<Option target="customNodeFunction" />
+		</Unit>
+		<Unit filename="examples/customSelectionScheme.c">
+			<Option compilerVar="CC" />
+			<Option target="customSelectionScheme" />
 		</Unit>
 		<Unit filename="examples/gettingStarted.c">
 			<Option compilerVar="CC" />
