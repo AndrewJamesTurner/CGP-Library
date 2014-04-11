@@ -36,7 +36,7 @@ int main(void){
 
 	int i;
 
-	struct dataSet *data;
+	struct dataSet *data = NULL;
 
 	float inputs[NUMSAMPLES][NUMINPUTS];
 	float outputs[NUMSAMPLES][NUMOUTPUTS];

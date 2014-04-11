@@ -54,7 +54,7 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 
 int main(void){
 
-	struct parameters *params;
+	struct parameters *params = NULL;
 
 	int numInputs = 2;
 	int numNodes = 10;
@@ -125,7 +125,7 @@ return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
 The fitness function used by the CGP-Library is defined in a <parameters> structure. Therefore in order to set the custom fitness function first a initialised <parameters> structure is required. 
 
 (begin code)
-struct parameters *params;
+struct parameters *params = NULL;
 
 int numInputs = 2;
 int numNodes = 10;

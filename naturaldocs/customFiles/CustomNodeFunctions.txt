@@ -32,7 +32,7 @@ float hypotenuse(const int numInputs, const float *inputs, const float *connecti
 
 int main(void){
 	
-	struct parameters *params;
+	struct parameters *params = NULL;
 	
 	int numInputs = 2;
 	int numNodes = 10;
@@ -86,7 +86,7 @@ float hypotenuse(const int numInputs, const float *inputs, const float *connecti
 In order to use our newly defined node function we first need a parameters structure to store the function in the function set.
 
 (begin code)
-struct parameters *params;
+struct parameters *params = NULL;
 	
 int numInputs = 2;
 int numNodes = 10;

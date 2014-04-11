@@ -992,7 +992,7 @@
 	/*
 		Function: initialiseDataSetFromArrays
 
-		Initialises a data structures using the given input output pairs.
+		Initialises a <dataSet> structures using the given input output pairs.
 
 		The given arrays containing the input output pairs must take the form
 		
@@ -1011,9 +1011,11 @@
 			outputs - pointer to the first element in outputs to be stored to the data structure
 
 		Returns:
-			A pointer to an initialised dataSet structure.
+			A pointer to an initialised <dataSet> structure.
 
 		Example:
+
+			Initialising a <dataSet> to contain the input output pairs for a full adder truth table.
 
 			(begin code)
 			struct data *trainingData;
@@ -1022,6 +1024,7 @@
 			int numOutputs = 2;
 			int numSamples = 8;
 
+			// full adder input output pairs
 			float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
 			float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
 
@@ -1037,19 +1040,17 @@
 	/*
 		Function: initialiseDataSetFromFile
 
-		Initialises a data structures using the given file.
-
-		The file must be in the correct format.
+		Initialises a <dataSet> structures using the given file.
 
 		Parameters:
-			file - the location of the file to be loaded into the data structure
+			file - the location of the file to be loaded into the <dataSet> structure
 
 		Returns:
-			A pointer to an initialised dataSet structure.
+			A pointer to an initialised <dataSet> structure.
 
 		Example:
 
-			The file containing the data must take the form
+			The file containing the <dataSet> must take the form
 
 			> 2,3,4
 			> 1,2,3,4,5
@@ -1057,12 +1058,12 @@
 			> 11,12,13,14,15
 			> 16,17,18,19,20
 
-			Where the header describes the number of inputs, number of outputs and the number of samples. The rest of the file should give the input and then the output data of each sample on a new line.
+			Where the header describes the number of inputs, number of outputs and the number of samples. The rest of the file gives the inputs and then the outputs of each sample on a new line. All values are comma separated.
 
-			The file can then be used to initialise a data structure.
+			The file can then be used to initialise a <dataSet> structure.
 
 			(begin code)
-			struct data *trainingData;
+			struct dataSet *trainingData;
 
 			trainingData = initialiseDataFromFile("file");
 			(end)
@@ -1076,7 +1077,7 @@
 	/*
 		Function: freeDataSet
 
-		Frees dataSet instance.
+		Frees <dataSet> instance.
 
 		Parameters:
 			data - pointer to dataSet structure.
@@ -1089,10 +1090,10 @@
 	/*
 		Function: printDataSet
 
-		Prints the input output pairs held by a dataSet structure in a human readable form.
+		Prints the input output pairs held by a <dataSet> structure to the terminal.
 
 		Parameters:
-			data - pointer to dataSet structure.
+			data - pointer to <dataSet> structure.
 
 		See Also:
 			<initialiseDataSetFromArrays>, <initialiseDataSetFromFile>, <freeDataSet>
@@ -1103,10 +1104,10 @@
 	/*
 		Function: saveDataSet
 
-		Saves the given dataSet to a file which can be read using <initialiseDataSetFromFile>.
+		Saves the given <dataSet> to a file which can be read using <initialiseDataSetFromFile>.
 
 		Parameters:
-			data - pointer to dataSet structure.
+			data - pointer to <dataSet> structure.
 			fileName - char array giving the location of the dataSet to be saved.
 
 		See Also:
@@ -1117,10 +1118,10 @@
 
 	/*
 		Function: getNumDataSetInputs
-			Gets the number of dataSet inputs
+			Gets the number of <dataSet> inputs.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure.
 
 		Returns:
 			Number number of dataSet inputs
@@ -1134,13 +1135,13 @@
 
 	/*
 		Function: getNumDataSetOutputs
-			Gets the number of dataSet outputs
+			Gets the number of <dataSet> outputs.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure.
 
 		Returns:
-			Number number of dataSet outputs
+			Number number of <dataSet> outputs
 
 		See Also:
 			<getNumDataSetInputs>, <getNumDataSetSamples>
@@ -1150,13 +1151,13 @@
 
 	/*
 		Function: getNumDataSetSamples
-			Gets the number of samples in the given dataSet
+			Gets the number of samples in the given <dataSet>.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure.
 
 		Returns:
-			Number number of dataSet samples
+			Number number of <dataSet> samples
 
 		See Also:
 			<getNumDataSetInputs>, <getNumDataSetOutputs>
@@ -1166,14 +1167,14 @@
 
 	/*
 		Function: getDataSetSampleInputs
-			Gets the dataSet inputs for the given sample index
+			Gets the <dataSet> inputs for the given sample index.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure.
 			sample - index of the sample inputs
 
 		Returns:
-			Pointer to array containing the sample inputs
+			Pointer to an array containing the sample inputs.
 
 		See Also:
 			<getDataSetSampleInput>, <getDataSetSampleOutputs>, <getDataSetSampleOutput>
@@ -1183,15 +1184,15 @@
 
 	/*
 		Function: getDataSetSampleInput
-			Gets the dataSet input for the given sample index and input index
+			Gets the <dataSet> input for the given sample index and input index.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure
 			sample - index of the sample inputs
 			input - index of the input for the given sample
 
 		Returns:
-			The given input value for the given input for the given sample
+			The input value for the given input for the given sample.
 
 		See Also:
 			<getDataSetSampleInputs>, <getDataSetSampleOutput>, <getDataSetSampleOutputs>
@@ -1201,14 +1202,14 @@
 
 	/*
 		Function: getDataSetSampleOutputs
-			Gets the dataSet outputs for the given sample index
+			Gets the <dataSet> outputs for the given sample index.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure
 			sample - index of the sample outputs
 
 		Returns:
-			Pointer to array containing the sample outputs
+			Pointer to an array containing the sample outputs.
 
 		See Also:
 			<getDataSetSampleOutput>, <getDataSetSampleInputs>, <getDataSetSampleInput>
@@ -1217,15 +1218,15 @@
 
 	/*
 		Function: getDataSetSampleOutput
-			Gets the dataSet output for the given sample index and output index
+			Gets the <dataSet> output for the given sample index and output index.
 
 		Parameters:
-			data - pointer to an initialised dataSet structure.
+			data - pointer to an initialised <dataSet> structure.
 			sample - index of the sample inputs
 			output - index of the output for the given sample
 
 		Returns:
-			The given output value for the given output for the given sample
+			The output value for the given output for the given sample.
 
 		See Also:
 			<getDataSetSampleOutputs>, <getDataSetSampleInput>, <getDataSetSampleInputs>

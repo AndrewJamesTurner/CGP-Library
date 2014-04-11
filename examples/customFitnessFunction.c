@@ -55,7 +55,7 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 
 int main(void){
 
-	struct parameters *params;
+	struct parameters *params = NULL;
 
 	int numInputs = 2;
 	int numNodes = 10;

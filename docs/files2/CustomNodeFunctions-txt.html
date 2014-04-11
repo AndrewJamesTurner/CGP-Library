@@ -32,7 +32,7 @@ float hypotenuse(const int numInputs, const float *inputs, const float *connecti
 
 int main(void){
 
-    struct parameters *params;
+    struct parameters *params = NULL;
 
     int numInputs = 2;
     int numNodes = 10;
@@ -65,7 +65,7 @@ int main(void){
     hypt = sqrtf(sumOfSqrs);
 
     return hypt;
-}</pre></blockquote><p>In order to use our newly defined node function we first need a parameters structure to store the function in the function set.</p><blockquote><pre class="prettyprint">struct parameters *params;
+}</pre></blockquote><p>In order to use our newly defined node function we first need a parameters structure to store the function in the function set.</p><blockquote><pre class="prettyprint">struct parameters *params = NULL;
 
 int numInputs = 2;
 int numNodes = 10;
