@@ -221,7 +221,7 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 	fprintf(fp, "digraph NeuralNetwork {\n");
 	
 	/* landscape, square and centre */
-	fprintf(fp, "rank=LR;\n");
+	fprintf(fp, "rankdir=LR;\n");
 	fprintf(fp, "size=\"4,3\";\n");	
 	fprintf(fp, "center = true;\n");	
 	

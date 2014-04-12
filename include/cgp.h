@@ -48,7 +48,12 @@
 
 		Stores general parameters used by the CGP-Library.
 
-		The values stored in parameters are set to default values when initialised and can be altered though setter functions. The parameters variables can not be accessed directly; getters and Setters must be used.
+		The parameters structure is used extensively by the CGP-Library
+		and controls every aspect of the evolutionary algorithm.  
+
+		The values stored in <parameters> are set to default values when
+		initialised using <initialiseParameters> and can be altered
+		using various setter functions. 
 
 		Defaults:
 
@@ -65,7 +70,37 @@
 			> selection scheme:			pickHighest
 			> reproduction scheme:		mutateRandomParent
 
-			For information on probabilistic and other available mutation types see <setMutationType>. The supervisedLearning fitness function assigns the sum of the absolute difference between all actual and target outputs. This fitness function can be changed using <setFitnessFunction>. The pickHighest selection scheme selects the fittest members of the population to become the parents each generation. The mutateRandomParent reproduction scheme create the children by mutating randomly selected parents.
+			Mu, lambda and evolutionary strategy control the type and
+			parameter values of the evolutionary strategy used. See
+			<setMu>, <setLambda> and <setEvolutionaryStrategy>.
+
+			The mutation rate controls the percentage of the
+			chromosomes genes which are set to new random value when the
+			chromosome is mutated. See <setMutationRate>.
+
+			The connection weight range controls the range of values
+			which the connection weights can take. Connection weights
+			are only considered when CGP-Library is used to evolve
+			neural networks. See <setConnectionWeightRange>.
+
+			The update frequency controls the frequency of updates to
+			the terminal when using <runCGP>. The value is the number
+			of generations between updates. See <setUpdateFrequency>.
+
+			The mutation type stores the type of mutation used when
+			mutating chromosomes. See <setMutationType>.
+
+			The fitness function stores the fitness function used when
+			assigning a fitness to the chromosomes. See
+			<setFitnessFunction>.
+
+			The selection scheme stores the selection scheme used when
+			selecting the parents from the candidate chromosomes. See
+			<setSelectionScheme>.
+
+			The reproduction scheme stores how the children
+			chromosomes are created from the parents. Currently this
+			cannot be altered.
 
 		See Also:
 			<initialiseParameters>, <freeParameters>, <printParameters>

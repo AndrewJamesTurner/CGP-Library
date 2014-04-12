@@ -26,8 +26,6 @@ Andrew James Turner, Phd student at The University of York, 2014.
 
 Homepage: <http://andrewjamesturner.co.uk/>
 
-Publications: <http://scholar.google.co.uk/citations?user=dMZhgm8AAAAJ&hl=en&authuser=1&oi=sra>
-
 Open Source:
 
 CGP-Library is open source'd under the LGPL, which means you have full access to the source files as well as the complied library. See <Licenses> for more details. The CGP-Library project is hosted on github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project.

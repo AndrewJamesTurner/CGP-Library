@@ -48,8 +48,8 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 10000;
-	int numRuns = 10;
+	int numGens = 100;
+	int numRuns = 3;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -77,11 +77,13 @@ int main(void){
 	
 	chromo = runCGP(params, data, numGens);	
 	
-	saveChromosomeDot(chromo, 0, "temp.dot");
+	
 	
 	printChromosome(chromo);
 	removeInactiveNodes(chromo);
 	printChromosome(chromo);
+	
+	saveChromosomeDot(chromo, 0, "temp.dot");
 	
 	setChromosomeFitness(params, chromo, data);
 	printf("\n%f\n", getChromosomeFitness(chromo));
