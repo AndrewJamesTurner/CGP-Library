@@ -77,6 +77,8 @@ int main(void){
 	
 	chromo = runCGP(params, data, numGens);	
 	
+	saveChromosomeDot(chromo, 0, "temp.dot");
+	
 	printChromosome(chromo);
 	removeInactiveNodes(chromo);
 	printChromosome(chromo);

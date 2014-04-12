@@ -46,4 +46,4 @@ so: src/cgp.c
 	@gcc -shared -o libcgp.so cgp.o -lm -O3
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg

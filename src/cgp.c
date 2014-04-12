@@ -198,6 +198,100 @@ int getNumberOfGenerations(struct population *pop);
 struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
+
+/*
+
+*/
+DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName){
+	
+	int i,j;
+	FILE *fp;
+	
+	char colour[20];
+	char weight[20];
+	
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		return;
+	}
+	
+	/* */
+	fprintf(fp, "digraph NeuralNetwork {\n");
+	
+	/* landscape, square and centre */
+	fprintf(fp, "rank=LR;\n");
+	fprintf(fp, "size=\"4,3\";\n");	
+	fprintf(fp, "center = true;\n");	
+	
+	/* for all the inputs */
+	for(i=0; i < getNumChromosomeInputs(chromo); i++){
+		
+		fprintf(fp, "node%d [label=\"Input %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i, i);
+	}
+	
+	/* for all nodes */
+	for(i=0; i<getNumChromosomeNodes(chromo); i++){
+		
+		if(chromo->nodes[i]->active == 1){
+			strncpy(colour, "black", 20);
+		}
+		else{
+			strncpy(colour, "lightgrey", 20);
+		}
+		
+		fprintf(fp, "node%d [label=\"%s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
+		
+		/* for each node input */
+		for(j=0; j<getChromosomeNodeArity(chromo); j++){
+			
+			if(weights == 1){
+				snprintf(weight, 20, "%f", chromo->nodes[i]->weights[j]);
+			}
+			else{
+				snprintf(weight, 20, " ");
+			}
+			
+			
+			fprintf(fp, "node%d -> node%d [label=\"%s\", labelfontcolor=%s, fontcolor=%s, bold=true, color=%s];\n", chromo->nodes[i]->inputs[j], i+getNumChromosomeInputs(chromo), weight, colour, colour, colour);	
+		}
+	}
+	
+	for(i=0; i<getNumChromosomeOutputs(chromo); i++){
+				
+		fprintf(fp, "node%d [label=\"Output %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i+getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo), i);
+		
+		fprintf(fp, "node%d -> node%d [labelfontcolor=black, fontcolor=black, bold=true, color=black];\n", chromo->outputNodes[i], i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));	
+	} 
+	
+	
+	/* place inputs  on same line */
+	fprintf(fp, "{ rank = source;");
+	
+	for(i=0; i < getNumChromosomeInputs(chromo); i++){
+		fprintf(fp, " \"node%d\";", i);
+	}
+	fprintf(fp, " }\n");
+	
+		
+	/* place outputs  on same line */
+	fprintf(fp, "{ rank = max;");
+	
+	for(i = 0; i < getNumChromosomeOutputs(chromo); i++){
+		fprintf(fp, "\"node%d\";", i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));
+	}
+	fprintf(fp, " }\n");
+	
+	
+	
+	/* last line of dot file */
+	fprintf(fp, "}");
+	
+	fclose(fp);
+}
+
+
 /*
 	Sets the random number seed
 */
@@ -268,17 +362,17 @@ DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output){
 /*
 	Saves the given chromosome in a form which can be read in later
 */
-DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file){
+DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName){
 
 	int i,j;
 	FILE *fp;
 
 	/* create the chromosome file */
-	fp = fopen(file, "w");
+	fp = fopen(fileName, "w");
 
 	/* ensure that the file was created correctly */
 	if(fp == NULL){
-		printf("Warning: cannot save chromosome to '%s'. Chromosome was not saved.\n", file);
+		printf("Warning: cannot save chromosome to '%s'. Chromosome was not saved.\n", fileName);
 		return;
 	}
 

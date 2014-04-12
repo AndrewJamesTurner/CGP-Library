@@ -793,13 +793,17 @@
 
 		Parameters:
 			chromo - pointer to chromosome structure.
-			file - char array giving the location of the chromosome to be saved.
+			fileName - char array giving the location of the chromosome to be saved.
 
 		See Also:
 			<initialiseChromosomeFromFile>
 	*/
-	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *file);
+	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName);
 
+	/*
+		Function: saveChromosomeDot
+	*/
+	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName);
 
 	/*
 		Function: mutateChromosome
