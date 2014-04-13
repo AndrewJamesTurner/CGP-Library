@@ -70,37 +70,37 @@
 			> selection scheme:			pickHighest
 			> reproduction scheme:		mutateRandomParent
 
-			Mu, lambda and evolutionary strategy control the type and
+			- Mu, lambda and evolutionary strategy control the type and
 			parameter values of the evolutionary strategy used. See
 			<setMu>, <setLambda> and <setEvolutionaryStrategy>.
 
-			The mutation rate controls the percentage of the
+			- The mutation rate controls the percentage of the
 			chromosomes genes which are set to new random value when the
 			chromosome is mutated. See <setMutationRate>.
 
-			The connection weight range controls the range of values
+			- The connection weight range controls the range of values
 			which the connection weights can take. Connection weights
 			are only considered when CGP-Library is used to evolve
 			neural networks. See <setConnectionWeightRange>.
 
-			The update frequency controls the frequency of updates to
+			- The update frequency controls the frequency of updates to
 			the terminal when using <runCGP>. The value is the number
 			of generations between updates. See <setUpdateFrequency>.
 
-			The mutation type stores the type of mutation used when
+			- The mutation type stores the type of mutation used when
 			mutating chromosomes. See <setMutationType>.
 
-			The fitness function stores the fitness function used when
+			- The fitness function stores the fitness function used when
 			assigning a fitness to the chromosomes. See
 			<setFitnessFunction>.
 
-			The selection scheme stores the selection scheme used when
+			- The selection scheme stores the selection scheme used when
 			selecting the parents from the candidate chromosomes. See
 			<setSelectionScheme>.
 
-			The reproduction scheme stores how the children
-			chromosomes are created from the parents. Currently this
-			cannot be altered.
+			- The reproduction scheme stores how the children
+			chromosomes are created from the parents. see
+			<setReproductionScheme>.
 
 		See Also:
 			<initialiseParameters>, <freeParameters>, <printParameters>
@@ -550,6 +550,13 @@
 			<setFitnessFunction>	
 	*/
 	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
+
+
+	/*
+		Function: setReproductionScheme
+	*/
+	DLL_EXPORT void setReproductionScheme(struct parameters *params, void
+	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName);
 
 
 	/*

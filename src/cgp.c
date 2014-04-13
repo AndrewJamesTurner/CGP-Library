@@ -36,14 +36,6 @@
 	Structure definitions
 */
 
-struct population{
-
-	int mu;
-	int lambda;
-	struct chromosome **parents;
-	struct chromosome **children;
-	int trainedGenerations;
-};
 
 struct parameters{
 
@@ -64,7 +56,9 @@ struct parameters{
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
 	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
-	void (*reproductionScheme)(struct parameters *params, struct population *pop);
+	
+	void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
+	
 	char reproductionSchemeName[REPRODUCTIONSCHEMENAMELENGTH];
 	int updateFrequency;
 };
@@ -152,7 +146,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo);
 static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 
 /* reproduction scheme functions */
-static void mutateRandomParent(struct parameters *params, struct population *pop);
+static void mutateRandomParent(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
 
 /* fitness function */
 static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
@@ -190,11 +184,9 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
 
 /* population functions */
-struct population *initialisePopulation(struct parameters *params);
-void freePopulation(struct population *pop);
 
-struct chromosome *getFittestChromosome(struct population *pop);
-int getNumberOfGenerations(struct population *pop);
+
+
 struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
@@ -859,10 +851,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	/* */
 	struct chromosome *chromo;
 	struct chromosome *bestChromo;
-	struct population *pop;
+	
+
+	struct chromosome **parentChromos;
+	struct chromosome **childrenChromos;
 
 	/* storage for chromosomes used by selection scheme */
-	struct chromosome **candidateChromos;
+	struct chromosome **candidateChromos;  
 	int numCandidateChromos;
 
 	/* error checking */
@@ -886,11 +881,22 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		exit(0);
 	}
 
+	/* */
+	parentChromos = malloc(params->mu * sizeof(struct chromosome *));
+
+	for(i=0; i<params->mu; i++){
+		parentChromos[i] = initialiseChromosome(params);
+	}
+
+	/* */
+	childrenChromos = malloc(params->lambda * sizeof(struct chromosome *));
+
+	for(i=0; i<params->lambda; i++){
+		childrenChromos[i] = initialiseChromosome(params);
+	}
+
 	/* initialise the chromosome to be returned */
 	chromo = initialiseChromosome(params);
-
-	/* initialise the population to be evolved */
-	pop = initialisePopulation(params);
 
 	/* determine the size of the Candidate Chromos based on the evolutionary Strategy */
 	if(params->evolutionaryStrategy == '+'){
@@ -913,7 +919,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 	/* set fitness of the parents */
 	for(i=0; i<params->mu; i++){
-		setChromosomeFitness(params, pop->parents[i], data);
+		setChromosomeFitness(params, parentChromos[i], data);
 	}
 	
 	/* show the user whats going on */
@@ -927,11 +933,27 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 		/* set fitness of the children of the population */
 		for(i=0; i< params->lambda; i++){
-			setChromosomeFitness(params, pop->children[i], data);
+			setChromosomeFitness(params, childrenChromos[i], data);
 		}
 
 		/* check termination conditions */
-		bestChromo = getFittestChromosome(pop);
+		bestChromo = parentChromos[0];
+
+		for(i=1; i<params->mu; i++){
+
+			if(parentChromos[i]->fitness <= bestChromo->fitness){
+				bestChromo = parentChromos[i];
+			}	
+		}
+
+		for(i=0; i<params->lambda; i++){
+
+			if(childrenChromos[i]->fitness <= bestChromo->fitness){
+				bestChromo = childrenChromos[i];
+			}	
+		}
+
+		
 		if(getChromosomeFitness(bestChromo) <= params->targetFitness){
 
 			if(params->updateFrequency != 0){
@@ -941,6 +963,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			break;
 		}
 
+
+		/* display progress to the user at the update frequency specified */
+		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
+			printf("%d\t%f\n", gen, bestChromo->fitness);
+		}
+		
+
 		/*
 			Set the chromosomes which will be used by the selection scheme
 			dependant upon the evolutionary strategy. i.e. '+' all are used
@@ -949,23 +978,18 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		for(i=0; i<numCandidateChromos; i++){
 
 			if(i < params->lambda){
-				copyChromosome(candidateChromos[i], pop->children[i] );
+				copyChromosome(candidateChromos[i], childrenChromos[i] );
 			}
 			else{
-				copyChromosome(candidateChromos[i], pop->parents[i - params->lambda] );
+				copyChromosome(candidateChromos[i], parentChromos[i - params->lambda] );
 			}
 		}
 
 		/* select the parents from the candidateChromos */
-		params->selectionScheme(params, pop->parents, candidateChromos, params->mu, numCandidateChromos);
-
-		/* display progress to the user at the update frequency specified */
-		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
-			printf("%d\t%f\n", gen, pop->parents[0]->fitness);
-		}
+		params->selectionScheme(params, parentChromos, candidateChromos, params->mu, numCandidateChromos);
 
 		/* create the children from the parents */
-		params->reproductionScheme(params, pop);
+		params->reproductionScheme(params, parentChromos, childrenChromos, params->mu, params->lambda);
 	}
 
 	/* deal with formatting for displaying progress */
@@ -973,21 +997,45 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
         printf("\n");
     }
 
-	/* store the number of generations evolved for */
-	pop->trainedGenerations = gen;
-
 	/* get the fittest chromosome form the evolutionary run */
-	bestChromo = getFittestChromosome(pop);
+	bestChromo = parentChromos[0];
+
+	for(i=1; i<params->mu; i++){
+
+		if(parentChromos[i]->fitness <= bestChromo->fitness){
+			bestChromo = parentChromos[i];
+		}	
+	}
+
+	for(i=0; i<params->lambda; i++){
+
+		if(childrenChromos[i]->fitness <= bestChromo->fitness){
+			bestChromo = childrenChromos[i];
+		}	
+	}
+
 	bestChromo->generation = gen;
 	copyChromosome(chromo, bestChromo);
+
+	
+
+	for(i=0; i<params->mu; i++){
+		freeChromosome(parentChromos[i]);
+	}
+	free(parentChromos);
+
+
+	for(i=0; i<params->lambda; i++){
+		freeChromosome(childrenChromos[i]);
+	}
+	free(childrenChromos);
+
 
 	/* free the used chromosomes and population */
 	for(i=0; i<numCandidateChromos; i++){
 		freeChromosome(candidateChromos[i]);
 	}
 	free(candidateChromos);
-
-	freePopulation(pop);
 
 	return chromo;
 }
@@ -1009,13 +1057,7 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 }
 
 
-/*
-	Returns the number of generations the given population
-	was ran for before terminating the search
-*/
-int getNumberOfGenerations(struct population *pop){
-	return pop->trainedGenerations;
-}
+
 
 
 /*
@@ -1026,43 +1068,7 @@ DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo){
 }
 
 
-/*
-	Returns a pointer to the best chromosome in the given population
-*/
-struct chromosome *getFittestChromosome(struct population *pop){
 
-	struct chromosome *bestChromo;
-	float bestFitness;
-	int i;
-
-	/* set the best chromosome to be the first parent */
-	bestChromo = pop->parents[0];
-	bestFitness = pop->parents[0]->fitness;
-
-	/* for all the parents except the first parent */
-	for(i=1; i<pop->mu; i++){
-
-		/* set this parent to be the best chromosome if it is fitter than the current best */
-		if(pop->parents[i]->fitness < bestFitness){
-
-			bestFitness = pop->parents[i]->fitness;
-			bestChromo = pop->parents[i];
-		}
-	}
-
-	/* for all the children */
-	for(i=0; i<pop->lambda; i++){
-
-		/* set this child to be the best chromosome if it is fitter than the current best */
-		if(pop->children[i]->fitness < bestFitness){
-
-			bestFitness = pop->children[i]->fitness;
-			bestChromo = pop->children[i];
-		}
-	}
-
-	return bestChromo;
-}
 
 
 /*
@@ -1398,61 +1404,7 @@ DLL_EXPORT void freeParameters(struct parameters *params){
 }
 
 
-/*
-	Returns a pointer to an initialised population
-*/
-struct population *initialisePopulation(struct parameters *params){
 
-	int i;
-
-	struct population *pop;
-
-	pop = malloc(sizeof(struct population));
-
-	pop->mu = params->mu;
-	pop->lambda = params->lambda;
-
-	pop->parents = malloc( pop->mu * sizeof(struct chromosome) );
-	pop->children = malloc( pop->lambda * sizeof(struct chromosome) );
-
-	for(i=0; i < pop->mu ; i++){
-		pop->parents[i] = initialiseChromosome(params);
-	}
-
-	for(i=0; i < pop->lambda ; i++){
-		pop->children[i] = initialiseChromosome(params);
-	}
-
-	pop->trainedGenerations = -1;
-
-	return pop;
-}
-
-/*
-	free the given population
-*/
-void freePopulation(struct population *pop){
-
-	int i;
-
-	/* attempt to prevent user double freeing */
-	if(pop == NULL){
-		return;
-	}
-
-	for(i=0; i < pop->mu; i++){
-		freeChromosome(pop->parents[i]);
-	}
-
-	for(i=0; i < pop->lambda; i++){
-		freeChromosome(pop->children[i]);
-	}
-
-	free(pop->parents);
-	free(pop->children);
-
-	free(pop);
-}
 
 /*
 	returns mu value currently set in given parameters.
@@ -1607,8 +1559,8 @@ DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionSc
 	sets the reproduction scheme used to select the parents from the candidate chromosomes. If the reproductionScheme is NULL
 	then the default mutateRandomParent selection scheme is used.
 */
-/*
-DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct population *pop), char *reproductionSchemeName){
+
+DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName){
 
 	if(reproductionScheme == NULL){
 		params->reproductionScheme = mutateRandomParent;
@@ -1619,7 +1571,7 @@ DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproduc
 		strncpy(params->reproductionSchemeName, reproductionSchemeName, REPRODUCTIONSCHEMENAMELENGTH);
 	}
 }
-*/
+
 
 
 
@@ -1921,21 +1873,20 @@ DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosom
 /*
 	mutate Random parent reproduction method.
 */
-static void mutateRandomParent(struct parameters *params, struct population *pop){
+static void mutateRandomParent(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren){
 
 	int i;
 
 	/* for each child */
-	for(i=0; i< params->lambda; i++){
+	for(i=0; i< numChildren; i++){
 
 		/* set child as clone of random parent */
-		copyChromosome(pop->children[i], pop->parents[rand() % params->mu]);
+		copyChromosome(children[i], parents[rand() % numParents]);
 
 		/* mutate newly cloned child */
-		params->mutationType(params, pop->children[i]);
+		mutateChromosome(params, children[i]);
 	}
 }
-
 
 
 /*
