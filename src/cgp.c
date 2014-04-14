@@ -119,6 +119,8 @@ struct results{
 
 /* chromosome functions */
 static void setChromosomeActiveNodes(struct chromosome *chromo);
+static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
+static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 
 /* node functions */
 static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
@@ -131,12 +133,10 @@ static int getRandomNodeInput(int numChromoInputs, int nodePosition);
 static int getRandomFunction(int numFunctions);
 static int getRandomChromosomeOutput(int numInputs, int numNodes);
 
-/* active node functions */
-
-static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
-
 /* function set functions */
 static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName);
+static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
+struct results* initialiseResults(struct parameters *params, int numRuns);
 
 /* mutation functions  */
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
@@ -179,15 +179,8 @@ static float hyperbolicTangent(const int numInputs, const float *inputs, const f
 
 /* other */
 static float randFloat(void);
+int randInt(int n);
 static void bubbleSortInt(int *array, const int length);
-static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
-static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
-
-/* population functions */
-
-
-
-struct results* initialiseResults(struct parameters *params, int numRuns);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
 
@@ -1881,7 +1874,7 @@ static void mutateRandomParent(struct parameters *params, struct chromosome **pa
 	for(i=0; i< numChildren; i++){
 
 		/* set child as clone of random parent */
-		copyChromosome(children[i], parents[rand() % numParents]);
+		copyChromosome(children[i], parents[randInt(numParents)]);
 
 		/* mutate newly cloned child */
 		mutateChromosome(params, children[i]);
@@ -2093,7 +2086,7 @@ static int getRandomFunction(int numFunctions){
 		exit(0);
 	}
 
-	return rand() % (numFunctions);
+	return randInt(numFunctions);
 }
 
 /*
@@ -2103,7 +2096,7 @@ static int getRandomNodeInput(int numChromoInputs, int nodePosition){
 
 	int input;
 
-	input = rand() % (numChromoInputs + nodePosition);
+	input = randInt(numChromoInputs + nodePosition);
 
 	return input;
 }
@@ -2175,7 +2168,7 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 
 	int output;
 
-	output = rand() % (numInputs + numNodes);
+	output = randInt(numInputs + numNodes);
 
 	return output;
 }
@@ -2299,7 +2292,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo){
 	for(i=0; i<numGenesToMutate; i++){
 
 		/* select a random gene */
-		geneToMutate = rand() % numGenes;
+		geneToMutate = randInt(numGenes);
 
 		/* mutate function gene */
 		if(geneToMutate < numFunctionGenes){
@@ -2922,3 +2915,24 @@ static void bubbleSortInt(int *array, const int length){
 	}
 }
 
+/*
+	random integer between zero and n without modulo bias.
+	
+	adapted from: http://zuttobenkyou.wordpress.com/2012/10/18/generating-random-numbers-without-modulo-bias/
+*/
+int randInt(int n){
+	
+	int x;
+	int randLimit;
+	int randExcess;
+	
+	randExcess = (RAND_MAX % n) + 1;
+	randLimit = RAND_MAX - randExcess;
+	
+	do{
+		x = rand();
+	}
+	while (x > randLimit);
+		
+	return x % n;
+}

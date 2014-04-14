@@ -48,7 +48,7 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 10000;
+	int numGens = 100;
 	int numRuns = 3;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
