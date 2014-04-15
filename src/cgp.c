@@ -36,9 +36,7 @@
 	Structure definitions
 */
 
-
 struct parameters{
-
 	int mu;
 	int lambda;
 	char evolutionaryStrategy;
@@ -50,23 +48,18 @@ struct parameters{
 	int arity;
 	struct functionSet *funcSet;
 	float targetFitness;
+	int updateFrequency;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
 	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
 	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
-	
 	void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
-	
 	char reproductionSchemeName[REPRODUCTIONSCHEMENAMELENGTH];
-	int updateFrequency;
 };
 
-
-
 struct chromosome{
-
 	int numInputs;
 	int numOutputs;
 	int numNodes;
@@ -83,7 +76,6 @@ struct chromosome{
 };
 
 struct node{
-
 	int function;
 	int *inputs;
 	float *weights;
@@ -107,7 +99,6 @@ struct dataSet{
 };
 
 struct results{
-
 	int numRuns;
 	struct chromosome **bestChromosomes;
 };
@@ -143,7 +134,6 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
 static void probabilisticMutationOnlyActive(struct parameters *params, 
 struct chromosome *chromo);
-
 
 /* selection scheme functions */
 static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
@@ -187,8 +177,125 @@ static void bubbleSortInt(int *array, const int length);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 
 
+
+/*
+	parameters function definitions
+*/
+
+/*
+	Initialises a parameter struct with default values. These
+	values can be individually changed via set functions.
+*/
+DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity){
+
+	struct parameters *params;
+
+	/* allocate memory for parameters */
+	params = malloc(sizeof(struct parameters));
+
+	/* Set default values */
+	params->mu = 1;
+	params->lambda = 4;
+	params->evolutionaryStrategy = '+';
+	params->mutationRate = 0.05;
+	params->connectionWeightRange = 1;
+
+	params->targetFitness = 0;
+
+	params->updateFrequency = 1;
+
+	setNumInputs(params, numInputs);
+	setNumNodes(params, numNodes);
+	setNumOutputs(params, numOutputs);
+	setArity(params, arity);
+
+	params->mutationType = probabilisticMutation;
+	strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH);
+
+	params->funcSet = malloc(sizeof(struct functionSet));
+	params->funcSet->numFunctions = 0;
+
+	params->fitnessFunction = supervisedLearning;
+	strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
+
+	params->selectionScheme = selectFittest;
+	strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
+
+	params->reproductionScheme = mutateRandomParent;
+	strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
+
+	/* Seed the random number generator */
+	srand(time(NULL));
+
+	return params;
+}
+
+
+/*
+	Frees the memory associated with the given parameter structure
+*/
+DLL_EXPORT void freeParameters(struct parameters *params){
+
+	/* attempt to prevent user double freeing */
+	if(params == NULL){
+		return;
+	}
+
+	free(params->funcSet);
+	free(params);
+}
+
+/*
+	prints the given parameters to the terminal
+*/
+DLL_EXPORT void printParameters(struct parameters *params){
+
+	if(params == NULL){
+		printf("Error: cannot print uninitialised parameters.\nTerminating CGP-Library.\n");
+		exit(0);
+	}
+
+	printf("---------------------------------------------------\n");
+	printf("                   Parameters                      \n");
+	printf("---------------------------------------------------\n");
+	printf("Evolutionary Strategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	
+	printf("Inputs:\t\t\t\t%d\n", params->numInputs);
+	printf("Nodes:\t\t\t\t%d\n", params->numNodes);
+	printf("Outputs:\t\t\t%d\n", params->numOutputs);
+	printf("Node Arity:\t\t\t%d\n", params->arity);
+	printf("Connection weights range:\t+/- %f\n", params->connectionWeightRange);
+	printf("Mutation Type:\t\t\t%s\n", params->mutationTypeName);
+	printf("Mutation rate:\t\t\t%f\n", params->mutationRate);
+	printf("Fitness Function:\t\t%s\n", params->fitnessFunctionName);
+	printf("Target Fitness:\t\t\t%f\n", params->targetFitness);
+	printf("Selection scheme:\t\t%s\n", params->selectionSchemeName);
+	printf("Reproduction scheme:\t\t%s\n", params->reproductionSchemeName);
+	printf("Update frequency:\t\t%d\n", params->updateFrequency);
+	printFunctionSet(params);
+
+	printf("---------------------------------------------------\n\n");
+	
+	
 /*
 
+	int numInputs;
+	int numNodes;
+	int numOutputs;
+	int arity;
+	*/
+}
+
+
+
+/*
+	chromosome function definitions
+*/
+
+
+/*
+	save the given chromosome to a graphviz .dot file
+	(www.graphviz.org/‎)
 */
 DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName){
 	
@@ -197,7 +304,6 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 	
 	char colour[20];
 	char weight[20];
-	
 	
 	fp = fopen(fileName, "w");
 	
@@ -1276,54 +1382,7 @@ DLL_EXPORT void printDataSet(struct dataSet *data){
 }
 
 
-/*
-	Initialises a parameter struct with default values. These
-	values can be individually changed via set functions.
-*/
-DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity){
 
-	struct parameters *params;
-
-	/* allocate memory for parameters */
-	params = malloc(sizeof(struct parameters));
-
-	/* Set default values */
-	params->mu = 1;
-	params->lambda = 4;
-	params->evolutionaryStrategy = '+';
-	params->mutationRate = 0.05;
-	params->connectionWeightRange = 1;
-
-	params->targetFitness = 0;
-
-	params->updateFrequency = 1;
-
-	setNumInputs(params, numInputs);
-	setNumNodes(params, numNodes);
-	setNumOutputs(params, numOutputs);
-	setArity(params, arity);
-
-
-	params->mutationType = probabilisticMutation;
-	strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH);
-
-	params->funcSet = malloc(sizeof(struct functionSet));
-	params->funcSet->numFunctions = 0;
-
-	params->fitnessFunction = supervisedLearning;
-	strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
-
-	params->selectionScheme = selectFittest;
-	strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
-
-	params->reproductionScheme = mutateRandomParent;
-	strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
-
-	/* Seed the random number generator */
-	srand(time(NULL));
-
-	return params;
-}
 
 
 /*
@@ -1385,19 +1444,7 @@ DLL_EXPORT void setArity(struct parameters *params, int arity){
 }
 
 
-/*
-	Frees the memory associated with the given parameter structure
-*/
-DLL_EXPORT void freeParameters(struct parameters *params){
 
-	/* attempt to prevent user double freeing */
-	if(params == NULL){
-		return;
-	}
-
-	free(params->funcSet);
-	free(params);
-}
 
 
 
@@ -2183,31 +2230,6 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 }
 
 
-DLL_EXPORT void printParameters(struct parameters *params){
-
-	printf("---------------------------------------------------\n");
-	printf("                   Parameters                      \n");
-	printf("---------------------------------------------------\n");
-	printf("Evolutionary Strategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
-	printf("Mutation Type:\t\t\t%s\n", params->mutationTypeName);
-	printf("Mutation rate:\t\t\t%f\n", params->mutationRate);
-	printf("Connection weights range:\t+/- %f\n", params->connectionWeightRange);
-	printf("Fitness Function:\t\t%s\n", params->fitnessFunctionName);
-	printf("Target Fitness:\t\t\t%f\n", params->targetFitness);
-	printf("Selection scheme:\t\t%s\n", params->selectionSchemeName);
-	printf("Reproduction scheme:\t\t%s\n", params->reproductionSchemeName);
-	printf("Update frequency:\t\t%d\n", params->updateFrequency);
-	printFunctionSet(params);
-
-	printf("---------------------------------------------------\n\n");
-/*
-
-	int numInputs;
-	int numNodes;
-	int numOutputs;
-	int arity;
-	*/
-}
 
 
 /*

@@ -188,9 +188,13 @@ For details of the parameters stored in <parameters> see <parameters>.
 >                   Parameters                      
 > ---------------------------------------------------
 > Evolutionary Strategy:		(1+4)-ES
+> Inputs:						1
+> Nodes:						15
+> Outputs:						1
+> Node Arity:					2
+> Connection weights range:		+/- 1.000000
 > Mutation Type:				probabilistic
 > Mutation rate:				0.050000
-> Connection weights range:		+/- 1.000000
 > Fitness Function:				supervisedLearning
 > Target Fitness:				0.100000
 > Selection scheme:				selectFittest
@@ -198,6 +202,7 @@ For details of the parameters stored in <parameters> see <parameters>.
 > Update frequency:				500
 > Function Set: add sub mul div sin (5)
 > ---------------------------------------------------
+
 
 Now the parameters associated with the CGP-Library are set up we next 
 need to define the task to be solved. By default a supervised learning 
