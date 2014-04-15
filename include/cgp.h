@@ -207,8 +207,7 @@
 
 	*/
 	DLL_EXPORT void printParameters(struct parameters *params);
-
-
+	
 	/*
 		Function: addNodeFunction
 
@@ -265,12 +264,13 @@
 			(end)
 
 		See Also:
-			<clearFunctionSet>, <addNodeFunctionCustom>, <printFunctionSet>
+			<clearFunctionSet>, <addNodeFunctionCustom>
 	*/
 	DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames);
 
 
-		/*
+
+	/*
 		Function: addNodeFunctionCustom
 
 		Adds a custom node function to the set of functions made available to chromosome nodes.
@@ -313,7 +313,7 @@
 			(end)
 
 		See Also:
-			<clearFunctionSet>, <addNodeFunction>, <printFunctionSet>
+			<clearFunctionSet>, <addNodeFunction>
 	*/
 	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
 
@@ -327,23 +327,86 @@
 			params - pointer to parameters structure
 
 		See Also:
-			<addNodeFunction>, <addNodeFunctionCustom>, <printFunctionSet>
+			<addNodeFunction>, <addNodeFunctionCustom>
 	*/
 	DLL_EXPORT void clearFunctionSet(struct parameters *params);
 
 
 	/*
-		Function: printFunctionSet
+		Function: setNumInputs
 
-		Prints the contents of the current function set in a human readable form.
+			Sets the number of chromosome inputs in the given parameters.
+
+			The given number of chromosome inputs is also parsed to ensure a valid number of chromosome inputs.
+			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give an error is displayed
+			and CGP-Library terminates.
 
 		Parameters:
-			params - pointer to parameters structure
-
+			params - pointer to parameters structure.
+			numInputs - The number of chromosome inputs to be set.
+		
 		See Also:
-			<addNodeFunction>, <addNodeFunctionCustom>, <clearFunctionSet>
+			<setNumNodes>, <setNumOutputs>, <setArity>
+			
 	*/
-	DLL_EXPORT void printFunctionSet(struct parameters *params);
+	DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs);
+
+
+	/*
+		Function: setNumNodes
+
+			Sets the number of chromosome nodes in the given parameters.
+
+			The given number of chromosome nodes is also parsed to ensure a valid number of chromosome nodes.
+			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give an error is displayed
+			and CGP-Library terminates.
+
+		Parameters:
+			params - pointer to parameters structure.
+			nodes - The number of chromosome nodes to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumOutputs>, <setArity>
+	*/
+	DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes);
+
+	/*
+		Function: setNumOutputs
+
+			Sets the number of chromosome outputs in the given parameters.
+
+			The given number of chromosome outputs is also parsed to ensure a valid number of chromosome outputs.
+			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give an error is displayed
+			and CGP-Library terminates.
+
+		Parameters:
+			params - pointer to parameters structure.
+			numOutputs - The number of chromosome outputs to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumNodes>, <setArity>
+	*/
+	DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs);
+
+
+	/*
+		Function: setArity
+
+			Sets the arity of the chromosome nodes in the given parameters.
+
+			The given arity for each chromosome node is also parsed to ensure a valid chromosome node arity.
+			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give an error is displayed
+			and CGP-Library terminates.
+
+		Parameters:
+			params - pointer to parameters structure.
+			arity - The chromosome node arity to be set.
+			
+		See Also:
+			<setNumInputs>, <setNumNodes>, <setNumOutputs>
+	*/
+	DLL_EXPORT void setArity(struct parameters *params, int arity);
+
 
 
 	/*
@@ -601,80 +664,7 @@
 	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName);
 
 
-	/*
-		Function: setNumInputs
-
-			Sets the number of chromosome inputs in the given parameters.
-
-			The given number of chromosome inputs is also parsed to ensure a valid number of chromosome inputs.
-			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give an error is displayed
-			and CGP-Library terminates.
-
-		Parameters:
-			params - pointer to parameters structure.
-			numInputs - The number of chromosome inputs to be set.
-		
-		See Also:
-			<setNumNodes>, <setNumOutputs>, <setArity>
-			
-	*/
-	DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs);
-
-
-	/*
-		Function: setNumNodes
-
-			Sets the number of chromosome nodes in the given parameters.
-
-			The given number of chromosome nodes is also parsed to ensure a valid number of chromosome nodes.
-			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give an error is displayed
-			and CGP-Library terminates.
-
-		Parameters:
-			params - pointer to parameters structure.
-			nodes - The number of chromosome nodes to be set.
-			
-		See Also:
-			<setNumInputs>, <setNumOutputs>, <setArity>
-	*/
-	DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes);
-
-	/*
-		Function: setNumOutputs
-
-			Sets the number of chromosome outputs in the given parameters.
-
-			The given number of chromosome outputs is also parsed to ensure a valid number of chromosome outputs.
-			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give an error is displayed
-			and CGP-Library terminates.
-
-		Parameters:
-			params - pointer to parameters structure.
-			numOutputs - The number of chromosome outputs to be set.
-			
-		See Also:
-			<setNumInputs>, <setNumNodes>, <setArity>
-	*/
-	DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs);
-
-
-	/*
-		Function: setArity
-
-			Sets the arity of the chromosome nodes in the given parameters.
-
-			The given arity for each chromosome node is also parsed to ensure a valid chromosome node arity.
-			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give an error is displayed
-			and CGP-Library terminates.
-
-		Parameters:
-			params - pointer to parameters structure.
-			arity - The chromosome node arity to be set.
-			
-		See Also:
-			<setNumInputs>, <setNumNodes>, <setNumOutputs>
-	*/
-	DLL_EXPORT void setArity(struct parameters *params, int arity);
+	
 
 
 	/*
@@ -880,12 +870,26 @@
 			fileName - char array giving the location of the chromosome to be saved.
 
 		See Also:
-			<initialiseChromosomeFromFile>
+			<initialiseChromosomeFromFile>, <saveChromosomeDot>
 	*/
 	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName);
 
 	/*
 		Function: saveChromosomeDot
+		
+			Saves the given <chromosome> to a graphviz .dot file.
+		
+			graphviz (www.graphviz.org/‎) is a free open source graph 
+			drawing tool. Once installed graphviz can be used to draw the 
+			<chromosomes> saved using <saveChromosomeDot> with the following 
+			command.
+		
+			(begin code)
+			dot -Tsvg chromosome.dot -o chromosome.svg
+			(end)
+			
+		See Also:
+			<saveChromosome>
 	*/
 	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName);
 

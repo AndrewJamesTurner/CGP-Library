@@ -110,8 +110,8 @@ struct results{
 
 /* chromosome functions */
 static void setChromosomeActiveNodes(struct chromosome *chromo);
-static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
+static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
 
 /* node functions */
 static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
@@ -127,6 +127,9 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes);
 /* function set functions */
 static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName);
 static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
+static void printFunctionSet(struct parameters *params);
+
+/* results functions */
 struct results* initialiseResults(struct parameters *params, int numRuns);
 
 /* mutation functions  */
@@ -259,7 +262,6 @@ DLL_EXPORT void printParameters(struct parameters *params){
 	printf("                   Parameters                      \n");
 	printf("---------------------------------------------------\n");
 	printf("Evolutionary Strategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
-	
 	printf("Inputs:\t\t\t\t%d\n", params->numInputs);
 	printf("Nodes:\t\t\t\t%d\n", params->numNodes);
 	printf("Outputs:\t\t\t%d\n", params->numOutputs);
@@ -273,24 +275,460 @@ DLL_EXPORT void printParameters(struct parameters *params){
 	printf("Reproduction scheme:\t\t%s\n", params->reproductionSchemeName);
 	printf("Update frequency:\t\t%d\n", params->updateFrequency);
 	printFunctionSet(params);
-
 	printf("---------------------------------------------------\n\n");
-	
-	
-/*
-
-	int numInputs;
-	int numNodes;
-	int numOutputs;
-	int arity;
-	*/
 }
+
+
+/*
+	Sets the given function set to contain the per-set functions
+	given in the char array. The function names must be comma separated
+	and contain no spaces i.e. "and,or".
+*/
+DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
+
+	char *pch;
+	char funcNames[FUNCTIONNAMELENGTH * FUNCTIONSETSIZE];
+
+	/* make a local copy of the function names*/
+	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
+
+	/* get the first function name */
+	pch = strtok(funcNames, ", ");
+
+	/* while the function names char array contains function names */
+	while (pch != NULL){
+
+		/* add the named function to the function set */
+		addPresetFuctionToFunctionSet(params, pch);
+
+		/* get the next function name */
+		pch = strtok(NULL, ", ");
+	}
+
+	/* if the function set is empty give warning */
+	if(params->funcSet->numFunctions == 0){
+		printf("Warning: No Functions added to function set.\n");
+	}
+}
+
+
+/*
+	Adds given node function to given function set with given name.
+	Disallows exceeding the function set size.
+*/
+DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName){
+
+	if(params->funcSet->numFunctions >= FUNCTIONSETSIZE){
+		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
+		return;
+	}
+
+	/* */
+	params->funcSet->numFunctions++;
+
+	/* */
+	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName, FUNCTIONNAMELENGTH);
+
+	/* */
+	params->funcSet->functions[params->funcSet->numFunctions-1] = function;
+}
+
+
+/*
+	clears the given function set of functions
+*/
+DLL_EXPORT void clearFunctionSet(struct parameters *params){
+	params->funcSet->numFunctions = 0;
+}
+
+
+/*
+	sets num chromosome inputs in parameters
+*/
+DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
+
+	/* error checking */
+	if(numInputs < 0){
+		printf("Error: number of chromosome inputs cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
+		exit(0);
+	}
+
+	params->numInputs = numInputs;
+}
+
+
+/*
+	sets num chromosome nodes in parameters
+*/
+DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
+
+	/* error checking */
+	if(numNodes < 0){
+		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
+		exit(0);
+	}
+
+	params->numNodes = numNodes;
+}
+
+/*
+	sets num chromosome outputs in parameters
+*/
+DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs){
+
+	/* error checking */
+	if(numOutputs < 0){
+		printf("Warning: number of chromosome outputs cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", numOutputs);
+		exit(0);
+	}
+
+	params->numOutputs = numOutputs;
+}
+
+
+/*
+	sets chromosome arity in parameters
+*/
+DLL_EXPORT void setArity(struct parameters *params, int arity){
+
+	/* error checking */
+	if(arity < 0){
+		printf("Warning: node arity cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", arity);
+		exit(0);
+	}
+
+	params->arity = arity;
+}
+
+
+
+
+/*
+	Sets the mu value in given parameters to the new given value. If mu value
+	is invalid a warning is displayed and the mu value is left unchanged.
+*/
+DLL_EXPORT void setMu(struct parameters *params, int mu){
+
+	if(mu > 0){
+		params->mu = mu;
+	}
+	else{
+		printf("\nWarning: mu value '%d' is invalid. Mu value must have a value of one or greater. Mu value left unchanged as '%d'.\n", mu, params->mu);
+	}
+}
+
+
+/*
+	Sets the lambda value in given parameters to the new given value.
+	If lambda value is invalid a warning is displayed and the lambda value
+	is left unchanged.
+*/
+DLL_EXPORT void setLambda(struct parameters *params, int lambda){
+
+	if(lambda > 0){
+		params->lambda = lambda;
+	}
+	else{
+		printf("\nWarning: lambda value '%d' is invalid. Lambda value must have a value of one or greater. Lambda value left unchanged as '%d'.\n", lambda, params->lambda);
+	}
+}
+
+
+/*
+	Sets the evolutionary strategy given in parameters to '+' or ','.
+	If an invalid option is given a warning is displayed and the evolutionary
+	strategy is left unchanged.
+*/
+DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy){
+
+	if(evolutionaryStrategy == '+' || evolutionaryStrategy == ','){
+		params->evolutionaryStrategy = evolutionaryStrategy;
+	}
+	else{
+		printf("\nWarning: the evolutionary strategy '%c' is invalid. The evolutionary strategy must be '+' or ','. The evolutionary strategy has been left unchanged as '%c'.\n", evolutionaryStrategy, params->evolutionaryStrategy);
+	}
+}
+
+
+/*
+	Sets the mutation rate given in parameters. IF an invalid mutation
+	rate is given a warning is displayed and the mutation rate is left
+	unchanged.
+*/
+DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate){
+
+	if(mutationRate >= 0 && mutationRate <= 1){
+		params->mutationRate = mutationRate;
+	}
+	else{
+		printf("\nWarning: mutation rate '%f' is invalid. The mutation rate must be in the range [0,1]. The mutation rate has been left unchanged as '%f'.\n", mutationRate, params->mutationRate);
+	}
+}
+
+
+/*
+	Sets the connection weight range given in parameters.
+*/
+DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weightRange){
+
+	params->connectionWeightRange = weightRange;
+}
+
+
+/*
+	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL
+	then the default supervisedLearning fitness function is used.
+*/
+DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
+
+	if(fitnessFunction == NULL){
+		params->fitnessFunction = supervisedLearning;
+		strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
+	}
+	else{
+		params->fitnessFunction = fitnessFunction;
+		strncpy(params->fitnessFunctionName, fitnessFunctionName, FITNESSFUNCTIONNAMELENGTH);
+	}
+}
+
+
+
+/*
+	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
+	then the default selectFittest selection scheme is used.
+*/
+DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName){
+
+	if(selectionScheme == NULL){
+		params->selectionScheme = selectFittest;
+		strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
+	}
+	else{
+		params->selectionScheme = selectionScheme;
+		strncpy(params->selectionSchemeName, selectionSchemeName, SELECTIONSCHEMENAMELENGTH);
+	}
+}
+
+
+/*
+	sets the reproduction scheme used to select the parents from the candidate chromosomes. If the reproductionScheme is NULL
+	then the default mutateRandomParent selection scheme is used.
+*/
+
+DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName){
+
+	if(reproductionScheme == NULL){
+		params->reproductionScheme = mutateRandomParent;
+		strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
+	}
+	else{
+		params->reproductionScheme = reproductionScheme;
+		strncpy(params->reproductionSchemeName, reproductionSchemeName, REPRODUCTIONSCHEMENAMELENGTH);
+	}
+}
+
+/*
+	Sets the target fitness
+*/
+DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness){
+	params->targetFitness = targetFitness;
+}
+
+
+/*
+	sets the mutation type in params
+*/
+DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
+
+	if(strncmp(mutationType, "probabilistic", MUTATIONTYPENAMELENGTH) == 0){
+
+		params->mutationType = probabilisticMutation;
+		strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH);
+	}
+
+	else if(strncmp(mutationType, "point", MUTATIONTYPENAMELENGTH) == 0){
+
+		params->mutationType = pointMutation;
+		strncpy(params->mutationTypeName, "point", MUTATIONTYPENAMELENGTH);
+	}
+	
+	else if(strncmp(mutationType, "onlyActive", MUTATIONTYPENAMELENGTH) == 0){
+
+		params->mutationType = probabilisticMutationOnlyActive;
+		strncpy(params->mutationTypeName, "onlyActive", MUTATIONTYPENAMELENGTH);
+	}
+	
+	else{
+		printf("\nWarning: mutation type '%s' is invalid. The mutation type must be 'probabilistic' or 'point'. The mutation type has been left unchanged as '%s'.\n", mutationType, params->mutationTypeName);
+	}
+}
+
+
+/*
+	Sets the update frequency in generations 
+*/
+DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency){
+	
+	if(updateFrequency < 0){
+		printf("Warning: update frequency of %d is invalid. Update frequency must be >= 0. Update frequency is left unchanged as %d.\n", updateFrequency, params->updateFrequency);
+	}
+	else{
+		params->updateFrequency = updateFrequency;
+	}
+}
+
+
+/*
+	set the active nodes in the given chromosome
+*/
+static void setChromosomeActiveNodes(struct chromosome *chromo){
+
+	int i;
+
+	/* set the number of active nodes to zero */
+	chromo->numActiveNodes = 0;
+
+	/* reset the active nodes */
+	for(i = 0; i < chromo->numNodes; i++){
+		chromo->nodes[i]->active = 0;
+	}
+
+	/* start the recursive search for active nodes from the output nodes for the number of output nodes */
+	for(i=0; i < chromo->numOutputs; i++){
+
+		/* if the output connects to a chromosome input, skip */
+		if(chromo->outputNodes[i] < chromo->numInputs){
+			continue;
+		}
+
+		/* begin a recursive search for active nodes */
+		recursivelySetActiveNodes(chromo, chromo->outputNodes[i]);
+	}
+
+	/* place active nodes in order */
+	bubbleSortInt(chromo->activeNodes, chromo->numActiveNodes);
+}
+
+/*
+	used by setActiveNodes to recursively search for active nodes
+*/
+static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
+
+	int i;
+
+	/* if the given node is an input, stop */
+	if(nodeIndex < chromo->numInputs){
+		return;
+	}
+
+	/* if the given node has already been flagged as active */
+	if(chromo->nodes[nodeIndex - chromo->numInputs]->active == 1){
+		return;
+	}
+
+	/* log the node as active */
+	chromo->nodes[nodeIndex - chromo->numInputs]->active = 1;
+	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - chromo->numInputs;
+	chromo->numActiveNodes++;
+
+	/* recursively log all the nodes to which the current nodes connect as active */
+	for(i=0; i < chromo->arity; i++){
+		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
+	}
+}
+
+/*
+	Switches the first chromosome with the last and then sorts the population.
+*/
+static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
+
+	struct chromosome *chromoTmp;
+	int i;
+	int finished = 0;
+
+	/*
+		place first chromosome at the end of the population.
+		has the effect of always choosing new blood allowing
+		for neural genetic drift to take place.
+	*/
+	chromoTmp = chromoArray[0];
+	chromoArray[0] = chromoArray[numChromos -1];
+	chromoArray[numChromos -1] = chromoTmp;
+
+	/* bubble sort population */
+	while(finished == 0){
+
+		finished = 1;
+
+		for(i=0; i < numChromos -1; i++){
+
+			if(chromoArray[i]->fitness > chromoArray[i+1]->fitness){
+
+				finished = 0;
+				chromoTmp = chromoArray[i];
+				chromoArray[i] = chromoArray[i+1];
+				chromoArray[i+1] = chromoTmp;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 /*
 	chromosome function definitions
 */
+
+
+
+
+/*
+	Prints the current functions in the function set to
+	the terminal.
+*/
+static void printFunctionSet(struct parameters *params){
+
+	int i;
+
+	printf("Function Set:");
+
+	for(i=0; i<params->funcSet->numFunctions; i++){
+		printf(" %s", params->funcSet->functionNames[i]);
+	}
+
+	printf(" (%d)\n", params->funcSet->numFunctions);
+}
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -751,25 +1189,7 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 }
 
 
-/*
-	Sets the target fitness
-*/
-DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness){
-	params->targetFitness = targetFitness;
-}
 
-/*
-	Sets the update frequency in generations 
-*/
-DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency){
-	
-	if(updateFrequency < 0){
-		printf("Warning: update frequency of %d is invalid. Update frequency must be >= 0. Update frequency is left unchanged as %d.\n", updateFrequency, params->updateFrequency);
-	}
-	else{
-		params->updateFrequency = updateFrequency;
-	}
-}
 
 /*
 	initialises a results structure
@@ -1385,63 +1805,7 @@ DLL_EXPORT void printDataSet(struct dataSet *data){
 
 
 
-/*
-	sets num chromosome inputs in parameters
-*/
-DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 
-	/* error checking */
-	if(numInputs < 0){
-		printf("Error: number of chromosome inputs cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
-		exit(0);
-	}
-
-	params->numInputs = numInputs;
-}
-
-
-/*
-	sets num chromosome nodes in parameters
-*/
-DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
-
-	/* error checking */
-	if(numNodes < 0){
-		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
-		exit(0);
-	}
-
-	params->numNodes = numNodes;
-}
-
-/*
-	sets num chromosome outputs in parameters
-*/
-DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs){
-
-	/* error checking */
-	if(numOutputs < 0){
-		printf("Warning: number of chromosome outputs cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", numOutputs);
-		exit(0);
-	}
-
-	params->numOutputs = numOutputs;
-}
-
-
-/*
-	sets chromosome arity in parameters
-*/
-DLL_EXPORT void setArity(struct parameters *params, int arity){
-
-	/* error checking */
-	if(arity < 0){
-		printf("Warning: node arity cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", arity);
-		exit(0);
-	}
-
-	params->arity = arity;
-}
 
 
 
@@ -1456,105 +1820,13 @@ DLL_EXPORT int getMu(struct parameters *params){
 	return params->mu;
 }
 
-/*
-	Sets the mu value in given parameters to the new given value. If mu value
-	is invalid a warning is displayed and the mu value is left unchanged.
-*/
-DLL_EXPORT void setMu(struct parameters *params, int mu){
-
-	if(mu > 0){
-		params->mu = mu;
-	}
-	else{
-		printf("\nWarning: mu value '%d' is invalid. Mu value must have a value of one or greater. Mu value left unchanged as '%d'.\n", mu, params->mu);
-	}
-}
 
 
-/*
-	Sets the lambda value in given parameters to the new given value.
-	If lambda value is invalid a warning is displayed and the lambda value
-	is left unchanged.
-*/
-DLL_EXPORT void setLambda(struct parameters *params, int lambda){
-
-	if(lambda > 0){
-		params->lambda = lambda;
-	}
-	else{
-		printf("\nWarning: lambda value '%d' is invalid. Lambda value must have a value of one or greater. Lambda value left unchanged as '%d'.\n", lambda, params->lambda);
-	}
-}
 
 
-/*
-	Sets the evolutionary strategy given in parameters to '+' or ','.
-	If an invalid option is given a warning is displayed and the evolutionary
-	strategy is left unchanged.
-*/
-DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy){
-
-	if(evolutionaryStrategy == '+' || evolutionaryStrategy == ','){
-		params->evolutionaryStrategy = evolutionaryStrategy;
-	}
-	else{
-		printf("\nWarning: the evolutionary strategy '%c' is invalid. The evolutionary strategy must be '+' or ','. The evolutionary strategy has been left unchanged as '%c'.\n", evolutionaryStrategy, params->evolutionaryStrategy);
-	}
-}
 
 
-/*
-	sets the mutation type in params
-*/
-DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
 
-	if(strncmp(mutationType, "probabilistic", MUTATIONTYPENAMELENGTH) == 0){
-
-		params->mutationType = probabilisticMutation;
-		strncpy(params->mutationTypeName, "probabilistic", MUTATIONTYPENAMELENGTH);
-	}
-
-	else if(strncmp(mutationType, "point", MUTATIONTYPENAMELENGTH) == 0){
-
-		params->mutationType = pointMutation;
-		strncpy(params->mutationTypeName, "point", MUTATIONTYPENAMELENGTH);
-	}
-	
-	else if(strncmp(mutationType, "onlyActive", MUTATIONTYPENAMELENGTH) == 0){
-
-		params->mutationType = probabilisticMutationOnlyActive;
-		strncpy(params->mutationTypeName, "onlyActive", MUTATIONTYPENAMELENGTH);
-	}
-	
-	else{
-		printf("\nWarning: mutation type '%s' is invalid. The mutation type must be 'probabilistic' or 'point'. The mutation type has been left unchanged as '%s'.\n", mutationType, params->mutationTypeName);
-	}
-}
-
-
-/*
-	Sets the mutation rate given in parameters. IF an invalid mutation
-	rate is given a warning is displayed and the mutation rate is left
-	unchanged.
-*/
-DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate){
-
-	if(mutationRate >= 0 && mutationRate <= 1){
-		params->mutationRate = mutationRate;
-	}
-	else{
-		printf("\nWarning: mutation rate '%f' is invalid. The mutation rate must be in the range [0,1]. The mutation rate has been left unchanged as '%f'.\n", mutationRate, params->mutationRate);
-	}
-}
-
-
-/*
-	Sets the connection weight range given in parameters.
-*/
-DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weightRange){
-
-	params->connectionWeightRange = weightRange;
-}
 
 
 /*
@@ -1569,93 +1841,12 @@ DLL_EXPORT int getNumOutputs(struct parameters *params){
 	return params->numOutputs;
 }
 
-/*
-	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL
-	then the default supervisedLearning fitness function is used.
-*/
-DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
-
-	if(fitnessFunction == NULL){
-		params->fitnessFunction = supervisedLearning;
-		strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
-	}
-	else{
-		params->fitnessFunction = fitnessFunction;
-		strncpy(params->fitnessFunctionName, fitnessFunctionName, FITNESSFUNCTIONNAMELENGTH);
-	}
-}
-
-
-
-/*
-	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
-	then the default selectFittest selection scheme is used.
-*/
-DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName){
-
-	if(selectionScheme == NULL){
-		params->selectionScheme = selectFittest;
-		strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
-	}
-	else{
-		params->selectionScheme = selectionScheme;
-		strncpy(params->selectionSchemeName, selectionSchemeName, SELECTIONSCHEMENAMELENGTH);
-	}
-}
-
-
-/*
-	sets the reproduction scheme used to select the parents from the candidate chromosomes. If the reproductionScheme is NULL
-	then the default mutateRandomParent selection scheme is used.
-*/
-
-DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName){
-
-	if(reproductionScheme == NULL){
-		params->reproductionScheme = mutateRandomParent;
-		strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
-	}
-	else{
-		params->reproductionScheme = reproductionScheme;
-		strncpy(params->reproductionSchemeName, reproductionSchemeName, REPRODUCTIONSCHEMENAMELENGTH);
-	}
-}
 
 
 
 
 
-/*
-	Sets the given function set to contain the per-set functions
-	given in the char array. The function names must be comma separated
-	and contain no spaces i.e. "and,or".
-*/
-DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 
-	char *pch;
-	char funcNames[FUNCTIONNAMELENGTH * FUNCTIONSETSIZE];
-
-	/* make a local copy of the function names*/
-	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
-
-	/* get the first function name */
-	pch = strtok(funcNames, ", ");
-
-	/* while the function names char array contains function names */
-	while (pch != NULL){
-
-		/* add the named function to the function set */
-		addPresetFuctionToFunctionSet(params, pch);
-
-		/* get the next function name */
-		pch = strtok(NULL, ", ");
-	}
-
-	/* if the function set is empty give warning */
-	if(params->funcSet->numFunctions == 0){
-		printf("Warning: No Functions added to function set.\n");
-	}
-}
 
 /*
 	used as an interface to adding pre-set node functions
@@ -1747,50 +1938,12 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	return output;
 }
 
-/*
-*/
-DLL_EXPORT void clearFunctionSet(struct parameters *params){
-	params->funcSet->numFunctions = 0;
-}
-
-/*
-	Adds given node function to given function set with given name.
-	Disallows exceeding the function set size.
-*/
-DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName){
-
-	if(params->funcSet->numFunctions >= FUNCTIONSETSIZE){
-		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
-		return;
-	}
-
-	/* */
-	params->funcSet->numFunctions++;
-
-	/* */
-	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName, FUNCTIONNAMELENGTH);
-
-	/* */
-	params->funcSet->functions[params->funcSet->numFunctions-1] = function;
-}
 
 
-/*
-	Prints the current functions in the function set to
-	the terminal.
-*/
-DLL_EXPORT void printFunctionSet(struct parameters *params){
 
-	int i;
 
-	printf("Function Set:");
 
-	for(i=0; i<params->funcSet->numFunctions; i++){
-		printf(" %s", params->funcSet->functionNames[i]);
-	}
 
-	printf(" (%d)\n", params->funcSet->numFunctions);
-}
 
 
 
@@ -1951,43 +2104,6 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 	for(i=0; i<numParents; i++){
 
 		copyChromosome(parents[i], candidateChromos[i]);
-	}
-}
-
-
-/*
-	Switches the first chromosome with the last and then sorts the population.
-*/
-static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
-
-	struct chromosome *chromoTmp;
-	int i;
-	int finished = 0;
-
-	/*
-		place first chromosome at the end of the population.
-		has the effect of always choosing new blood allowing
-		for neural genetic drift to take place.
-	*/
-	chromoTmp = chromoArray[0];
-	chromoArray[0] = chromoArray[numChromos -1];
-	chromoArray[numChromos -1] = chromoTmp;
-
-	/* bubble sort population */
-	while(finished == 0){
-
-		finished = 1;
-
-		for(i=0; i < numChromos -1; i++){
-
-			if(chromoArray[i]->fitness > chromoArray[i+1]->fitness){
-
-				finished = 0;
-				chromoTmp = chromoArray[i];
-				chromoArray[i] = chromoArray[i+1];
-				chromoArray[i+1] = chromoTmp;
-			}
-		}
 	}
 }
 
@@ -2157,64 +2273,7 @@ static int getRandomNodeInput(int numChromoInputs, int nodePosition){
 	return input;
 }
 
-/*
-	set the active nodes in the given chromosome
-*/
-static void setChromosomeActiveNodes(struct chromosome *chromo){
 
-	int i;
-
-	/* set the number of active nodes to zero */
-	chromo->numActiveNodes = 0;
-
-	/* reset the active nodes */
-	for(i = 0; i < chromo->numNodes; i++){
-		chromo->nodes[i]->active = 0;
-	}
-
-	/* start the recursive search for active nodes from the output nodes for the number of output nodes */
-	for(i=0; i < chromo->numOutputs; i++){
-
-		/* if the output connects to a chromosome input, skip */
-		if(chromo->outputNodes[i] < chromo->numInputs){
-			continue;
-		}
-
-		/* begin a recursive search for active nodes */
-		recursivelySetActiveNodes(chromo, chromo->outputNodes[i]);
-	}
-
-	/* place active nodes in order */
-	bubbleSortInt(chromo->activeNodes, chromo->numActiveNodes);
-}
-
-/*
-	used by setActiveNodes to recursively search for active nodes
-*/
-static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
-
-	int i;
-
-	/* if the given node is an input, stop */
-	if(nodeIndex < chromo->numInputs){
-		return;
-	}
-
-	/* if the given node has already been flagged as active */
-	if(chromo->nodes[nodeIndex - chromo->numInputs]->active == 1){
-		return;
-	}
-
-	/* log the node as active */
-	chromo->nodes[nodeIndex - chromo->numInputs]->active = 1;
-	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - chromo->numInputs;
-	chromo->numActiveNodes++;
-
-	/* recursively log all the nodes to which the current nodes connect as active */
-	for(i=0; i < chromo->arity; i++){
-		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
-	}
-}
 
 
 /*
