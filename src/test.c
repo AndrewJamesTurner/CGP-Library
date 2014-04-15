@@ -65,7 +65,7 @@ int main(void){
 	
 	data = initialiseDataSetFromFile("./examples/symbolic.data");
 	
-	setMutationType(params, "onlyActive");
+	setMutationType(params, "point");
 	setMutationRate(params, 0.05);
 	
 	setSelectionScheme(params, NULL, "temp");

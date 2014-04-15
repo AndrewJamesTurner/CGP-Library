@@ -112,6 +112,7 @@ struct results{
 static void setChromosomeActiveNodes(struct chromosome *chromo);
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
+static int cmpChromosome(const void *a, const void *b);
 
 /* node functions */
 static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
@@ -176,9 +177,9 @@ static float hyperbolicTangent(const int numInputs, const float *inputs, const f
 /* other */
 static float randFloat(void);
 int randInt(int n);
-static void bubbleSortInt(int *array, const int length);
+static void sortIntArray(int *array, const int length);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
-
+static int cmpInt(const void * a, const void * b);
 
 
 /*
@@ -606,7 +607,7 @@ static void setChromosomeActiveNodes(struct chromosome *chromo){
 	}
 
 	/* place active nodes in order */
-	bubbleSortInt(chromo->activeNodes, chromo->numActiveNodes);
+	sortIntArray(chromo->activeNodes, chromo->numActiveNodes);
 }
 
 /*
@@ -643,38 +644,30 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
 
 	struct chromosome *chromoTmp;
-	int i;
-	int finished = 0;
-
-	/*
-		place first chromosome at the end of the population.
-		has the effect of always choosing new blood allowing
-		for neural genetic drift to take place.
-	*/
+		
 	chromoTmp = chromoArray[0];
 	chromoArray[0] = chromoArray[numChromos -1];
 	chromoArray[numChromos -1] = chromoTmp;
 
-	/* bubble sort population */
-	while(finished == 0){
-
-		finished = 1;
-
-		for(i=0; i < numChromos -1; i++){
-
-			if(chromoArray[i]->fitness > chromoArray[i+1]->fitness){
-
-				finished = 0;
-				chromoTmp = chromoArray[i];
-				chromoArray[i] = chromoArray[i+1];
-				chromoArray[i+1] = chromoTmp;
-			}
-		}
-	}
+	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
 }
 
 
-
+static int cmpChromosome(const void *a, const void *b){
+   
+   const struct chromosome *chromoA = (* (struct chromosome **) a);
+   const struct chromosome *chromoB = (* (struct chromosome **) b);
+        
+   if(chromoA->fitness < chromoB->fitness){
+	   return -1;
+   }    
+   else if(chromoA->fitness == chromoB->fitness){
+	   return 0;
+   }
+   else{
+	   return 1;
+   }  
+}
 
 
 
@@ -704,22 +697,7 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 
 
 
-/*
-	Prints the current functions in the function set to
-	the terminal.
-*/
-static void printFunctionSet(struct parameters *params){
 
-	int i;
-
-	printf("Function Set:");
-
-	for(i=0; i<params->funcSet->numFunctions; i++){
-		printf(" %s", params->funcSet->functionNames[i]);
-	}
-
-	printf(" (%d)\n", params->funcSet->numFunctions);
-}
 
 
 
@@ -3026,29 +3004,36 @@ static float randFloat(void){
 }
 
 /*
-	simple bad sort - replace with standard qsort...
+	simple sort using qsort
 */
-static void bubbleSortInt(int *array, const int length){
+static void sortIntArray(int *array, const int length){
 
-	int i,tmp;
-	int finished = 0;
-
-	while(finished == 0){
-
-		finished = 1;
-
-		for(i=0; i < length-1; i++){
-
-			if(array[i] > array[i+1]){
-
-				finished = 0;
-				tmp = array[i];
-				array[i] = array[i+1];
-				array[i+1] = tmp;
-			}
-		}
-	}
+	qsort(array, length, sizeof(int), cmpInt);
 }
+
+static int cmpInt(const void * a, const void * b){
+   return ( *(int*)a - *(int*)b );
+}
+
+
+
+/*
+	Prints the current functions in the function set to
+	the terminal.
+*/
+static void printFunctionSet(struct parameters *params){
+
+	int i;
+
+	printf("Function Set:");
+
+	for(i=0; i<params->funcSet->numFunctions; i++){
+		printf(" %s", params->funcSet->functionNames[i]);
+	}
+
+	printf(" (%d)\n", params->funcSet->numFunctions);
+}
+
 
 /*
 	random integer between zero and n without modulo bias.
