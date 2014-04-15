@@ -61,6 +61,8 @@ int main(void){
 	
 	printChromosome(chromo);
 
+	saveResults(rels, "results.csv");
+
 	freeDataSet(trainingData);
 	freeChromosome(chromo);
 	freeResults(rels);

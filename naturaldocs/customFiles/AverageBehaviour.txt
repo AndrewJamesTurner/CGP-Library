@@ -45,7 +45,7 @@ int main(void){
 	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 
 	rels = repeatCGP(params, trainingData, numGens, numRuns);
-
+	
 	averageFitness = getAverageFitness(rels);
 
 	printf("The average chromosome fitness is: %d\n", averageFitness);
@@ -55,6 +55,8 @@ int main(void){
 	printf("The best chromosome found on run 4:\n");
 	
 	printChromosome(chromo);
+
+	saveResults(rels, "results.csv");
 
 	freeDataSet(trainingData);
 	freeChromosome(chromo);
@@ -115,7 +117,13 @@ printf("The best chromosome found on run 4:\n");
 printChromosome(chromo);
 (end)
 
-finally all of the inilised strutures should be free'd including the <results> using <freeResults> and the <chromosome> returned from <getChromosome> using <freeChromosome>.
+In cases where the results need to be saved to be inspected later the <saveResults> function can be used. <saveResults> saves the given <results> structure to the given file. The format of the results is comma separated in the same form as is displayed to the terminal during <repeatCGP>; except the averages are not included.
+
+(begin code)
+saveResults(rels, "results.csv");
+(end)
+
+Finally all of the inilised strutures should be free'd including the <results> using <freeResults> and the <chromosome> returned from <getChromosome> using <freeChromosome>.
 
 (begin code)
 freeDataSet(trainingData);
