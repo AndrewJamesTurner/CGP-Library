@@ -864,7 +864,6 @@
 		Node:
 			Only chromosome which use node functions defined by the CGP-library can be loaded. Chromosomes which use custom node functions cannot be loaded.
 
-
 		Parameters:
 			chromo - pointer to chromosome structure.
 			fileName - char array giving the location of the chromosome to be saved.
@@ -887,6 +886,11 @@
 			(begin code)
 			dot -Tsvg chromosome.dot -o chromosome.svg
 			(end)
+			
+		Parameters:
+			chromo - pointer to chromosome structure.
+			fileName - char array giving the location of the 
+			chromosome dot file to be saved.
 			
 		See Also:
 			<saveChromosome>
