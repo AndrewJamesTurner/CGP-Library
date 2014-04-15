@@ -107,6 +107,16 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
+			<Target title="customReproductionScheme">
+				<Option output="customSelectionScheme" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DNO_DLL" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -126,6 +136,10 @@
 		<Unit filename="examples/customNodeFunction.c">
 			<Option compilerVar="CC" />
 			<Option target="customNodeFunction" />
+		</Unit>
+		<Unit filename="examples/customReproductionScheme.c">
+			<Option compilerVar="CC" />
+			<Option target="customReproductionScheme" />
 		</Unit>
 		<Unit filename="examples/customSelectionScheme.c">
 			<Option compilerVar="CC" />

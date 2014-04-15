@@ -4,7 +4,7 @@ First download CGP-Library from http://www.andrewjamesturner.co.uk and unzip the
 
 Simplest:
 
-The simplest method of using CGP-Library is to add cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must be #defined at compile time. 
+The simplest method of using CGP-Library is to add cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time. 
 
 For instance #include "cgp.h" and then compile your program similar too
 
@@ -43,6 +43,6 @@ Once CGP-Library has been installed it can be used by #include <cgp.h> in your p
 
 Windows:
 
-For windows the .dll has been pre-compiled. So all that is required is to link the complier and the provided CGP-Library.dll; how this is done is IDE/complier dependant. Then simply #include "cgp.h". 
+For windows the .dll has been pre-compiled. So all that is required is to link the complier and the provided CGP-Library.dll; how this is done is IDE/complier dependant. Then simply #include <cgp.h>. 
 
 

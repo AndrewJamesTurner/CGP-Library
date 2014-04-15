@@ -554,6 +554,48 @@
 
 	/*
 		Function: setReproductionScheme
+		
+			Sets custom reproduction scheme.
+			
+			By default the reproduction scheme used by CGP-Library is to create 
+			each child as a mutated version of a randomly selected parent. This 
+			type of reproduction scheme is commonly used by CGP. 
+			<setReproductionScheme> is used to redefine the reproduction scheme 
+			to be one of the users design.
+			
+			The custom reproduction scheme prototype must take the following 
+			form. Where params is a <parameters> structure, parents is an array 
+			of <chromosomes> which store the parents to select from, children is 
+			an array of <chromosomes> which will contain the children 
+			after reproduction, numParents is the number of parents 
+			available for reproduction and numChildren is the number of 
+			children to be created.
+
+			(begin code)
+			void reproductionScheme(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
+			(end)
+			
+			If the reproductionScheme parameter is set as NULL, the reproduction 
+			scheme will be reset to the default mutate random parent 
+			reproduction scheme.
+			
+			Example:
+		
+			Defining a custom reproduction scheme, ...
+			
+			(begin code)
+			
+			(end)
+			
+			Setting the new custom reproduction scheme as the reproduction scheme to be used
+			
+			(begin code)
+			setReproductionScheme(params, ..., "...");
+			(end)
+			
+		See Also:
+			<setFitnessFunction>, <setSelectionScheme>				
+		
 	*/
 	DLL_EXPORT void setReproductionScheme(struct parameters *params, void
 	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName);
