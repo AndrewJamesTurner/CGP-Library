@@ -1349,6 +1349,13 @@
 	*/
 	DLL_EXPORT void freeResults(struct results *rels);
 
+
+	/*
+		Function: saveResults
+	*/
+	DLL_EXPORT void saveResults(struct results *rels, char *fileName);
+
+
 	/*
 		Function: getChromosome
 			Gets a copy of the best chromosome found on the given run in an initialised <results> structure.

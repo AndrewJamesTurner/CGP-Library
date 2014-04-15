@@ -652,7 +652,9 @@ static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos)
 	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
 }
 
-
+/*
+	used by qsort in sortChromosomeArray
+*/
 static int cmpChromosome(const void *a, const void *b){
    
    const struct chromosome *chromoA = (* (struct chromosome **) a);
@@ -1152,6 +1154,9 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 	/* */
 	chromoNew->fitness = chromo->fitness;
 
+	/* */
+	chromoNew->generation = chromo->generation;
+
 	/*  */
 	chromoNew->funcSet = malloc(sizeof(struct functionSet));
 
@@ -1209,6 +1214,43 @@ DLL_EXPORT void freeResults(struct results *rels){
 	free(rels->bestChromosomes);
 	free(rels);
 }
+
+/*
+	saves results structure to file
+*/
+DLL_EXPORT void saveResults(struct results *rels, char *fileName){
+	
+	FILE *fp;
+	int i;
+	
+	struct chromosome *chromoTemp;
+	
+	if(rels == NULL){
+		printf("Warning: cannot save uninitialised results structure. Results not saved.\n");
+		return;
+	}
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		printf("Warning: cannot open '%s' and so cannot save results to that file. Results not saved.\n", fileName);
+		return;
+	}
+	
+	fprintf(fp, "Run,Fitness,Generations,Active Nodes\n");
+		
+	for(i=0; i<rels->numRuns; i++){
+		
+		chromoTemp = getChromosome(rels, i);
+		
+		fprintf(fp, "%d,%f,%d,%d\n", i, chromoTemp->fitness, chromoTemp->generation, chromoTemp->numActiveNodes);
+			
+		freeChromosome(chromoTemp);
+	}
+	
+	fclose(fp);
+}
+
 
 
 DLL_EXPORT int getNumChromosomes(struct results *rels){
@@ -3004,13 +3046,16 @@ static float randFloat(void){
 }
 
 /*
-	simple sort using qsort
+	sort int array using qsort
 */
 static void sortIntArray(int *array, const int length){
 
 	qsort(array, length, sizeof(int), cmpInt);
 }
 
+/*
+	used by qsort in sortIntArray 
+*/
 static int cmpInt(const void * a, const void * b){
    return ( *(int*)a - *(int*)b );
 }

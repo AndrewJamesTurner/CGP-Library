@@ -47,4 +47,4 @@ docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv
