@@ -48,7 +48,7 @@ int main(void){
 	int numOutputs = 1;
 	int nodeArity = 2;
 	
-	int numGens = 100;
+	int numGens = 10000;
 	int numRuns = 3;
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
@@ -65,7 +65,7 @@ int main(void){
 	
 	data = initialiseDataSetFromFile("./examples/symbolic.data");
 	
-	setMutationType(params, "probabilistic");
+	setMutationType(params, "onlyActive");
 	setMutationRate(params, 0.05);
 	
 	setSelectionScheme(params, NULL, "temp");

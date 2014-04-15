@@ -141,6 +141,9 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 /* mutation functions  */
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
+static void probabilisticMutationOnlyActive(struct parameters *params, 
+struct chromosome *chromo);
+
 
 /* selection scheme functions */
 static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
@@ -1469,7 +1472,13 @@ DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
 		params->mutationType = pointMutation;
 		strncpy(params->mutationTypeName, "point", MUTATIONTYPENAMELENGTH);
 	}
+	
+	else if(strncmp(mutationType, "onlyActive", MUTATIONTYPENAMELENGTH) == 0){
 
+		params->mutationType = probabilisticMutationOnlyActive;
+		strncpy(params->mutationTypeName, "onlyActive", MUTATIONTYPENAMELENGTH);
+	}
+	
 	else{
 		printf("\nWarning: mutation type '%s' is invalid. The mutation type must be 'probabilistic' or 'point'. The mutation type has been left unchanged as '%s'.\n", mutationType, params->mutationTypeName);
 	}
@@ -2371,7 +2380,52 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 	}
 }
 
+/*
+	Conductions probabilistic mutation on the active nodes in the give 
+	chromosome. Each chromosome gene is changed to a random valid allele 
+	with a probability specified in parameters.
+*/
+static void probabilisticMutationOnlyActive(struct parameters *params, struct chromosome *chromo){
 
+	int i,j;
+
+	/* for every nodes in the chromosome */
+	for(i=0; i<params->numNodes; i++){
+
+		/* skip inactive nodes */
+		if(chromo->nodes[i]->active == 0){
+			continue;
+		}
+
+		/* mutate the function gene */
+		if(randFloat() <= params->mutationRate){
+			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+
+		/* for every input to each chromosome */
+		for(j=0; j<params->arity; j++){
+
+			/* mutate the node input */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
+			}
+
+			/* mutate the node connection weight */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
+			}
+		}
+	}
+
+	/* for every chromosome output */
+	for(i=0; i<params->numOutputs; i++){
+
+		/* mutate the chromosome output */
+		if(randFloat() <= params->mutationRate){
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
 
 
 

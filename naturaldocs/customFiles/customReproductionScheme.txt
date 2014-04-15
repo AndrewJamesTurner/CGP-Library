@@ -140,11 +140,3 @@ setLambda(params, lambda);
 And that's it, in order to used a custom reproduction scheme it must be defined using the specific prototype and then added as the selection scheme to be used by calling <setReproductionScheme>. To revert back to the default reproduction scheme simply call <setReproductionScheme> with the reproduction scheme variable set as NULL.
 
 
-
-
-
-
-
-
-
-
