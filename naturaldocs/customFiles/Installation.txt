@@ -1,30 +1,30 @@
-Title: Installation 
+Title: Installation
 
 First download CGP-Library from http://www.andrewjamesturner.co.uk and unzip the file.
 
 Simplest:
 
-The simplest method of using CGP-Library is to add cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time. 
+The simplest method of using CGP-Library is to add cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time.
 
 For instance #include "cgp.h" and then compile your program similar too
 
     >$ gcc yourFiles.c cgp.c cgp.h -D NO_DLL
 
- 
+
 Standard:
 
-The standard method of using libraries is to link against the compiled library. For this the library must be compiled into a system specific shared library file.
+The standard method of using dynamic libraries is to link against the compiled library.
 
 Ubuntu:
 
 To compile the shared object (.so) open a terminal in the CGP-Library directory and run
 
     >$ make so
-    
+
 Then copy the generated libcgp.so to /usr/lib by running
 
     >$ sudo cp libcgp.so /usr/lib
-    
+
 Give libcgp.so the necessary permissions by running
 
     >$ sudo chmod 0755 /usr/lib/libcgp.so
@@ -36,13 +36,13 @@ Now copy cgp.h to /usr/include by running
 Finally update the system so it knows about libcgp.so
 
     >$ sudo ldconfig
-    
+
 Once CGP-Library has been installed it can be used by #include <cgp.h> in your project and linking against the .so using the -lcgp compiler flag. Similar too
 
     >$ gcc yourFiles.c -lcgp
 
 Windows:
 
-For windows the .dll has been pre-compiled. So all that is required is to link the complier and the provided CGP-Library.dll; how this is done is IDE/complier dependant. Then simply #include <cgp.h>. 
+For windows the CGP-Library has been pre-compiled into CGP-Library.dll. In order to use CGP-Library.dll there are two options 1) place CGP-Library.dll in the same directory as any executables which use it or 2) place CGP-Library.dll in the standard windows location for dynamic-link library i.e. C:\Windows\System32 for 32bit or C:\Windows\SysWOW64 for 64bit. Then #include "cgp.h" when compiling any programs which use the CGP-Library.
 
 
