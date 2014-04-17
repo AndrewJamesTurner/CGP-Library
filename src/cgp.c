@@ -1369,7 +1369,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 	}
 
 	printf("----------------------------------------------------\n");
-	printf("AVG\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));
+	printf("MEAN\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));
 	printf("----------------------------------------------------\n\n");
 
 	/* restore the original value for the update frequency */
@@ -1402,13 +1402,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	}
 
 	if(data != NULL && params->numInputs != data->numInputs){
-		printf("Error: The number of inputs specified in the data (%d) does not match the number of inputs specified in the parameters (%d).\n", data->numInputs, params->numInputs);
+		printf("Error: The number of inputs specified in the dataSet (%d) does not match the number of inputs specified in the parameters (%d).\n", data->numInputs, params->numInputs);
 		printf("Terminating CGP-Library.\n");
 		exit(0);	
 	}
 
 	if(data != NULL && params->numOutputs != data->numOutputs){
-		printf("Warning: The number of outputs specified in the data (%d) does not match the number of outputs specified in the parameters (%d).\n", data->numOutputs, params->numOutputs);
+		printf("Error: The number of outputs specified in the dataSet (%d) does not match the number of outputs specified in the parameters (%d).\n", data->numOutputs, params->numOutputs);
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
@@ -1506,21 +1506,34 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		/*
 			Set the chromosomes which will be used by the selection scheme
 			dependant upon the evolutionary strategy. i.e. '+' all are used
-			by selection scheme, ',' only the children are.
-			
-			Note: the children are always placed before the parents when both are
-			added to the candidate chromosomes. This ensures neutral genetic drift can 
-			take place.
+			by the selection scheme, ',' only the children are.
 		*/
-		for(i=0; i<numCandidateChromos; i++){
+		if(params->evolutionaryStrategy == '+'){
+			
+			/*
+				Note: the children are placed before the parents to 
+				ensure 'new blood' is always selected over old if the
+				fitness are equal.
+			*/
+			
+			for(i=0; i<numCandidateChromos; i++){
 
-			if(i < params->lambda){
-				copyChromosome(candidateChromos[i], childrenChromos[i] );
-			}
-			else{
-				copyChromosome(candidateChromos[i], parentChromos[i - params->lambda] );
+				if(i < params->lambda){
+					copyChromosome(candidateChromos[i], childrenChromos[i] );
+				}
+				else{
+					copyChromosome(candidateChromos[i], parentChromos[i - params->lambda] );
+				}
 			}
 		}
+		else if(params->evolutionaryStrategy == ','){
+			
+			for(i=0; i<numCandidateChromos; i++){
+				copyChromosome(candidateChromos[i], childrenChromos[i] );
+			}
+		}
+		
+		
 
 		/* select the parents from the candidateChromos */
 		params->selectionScheme(params, parentChromos, candidateChromos, params->mu, numCandidateChromos);

@@ -13,7 +13,7 @@ test: src/test.c src/cgp.c include/cgp.h
 	@$(CC) -o test src/test.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm 
 
 testParity: src/CGP-4bitParity.c src/cgp.c include/cgp.h
-	gcc -o parityTest src/CGP-4bitParity.c src/cgp.c include/cgp.h -g -lm 
+	gcc -o testParity src/CGP-4bitParity.c src/cgp.c include/cgp.h -g -lm 
 
 gettingStarted: examples/gettingStarted.c src/cgp.c include/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
@@ -53,4 +53,4 @@ docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution testParity *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*
