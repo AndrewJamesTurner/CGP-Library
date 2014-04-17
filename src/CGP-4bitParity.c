@@ -7,26 +7,26 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 	struct results *rels = NULL;
 
-	int numInputs = 3;
+	int numInputs = 4;
 	int numNodes = 50;
 	int numOutputs = 1;
 	int nodeArity = 2;
 
 	int numGens = 500000;
-	int numRuns = 5;
+	int numRuns = 20;
 	
 	
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
 	addNodeFunction(params, "or,nor,and,nand");
 
-	setMutationType(params, "probabilistic");
+	setMutationType(params, "point");
 
-	setMutationRate(params, 0.10);
+	setMutationRate(params, 0.03);
 
 	/*printParameters(params);*/
 
-	trainingData = initialiseDataSetFromFile("parity3bit.data");
+	trainingData = initialiseDataSetFromFile("parity4bit.data");
 
 	/*printDataSet(trainingData);*/
 	

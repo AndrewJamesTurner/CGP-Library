@@ -21,7 +21,7 @@
 #include "../include/cgp.h"  
 
 #define POPULATIONSIZE 5
-#define NUMINPUTS 1
+#define NUMINPUTS 3
 #define NUMNODES 30
 #define NUMOUTPUTS 1
 #define ARITY 2
@@ -35,20 +35,19 @@ int main(void){
 	struct chromosome *fittestChromosome = NULL;
 	struct dataSet *trainingData = NULL;
 		
-	float targetFitness = 1;
+	float targetFitness = 0;
 	int maxGens = 10000;
 		
 	float testInputs[NUMINPUTS];
-	float testOutputs[NUMOUTPUTS];
-	
+		
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	
-	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
-	setTargetFitness(params, targetFitness);
-	setMutationType(params, "point");
+	addNodeFunction(params, "or,nor,and,nand");
+	/*setTargetFitness(params, targetFitness);*/
+	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.08);
 	
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("parity3bit.data");
 	
 	for(i=0; i<POPULATIONSIZE; i++){
 		population[i] = initialiseChromosome(params);
@@ -75,7 +74,7 @@ int main(void){
 				copyChromosome(fittestChromosome, population[i]);
 			}
 		}
-		
+				
 		// termination condition
 		if(getChromosomeFitness(fittestChromosome) <= targetFitness){
 			break;
@@ -93,7 +92,10 @@ int main(void){
 		}
 	}
 	
+	printf("gen\tfitness\n");
+	printf("%d\t%f\n", gen, getChromosomeFitness(fittestChromosome));
 	
+	/*
 	printf("Fittest chromosome found has fitness: %f (target %.2f) and %d active nodes.\n", getChromosomeFitness(fittestChromosome), targetFitness, getNumChromosomeActiveNodes(fittestChromosome));
 	
 	printf("\nFittest chromosome");
@@ -112,11 +114,11 @@ int main(void){
 		
 	testInputs[0] = 3;
 	
-	executeChromosome(fittestChromosome, testInputs, testOutputs);
+	executeChromosome(fittestChromosome, testInputs);
 	printf("Using the generated chromosome\n");
 	printf("Applied input: %f\n", testInputs[0]);
-	printf("Generated output: %f\n", testOutputs[0]);
-	
+	printf("Generated output: %f\n", getChromosomeOutput(fittestChromosome,0));
+	*/
 	
 	for(i=0; i<POPULATIONSIZE; i++){
 		freeChromosome(population[i]);

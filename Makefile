@@ -42,6 +42,9 @@ averageBehaviour: examples/averageBehaviour.c src/cgp.c include/cgp.h
 neuroEvolution: examples/neuroEvolution.c src/cgp.c include/cgp.h
 	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
 
+customES: examples/customES.c src/cgp.c include/cgp.h
+	@$(CC) -o customES examples/customES.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
+
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
 	@$(CC) -shared -o libcgp.so cgp.o -lm -O3

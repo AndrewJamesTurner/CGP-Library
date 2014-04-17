@@ -643,12 +643,6 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 */
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
 
-	struct chromosome *chromoTmp;
-		
-	chromoTmp = chromoArray[0];
-	chromoArray[0] = chromoArray[numChromos -1];
-	chromoArray[numChromos -1] = chromoTmp;
-
 	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
 }
 
@@ -1394,7 +1388,6 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	struct chromosome *chromo;
 	struct chromosome *bestChromo;
 	
-
 	struct chromosome **parentChromos;
 	struct chromosome **childrenChromos;
 
@@ -1409,28 +1402,25 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	}
 
 	if(data != NULL && params->numInputs != data->numInputs){
-
 		printf("Error: The number of inputs specified in the data (%d) does not match the number of inputs specified in the parameters (%d).\n", data->numInputs, params->numInputs);
 		printf("Terminating CGP-Library.\n");
-		exit(0);
-		
+		exit(0);	
 	}
 
 	if(data != NULL && params->numOutputs != data->numOutputs){
-
 		printf("Warning: The number of outputs specified in the data (%d) does not match the number of outputs specified in the parameters (%d).\n", data->numOutputs, params->numOutputs);
 		printf("Terminating CGP-Library.\n");
 		exit(0);
 	}
 
-	/* */
+	/* initialise parent chromosomes */
 	parentChromos = malloc(params->mu * sizeof(struct chromosome *));
 
 	for(i=0; i<params->mu; i++){
 		parentChromos[i] = initialiseChromosome(params);
 	}
 
-	/* */
+	/* initialise children chromosomes */
 	childrenChromos = malloc(params->lambda * sizeof(struct chromosome *));
 
 	for(i=0; i<params->lambda; i++){
@@ -1478,7 +1468,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			setChromosomeFitness(params, childrenChromos[i], data);
 		}
 
-		/* check termination conditions */
+		/* get best chromosome */
 		bestChromo = parentChromos[0];
 
 		for(i=1; i<params->mu; i++){
@@ -1496,6 +1486,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		}
 
 		
+		/* check termination conditions */
 		if(getChromosomeFitness(bestChromo) <= params->targetFitness){
 
 			if(params->updateFrequency != 0){
@@ -1516,11 +1507,14 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			Set the chromosomes which will be used by the selection scheme
 			dependant upon the evolutionary strategy. i.e. '+' all are used
 			by selection scheme, ',' only the children are.
+			
+			Note: the children are always placed before the parents when both are
+			added to the candidate chromosomes. This ensures neutral genetic drift can 
+			take place.
 		*/
 		for(i=0; i<numCandidateChromos; i++){
 
 			if(i < params->lambda){
-				
 				copyChromosome(candidateChromos[i], childrenChromos[i] );
 			}
 			else{
@@ -1595,6 +1589,7 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 	for(i=0; i<funcSetDest->numFunctions; i++){
 
 		strncpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i], FUNCTIONNAMELENGTH);
+		
 		funcSetDest->functions[i] = funcSetSrc->functions[i];
 	}
 }
@@ -2022,7 +2017,6 @@ DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome 
 		exit(0);
 	}
 
-
 	/* copy nodes */
 	for(i=0; i<chromoSrc->numNodes; i++){
 		copyNode(chromoDest->nodes[i],  chromoSrc->nodes[i]);
@@ -2116,8 +2110,25 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 
 	int i;
 
+	/*
+	for(i=0; i<numCandidateChromos; i++){
+		printf("%.0f, ", getChromosomeFitness(candidateChromos[i]));
+	}
+
+	printf("\n");
+*/
 	sortChromosomeArray(candidateChromos, numCandidateChromos);
 
+/*
+
+	for(i=0; i<numCandidateChromos; i++){
+		printf("%.0f, ", getChromosomeFitness(candidateChromos[i]));
+	}
+
+	printf("\n");
+	
+	getchar();
+*/
 	for(i=0; i<numParents; i++){
 
 		copyChromosome(parents[i], candidateChromos[i]);
@@ -2201,6 +2212,19 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs
 			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - numInputs]->output;
 		}
 	}
+	
+	/*
+	for(i=0; i<numInputs; i++){
+		printf("%d, ", (int)inputs[i]);
+	}
+	
+	printf("\n%d\n", (int)chromo->outputValues[0]);
+	
+	printChromosome(chromo);
+	
+	
+	getchar();
+	*/
 }
 
 
@@ -3076,6 +3100,9 @@ static void printFunctionSet(struct parameters *params){
 */
 int randInt(int n){
 	
+	return rand() % n;
+	
+	/*
 	int x;
 	int randLimit;
 	int randExcess;
@@ -3089,4 +3116,5 @@ int randInt(int n){
 	while (x > randLimit);
 		
 	return x % n;
+	*/
 }
