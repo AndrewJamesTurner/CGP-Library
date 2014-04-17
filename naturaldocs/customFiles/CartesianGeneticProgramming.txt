@@ -1,0 +1,68 @@
+Title: Cartesian Genetic Programming
+
+Cartesian Genetic Programming (CGP) is a form of Genetic Programming (GP) which is itself a Evolutionary Algorithm (EA). CGP was invented my Julian Miller in the early 2000's and has many advantages over traditional GP.
+
+Title: Evolutionary Algorithms
+
+Evolutionary Algorithms are a super set of CGP.
+
+In order to explain CGP first Evolutionary Algorithms will be introduced. 
+
+Evolutionary Algorithms are a set Artificial Intelligence / Machine Learning search heuristics based on Darwinian evolution. The idea is to describe a 'population' of multiple solutions to a given task in software. Where each solution is called a 'chromosome' or 'genotype' taking the terminology form biology. Each of these chromosomes (solutions) is then assessed a 'fitness' score indicating how well it solves the given task. The fittest of these chromosome are then kept and the weakest removed mimicking survival of the fittest or natural selection. The remaining chromosomes are then treated as 'parents' and used to create new 'child' chromosomes. This process can involve sexual or asexual reproduction i.e. use one parent or two. These new 'child' chromosomes (with/without their parents) form the population of the next 'generation'. This process is repeated until a 'termination condition' is reached. Termination conditions often include a target fitness for a chromosome to reach and a time restraint. 
+
+The process is shown below in pseudo code
+
+(begin code)
+create initial population
+
+while(! terminated)
+
+	calculate chromosome fitnesses
+	Select parent chromosomes
+	create new population form parents
+
+end
+(end)
+
+Evolutionary Algorithms therefore involve several stages which are now described further.
+
+- creating initial population
+- calculating fitnesses
+- selection
+- reproduction
+
+Creating Initial Population:
+
+The original population typically takes one of two forms. Either it is populated with randomly generated chromosomes or it is seeded with specific chromosomes. These specific chromosomes may include partial solutions which need to be completed or current solutions which might be improved. 
+
+Calculating Fitnesses:
+
+The function which assigns a fitness to each chromosome is commonly called the fitness function. How the fitness function operates is dependant upon the problem being solved and the chromosome encoding but it must assign a fitness value to each chromosome. As this fitness value is only used to choose between chromosomes, it is not necessary that the perfect fitness be known; only that one chromosome is better than another.
+
+Selection:
+
+The method used to select the members of the population to be kept is referred to as the 'selection scheme'. Selections schemes can be very simple, just select the fittest chromosomes, or more complex, select chromosomes which represent the most novel solutions.
+
+Reproduction:
+
+There are two main ways in which new child chromosomes can be created from their parents. The first mimics asexual reproduction where the child is simply a mutated copy of the parent chromosome. The second mimics sexual reproduction where the child contains genetic material from both parents with or without mutation. The second method is refereed to as 'recombination' or 'crossover'. How mutation and recombination are implemented depends on the encoding of the chromosomes.
+
+Title: Cartesian Genetic Programming
+
+Now Evolutionary Algorithms have been explained CGP can be introduced.
+
+Cartesian Genetic Programming evolves chromosomes which represent programs. That is to say the object being evolved is a program which completes a given task. These programs can be 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
