@@ -4,7 +4,7 @@ First download CGP-Library from http://www.andrewjamesturner.co.uk and unzip the
 
 Simplest:
 
-The simplest method of using CGP-Library is to add cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time.
+The simplest method of using the CGP-Library is to include cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time.
 
 For instance #include "cgp.h" and then compile your program similar too
 
@@ -33,16 +33,20 @@ Now copy cgp.h to /usr/include by running
 
     >$ sudo cp include/cgp.h /usr/include/
 
-Finally update the system so it knows about libcgp.so
+Now update the system so it knows about libcgp.so
 
     >$ sudo ldconfig
+   
+Finally to check that CGP-Library has been installed    
+    
+	>ldconfig -p | grep libcgp    
 
-Once CGP-Library has been installed it can be used by #include <cgp.h> in your project and linking against the .so using the -lcgp compiler flag. Similar too
+Once CGP-Library has been installed it can be used by #include <cgp.h> in your project and linking against the libcgp.so using the -lcgp compiler flag. Similar to
 
     >$ gcc yourFiles.c -lcgp
 
 Windows:
 
-For windows the CGP-Library has been pre-compiled into CGP-Library.dll. In order to use CGP-Library.dll there are two options 1) place CGP-Library.dll in the same directory as any executables which use it or 2) place CGP-Library.dll in the standard windows location for dynamic-link library i.e. C:\Windows\System32 for 32bit or C:\Windows\SysWOW64 for 64bit. Then #include "cgp.h" when compiling any programs which use the CGP-Library.
+For windows the CGP-Library has been pre-compiled into CGP-Library.dll. In order to use CGP-Library.dll there are two options 1) place CGP-Library.dll in the same directory as any executables which use the CGP-Library, or 2) place CGP-Library.dll in the standard windows location for dynamic-link library i.e. C:\Windows\System32 for 32bit or C:\Windows\SysWOW64 for 64bit. Then #include "cgp.h" when compiling any programs which use the CGP-Library.
 
 

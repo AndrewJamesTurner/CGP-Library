@@ -68,7 +68,12 @@ First standard header files are used along with cgp.h.
 #include "../include/cgp.h"  
 (end)
 
-A number of #defines are used to keep the main function neat. The NUMINPUTS and NUMOUTPUTS describe how many inputs and outputs each sample in the <dataSet> will have. The NUMSAMPLES give the number of samples to be in the created <dataSet>. The INPUTRANGE specified the range of values the input values will take (+/- 5).
+A number of #defines are used to keep the main function neat (no 
+memory management). The NUMINPUTS and NUMOUTPUTS describe how many 
+inputs and outputs each sample in the <dataSet> will have. The 
+NUMSAMPLES give the number of samples to be in the created <dataSet>. 
+The INPUTRANGE specified the range of values the input values will take 
+centred around zero (+/- 5).
 
 (begin code)
 #define NUMINPUTS 1
@@ -77,7 +82,9 @@ A number of #defines are used to keep the main function neat. The NUMINPUTS and 
 #define INPUTRANGE 10.0
 (end)
 
-The data stored in the <dataSet> structures can come from any source but in this tutorial they shall be generated using the following function. The function returns x^6-2x^4+x^2 for a given input x.
+The data stored in a <dataSet> structures can come from any source but 
+in this tutorial they shall be generated using the following function. 
+The function returns x^6 - 2x^4 + x^2 for a given input x.
 
 (begin code)
 float symbolicEq1(float x){
@@ -124,13 +131,13 @@ Now we have an initialised <dataSet> it can be saved to a file using <saveDataSe
 saveDataSet(data, "symbolic.data");
 (end)
 
-Finally the <dataSet> used should be free'd.
+Finally the <dataSet> structure used should be free'd.
 
 (begin code)
 freeDataSet(data);
 (end)
 
-And that's it, <dataSets> can be initialised from arrays using <initialiseDataSetFromArrays> (provided the arrays are in the right form) and then saved to a file using <saveDataSet> to be read in again later. 
+And that's it, <dataSet> structures can be initialised from arrays using <initialiseDataSetFromArrays> (provided the arrays are in the right form) and then saved to a file using <saveDataSet> to be read in again later. 
 
 
 

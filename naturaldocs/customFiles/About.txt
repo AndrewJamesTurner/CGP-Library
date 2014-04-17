@@ -18,7 +18,7 @@ Tutorials:
 
 A number of tutorials are provided to walk new users though the CGG-Library. For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (on ubuntu you may also need to also install xterm for codeblocks to run the programs in its default terminal). 
 
-Although the tutorials cover basic and advance usage they do not cover every function described in the <API> so be sure to give it a read also.
+Although the tutorials cover basic and advance usage they do not cover every function described in the <API> so be sure to give it a read.
 
 Author:
 
@@ -28,7 +28,7 @@ Homepage: <http://andrewjamesturner.co.uk/>
 
 Open Source:
 
-CGP-Library is open source'd under the LGPL, which means you have full access to the source files as well as the complied library. See <Licenses> for more details. The CGP-Library project is hosted on github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project.
+CGP-Library is an open source project released under the GNU Lesser General Public License. See <Licenses> for more details. The CGP-Library project is hosted with github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project.
 
 (see github.jpg)
 

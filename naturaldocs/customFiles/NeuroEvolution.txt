@@ -82,7 +82,7 @@ Title: Stepping Through the Code
 
 A close look at each line of the example code.
 
-Artificial neural networks typically output values between [0,1] or [-1,1] therefore the <dataSet> used should contain outputs with these ranges or a custom fitness function should be defined with accommodates these output ranges. Here a custom fitness function shall be described. See <Custom Fitness Function> for further details on defining custom fitness functions.
+Artificial neural networks typically output values between [0,1] or [-1,1] therefore the <dataSet> used should contain outputs with these ranges or a custom fitness function should be defined which accommodates these output ranges. Here a custom fitness function shall be described. See <Custom Fitness Function> for further details on defining custom fitness functions.
 
 The custom fitness function defined here assesses how accurately the given chromosome implements a sin wave. 
 
