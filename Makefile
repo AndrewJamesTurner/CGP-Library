@@ -12,6 +12,9 @@ CFLAGS= -pedantic -Wall
 test: src/test.c src/cgp.c include/cgp.h
 	@$(CC) -o test src/test.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm 
 
+testParity: src/CGP-4bitParity.c src/cgp.c include/cgp.h
+	gcc -o parityTest src/CGP-4bitParity.c src/cgp.c include/cgp.h -g -lm 
+
 gettingStarted: examples/gettingStarted.c src/cgp.c include/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
 

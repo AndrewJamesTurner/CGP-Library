@@ -1520,6 +1520,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		for(i=0; i<numCandidateChromos; i++){
 
 			if(i < params->lambda){
+				
 				copyChromosome(candidateChromos[i], childrenChromos[i] );
 			}
 			else{
@@ -1860,10 +1861,6 @@ DLL_EXPORT int getNumInputs(struct parameters *params){
 DLL_EXPORT int getNumOutputs(struct parameters *params){
 	return params->numOutputs;
 }
-
-
-
-
 
 
 
@@ -2666,17 +2663,15 @@ static float tangent(const int numInputs, const float *inputs, const float *conn
 static float and(const int numInputs, const float *inputs, const float *connectionWeights){
 
 	int i;
-	float out = 1;
-
+	
 	for(i=0; i<numInputs; i++){
 
 		if(inputs[i] == 0){
-			out = 0;
-			break;
+			return 0;
 		}
 	}
 
-	return out;
+	return 1;
 }
 
 
@@ -2687,17 +2682,15 @@ static float and(const int numInputs, const float *inputs, const float *connecti
 static float nand(const int numInputs, const float *inputs, const float *connectionWeights){
 
 	int i;
-	float out = 0;
-
+	
 	for(i=0; i<numInputs; i++){
 
 		if(inputs[i] == 0){
-			out = 1;
-			break;
+			return 1;
 		}
 	}
 
-	return out;
+	return 0;
 }
 
 
@@ -2708,17 +2701,15 @@ static float nand(const int numInputs, const float *inputs, const float *connect
 static float or(const int numInputs, const float *inputs, const float *connectionWeights){
 
 	int i;
-	float out = 0;
-
+	
 	for(i=0; i<numInputs; i++){
 
 		if(inputs[i] == 1){
-			out = 1;
-			break;
+			return 1;
 		}
 	}
 
-	return out;
+	return 0;
 }
 
 
@@ -2729,17 +2720,15 @@ static float or(const int numInputs, const float *inputs, const float *connectio
 static float nor(const int numInputs, const float *inputs, const float *connectionWeights){
 
 	int i;
-	float out = 1;
-
+	
 	for(i=0; i<numInputs; i++){
 
 		if(inputs[i] == 1){
-			out = 0;
-			break;
+			return 0;
 		}
 	}
 
-	return out;
+	return 1;
 }
 
 
