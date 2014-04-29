@@ -887,7 +887,7 @@
 		
 			Saves the given <chromosome> to a graphviz .dot file.
 		
-			graphviz (www.graphviz.org/‎) is a free open source graph 
+			graphviz (www.graphviz.org) is a free open source graph 
 			drawing tool. Once installed graphviz can be used to draw the 
 			<chromosomes> saved using <saveChromosomeDot> with the following 
 			command.
