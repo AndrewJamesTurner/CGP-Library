@@ -25,6 +25,10 @@
 
 #include "../include/cgp.h"
 
+/*
+	Hard limits on the size of the function set 
+	and the names of various functions.
+*/
 #define FUNCTIONSETSIZE 50
 #define FUNCTIONNAMELENGTH 11
 #define FITNESSFUNCTIONNAMELENGTH 21
@@ -372,6 +376,7 @@ DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
 	params->numNodes = numNodes;
 }
 
+
 /*
 	sets num chromosome outputs in parameters
 */
@@ -400,8 +405,6 @@ DLL_EXPORT void setArity(struct parameters *params, int arity){
 
 	params->arity = arity;
 }
-
-
 
 
 /*
@@ -528,6 +531,7 @@ DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproduc
 	}
 }
 
+
 /*
 	Sets the target fitness
 */
@@ -579,338 +583,10 @@ DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequenc
 }
 
 
-/*
-	set the active nodes in the given chromosome
-*/
-static void setChromosomeActiveNodes(struct chromosome *chromo){
-
-	int i;
-
-	/* set the number of active nodes to zero */
-	chromo->numActiveNodes = 0;
-
-	/* reset the active nodes */
-	for(i = 0; i < chromo->numNodes; i++){
-		chromo->nodes[i]->active = 0;
-	}
-
-	/* start the recursive search for active nodes from the output nodes for the number of output nodes */
-	for(i=0; i < chromo->numOutputs; i++){
-
-		/* if the output connects to a chromosome input, skip */
-		if(chromo->outputNodes[i] < chromo->numInputs){
-			continue;
-		}
-
-		/* begin a recursive search for active nodes */
-		recursivelySetActiveNodes(chromo, chromo->outputNodes[i]);
-	}
-
-	/* place active nodes in order */
-	sortIntArray(chromo->activeNodes, chromo->numActiveNodes);
-}
-
-/*
-	used by setActiveNodes to recursively search for active nodes
-*/
-static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
-
-	int i;
-
-	/* if the given node is an input, stop */
-	if(nodeIndex < chromo->numInputs){
-		return;
-	}
-
-	/* if the given node has already been flagged as active */
-	if(chromo->nodes[nodeIndex - chromo->numInputs]->active == 1){
-		return;
-	}
-
-	/* log the node as active */
-	chromo->nodes[nodeIndex - chromo->numInputs]->active = 1;
-	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - chromo->numInputs;
-	chromo->numActiveNodes++;
-
-	/* recursively log all the nodes to which the current nodes connect as active */
-	for(i=0; i < chromo->arity; i++){
-		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
-	}
-}
-
-/*
-	Switches the first chromosome with the last and then sorts the population.
-*/
-static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
-
-	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
-}
-
-/*
-	used by qsort in sortChromosomeArray
-*/
-static int cmpChromosome(const void *a, const void *b){
-   
-   const struct chromosome *chromoA = (* (struct chromosome **) a);
-   const struct chromosome *chromoB = (* (struct chromosome **) b);
-        
-   if(chromoA->fitness < chromoB->fitness){
-	   return -1;
-   }    
-   else if(chromoA->fitness == chromoB->fitness){
-	   return 0;
-   }
-   else{
-	   return 1;
-   }  
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 	chromosome function definitions
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-	save the given chromosome to a graphviz .dot file
-	(www.graphviz.org/‎)
-*/
-DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName){
-	
-	int i,j;
-	FILE *fp;
-	
-	char colour[20];
-	char weight[20];
-	
-	fp = fopen(fileName, "w");
-	
-	if(fp == NULL){
-		return;
-	}
-	
-	/* */
-	fprintf(fp, "digraph NeuralNetwork {\n");
-	
-	/* landscape, square and centre */
-	fprintf(fp, "rankdir=LR;\n");
-	fprintf(fp, "size=\"4,3\";\n");	
-	fprintf(fp, "center = true;\n");	
-	
-	/* for all the inputs */
-	for(i=0; i < getNumChromosomeInputs(chromo); i++){
-		
-		fprintf(fp, "node%d [label=\"Input %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i, i);
-	}
-	
-	/* for all nodes */
-	for(i=0; i<getNumChromosomeNodes(chromo); i++){
-		
-		if(chromo->nodes[i]->active == 1){
-			strncpy(colour, "black", 20);
-		}
-		else{
-			strncpy(colour, "lightgrey", 20);
-		}
-		
-		fprintf(fp, "node%d [label=\"%s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
-		
-		/* for each node input */
-		for(j=0; j<getChromosomeNodeArity(chromo); j++){
-			
-			if(weights == 1){
-				snprintf(weight, 20, "%f", chromo->nodes[i]->weights[j]);
-			}
-			else{
-				snprintf(weight, 20, " ");
-			}
-			
-			
-			fprintf(fp, "node%d -> node%d [label=\"%s\", labelfontcolor=%s, fontcolor=%s, bold=true, color=%s];\n", chromo->nodes[i]->inputs[j], i+getNumChromosomeInputs(chromo), weight, colour, colour, colour);	
-		}
-	}
-	
-	for(i=0; i<getNumChromosomeOutputs(chromo); i++){
-				
-		fprintf(fp, "node%d [label=\"Output %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i+getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo), i);
-		
-		fprintf(fp, "node%d -> node%d [labelfontcolor=black, fontcolor=black, bold=true, color=black];\n", chromo->outputNodes[i], i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));	
-	} 
-	
-	
-	/* place inputs  on same line */
-	fprintf(fp, "{ rank = source;");
-	
-	for(i=0; i < getNumChromosomeInputs(chromo); i++){
-		fprintf(fp, " \"node%d\";", i);
-	}
-	fprintf(fp, " }\n");
-	
-		
-	/* place outputs  on same line */
-	fprintf(fp, "{ rank = max;");
-	
-	for(i = 0; i < getNumChromosomeOutputs(chromo); i++){
-		fprintf(fp, "\"node%d\";", i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));
-	}
-	fprintf(fp, " }\n");
-	
-	
-	
-	/* last line of dot file */
-	fprintf(fp, "}");
-	
-	fclose(fp);
-}
-
-
-/*
-	Sets the random number seed
-*/
-DLL_EXPORT void setRandomNumberSeed(unsigned int seed){
-	srand(seed);
-}
-
-/*
-	Gets the number of chromosome inputs
-*/
-DLL_EXPORT int getNumChromosomeInputs(struct chromosome *chromo){
-	return chromo->numInputs;
-}
-
-/*
-	Gets the number of chromosome nodes
-*/
-DLL_EXPORT int getNumChromosomeNodes(struct chromosome *chromo){
-	return chromo->numNodes;
-}
-
-DLL_EXPORT int getNumChromosomeOutputs(struct chromosome *chromo){
-	return chromo->numOutputs;
-}
-
-DLL_EXPORT int getNumChromosomeActiveNodes(struct chromosome *chromo){
-	return chromo->numActiveNodes;
-}
-
-DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo){
-	return chromo->arity;
-}
-
-
-DLL_EXPORT int getNumDataSetInputs(struct dataSet *data){
-	return data->numInputs;
-}
-
-DLL_EXPORT int getNumDataSetOutputs(struct dataSet *data){
-	return data->numOutputs;
-}
-
-DLL_EXPORT int getNumDataSetSamples(struct dataSet *data){
-	return data->numSamples;
-}
-
-DLL_EXPORT float *getDataSetSampleInputs(struct dataSet *data, int sample){
-	return data->inputData[sample];
-}
-
-DLL_EXPORT float getDataSetSampleInput(struct dataSet *data, int sample, int input){
-	return data->inputData[sample][input];
-}
-
-DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample){
-	return data->outputData[sample];
-}
-
-DLL_EXPORT float getDataSetSampleOutput(struct dataSet *data, int sample, int output){
-	return data->outputData[sample][output];
-}
-
-
-DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output){
-	return chromo->outputValues[output];
-}
-
-/*
-	Saves the given chromosome in a form which can be read in later
-*/
-DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName){
-
-	int i,j;
-	FILE *fp;
-
-	/* create the chromosome file */
-	fp = fopen(fileName, "w");
-
-	/* ensure that the file was created correctly */
-	if(fp == NULL){
-		printf("Warning: cannot save chromosome to '%s'. Chromosome was not saved.\n", fileName);
-		return;
-	}
-
-	/* save meta information */
-	fprintf(fp, "numInputs,%d\n", chromo->numInputs);
-	fprintf(fp, "numNodes,%d\n", chromo->numNodes);
-	fprintf(fp, "numOutputs,%d\n", chromo->numOutputs);
-	fprintf(fp, "arity,%d\n", chromo->arity);
-
-	fprintf(fp, "fuctionSet");
-
-	for(i=0; i<chromo->funcSet->numFunctions; i++){
-		fprintf(fp, ",%s", chromo->funcSet->functionNames[i]);
-	}
-	fprintf(fp, "\n");
-
-	/* save the chromosome structure */
-	for(i=0; i<chromo->numNodes; i++){
-
-		fprintf(fp, "%d\n", chromo->nodes[i]->function);
-
-		for(j=0; j<chromo->arity; j++){
-			fprintf(fp, "%d,%f\n", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
-		}
-	}
-
-	for(i=0; i<chromo->numOutputs; i++){
-		fprintf(fp, "%d,", chromo->outputNodes[i]);
-	}
-
-	fclose(fp);
-}
 
 
 /*
@@ -983,6 +659,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 
 	return chromo;
 }
+
 
 /*
 	Reads in saved chromosomes 
@@ -1098,6 +775,7 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 	return chromo;
 }
 
+
 /*
 	Returns a pointer to an initialised chromosome with values obeying the given parameters.
 */
@@ -1166,6 +844,879 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 }
 
 
+/*
+	Frees the memory associated with the given chromosome structure
+*/
+DLL_EXPORT void freeChromosome(struct chromosome *chromo){
+
+	int i;
+
+	/* attempt to prevent user double freeing */
+	if(chromo == NULL){
+		return;
+	}
+
+	for(i=0; i < chromo->numNodes; i++){
+		freeNode(chromo->nodes[i]);
+	}
+
+	free(chromo->nodeInputsHold);
+	free(chromo->funcSet);
+	free(chromo->outputValues);
+	free(chromo->nodes);
+	free(chromo->outputNodes);
+	free(chromo->activeNodes);
+	free(chromo);
+}
+
+
+
+/*
+	Prints the given chromosome to the screen
+*/
+DLL_EXPORT void printChromosome(struct chromosome *chromo){
+
+	int i,j;
+
+	/* set the active nodes in the given chromosome */
+	setChromosomeActiveNodes(chromo);
+
+	/* for all the chromo inputs*/
+	for(i=0; i<chromo->numInputs; i++){
+		printf("(%d):\tinput\n", i);
+	}
+
+	/* for all the hidden nodes */
+	for(i = 0; i < chromo->numNodes; i++){
+
+		/* print the node function */
+		printf("(%d):\t%s\t", chromo->numInputs + i, chromo->funcSet->functionNames[chromo->nodes[i]->function]);
+
+		/* for the arity of the node */
+		for(j = 0; j < chromo->arity; j++){
+
+			/* print the node input information */
+			printf("%d,%+.1f\t", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
+		}
+
+		/* Highlight active nodes */
+		if(chromo->nodes[i]->active == 1){
+			printf("*");
+		}
+
+		printf("\n");
+	}
+
+	/* for all of the outputs */
+	printf("outputs: ");
+	for(i = 0; i < chromo->numOutputs; i++){
+
+		/* print the output node locations */
+		printf("%d ", chromo->outputNodes[i]);
+	}
+
+	printf("\n\n");
+}
+
+
+
+/*
+	Executes the given chromosome
+*/
+DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs){
+
+	int i,j;
+	int nodeInputLocation;
+	int currentActiveNode;
+	int currentActiveNodeFuction;
+
+	const int numInputs = chromo->numInputs;
+	const int numActiveNodes = chromo->numActiveNodes;
+	const int numOutputs = chromo->numOutputs;
+	const int arity = chromo->arity;
+
+	/* error checking */
+	if(chromo == NULL){
+		printf("Error: cannot execute uninitialised chromosome.\n Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+
+	/* for all of the active nodes */
+	for(i=0; i<numActiveNodes; i++){
+
+		/* get the index of the current active node */
+		currentActiveNode = chromo->activeNodes[i];
+
+		/* for each of the active nodes inputs */
+		for(j=0; j<arity; j++){
+
+			/* gather the nodes inputs */
+			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
+
+			if(nodeInputLocation < numInputs){
+				chromo->nodeInputsHold[j] = inputs[nodeInputLocation];
+			}
+			else{
+				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - numInputs]->output;
+			}
+		}
+
+		/* get the index of the active node under evaluation */
+		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
+
+		/* calculate the output of the active node under evaluation */
+		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+
+
+		/* prevent float form going to inf and -inf */
+		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
+
+			if(chromo->nodes[currentActiveNode]->output > 0){
+				chromo->nodes[currentActiveNode]->output = FLT_MAX;
+			}
+			else{
+				chromo->nodes[currentActiveNode]->output = FLT_MIN;
+			}
+		}
+
+		/* deal with floats becoming NAN */
+		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
+			chromo->nodes[currentActiveNode]->output = 0;
+		}
+	}
+
+	/* Set the chromosome outputs */ 
+	for(i=0; i<numOutputs; i++){
+
+		if(chromo->outputNodes[i] < numInputs){
+			chromo->outputValues[i] = inputs[chromo->outputNodes[i]];
+		}
+		else{
+			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - numInputs]->output;
+		}
+	}
+}
+
+/*
+	used to access the chromosome outputs after executeChromosome
+	has been called
+*/
+DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output){
+	return chromo->outputValues[output];
+}
+
+
+
+/*
+	Saves the given chromosome in a form which can be read in later
+*/
+DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName){
+
+	int i,j;
+	FILE *fp;
+
+	/* create the chromosome file */
+	fp = fopen(fileName, "w");
+
+	/* ensure that the file was created correctly */
+	if(fp == NULL){
+		printf("Warning: cannot save chromosome to '%s'. Chromosome was not saved.\n", fileName);
+		return;
+	}
+
+	/* save meta information */
+	fprintf(fp, "numInputs,%d\n", chromo->numInputs);
+	fprintf(fp, "numNodes,%d\n", chromo->numNodes);
+	fprintf(fp, "numOutputs,%d\n", chromo->numOutputs);
+	fprintf(fp, "arity,%d\n", chromo->arity);
+
+	fprintf(fp, "fuctionSet");
+
+	for(i=0; i<chromo->funcSet->numFunctions; i++){
+		fprintf(fp, ",%s", chromo->funcSet->functionNames[i]);
+	}
+	fprintf(fp, "\n");
+
+	/* save the chromosome structure */
+	for(i=0; i<chromo->numNodes; i++){
+
+		fprintf(fp, "%d\n", chromo->nodes[i]->function);
+
+		for(j=0; j<chromo->arity; j++){
+			fprintf(fp, "%d,%f\n", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
+		}
+	}
+
+	for(i=0; i<chromo->numOutputs; i++){
+		fprintf(fp, "%d,", chromo->outputNodes[i]);
+	}
+
+	fclose(fp);
+}
+
+
+/*
+	save the given chromosome to a graphviz .dot file
+	(www.graphviz.org/‎)
+*/
+DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName){
+	
+	int i,j;
+	FILE *fp;
+	
+	char colour[20];
+	char weight[20];
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		return;
+	}
+	
+	/* */
+	fprintf(fp, "digraph NeuralNetwork {\n");
+	
+	/* landscape, square and centre */
+	fprintf(fp, "rankdir=LR;\n");
+	fprintf(fp, "size=\"4,3\";\n");	
+	fprintf(fp, "center = true;\n");	
+	
+	/* for all the inputs */
+	for(i=0; i < getNumChromosomeInputs(chromo); i++){
+		
+		fprintf(fp, "node%d [label=\"Input %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i, i);
+	}
+	
+	/* for all nodes */
+	for(i=0; i<getNumChromosomeNodes(chromo); i++){
+		
+		if(chromo->nodes[i]->active == 1){
+			strncpy(colour, "black", 20);
+		}
+		else{
+			strncpy(colour, "lightgrey", 20);
+		}
+		
+		fprintf(fp, "node%d [label=\"%s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
+		
+		/* for each node input */
+		for(j=0; j<getChromosomeNodeArity(chromo); j++){
+			
+			if(weights == 1){
+				snprintf(weight, 20, "%f", chromo->nodes[i]->weights[j]);
+			}
+			else{
+				snprintf(weight, 20, " ");
+			}
+			
+			
+			fprintf(fp, "node%d -> node%d [label=\"%s\", labelfontcolor=%s, fontcolor=%s, bold=true, color=%s];\n", chromo->nodes[i]->inputs[j], i+getNumChromosomeInputs(chromo), weight, colour, colour, colour);	
+		}
+	}
+	
+	for(i=0; i<getNumChromosomeOutputs(chromo); i++){
+				
+		fprintf(fp, "node%d [label=\"Output %d\", color=black, labelfontcolor=black, fontcolor=black];\n", i+getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo), i);
+		
+		fprintf(fp, "node%d -> node%d [labelfontcolor=black, fontcolor=black, bold=true, color=black];\n", chromo->outputNodes[i], i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));	
+	} 
+	
+	
+	/* place inputs  on same line */
+	fprintf(fp, "{ rank = source;");
+	
+	for(i=0; i < getNumChromosomeInputs(chromo); i++){
+		fprintf(fp, " \"node%d\";", i);
+	}
+	fprintf(fp, " }\n");
+	
+		
+	/* place outputs  on same line */
+	fprintf(fp, "{ rank = max;");
+	
+	for(i = 0; i < getNumChromosomeOutputs(chromo); i++){
+		fprintf(fp, "\"node%d\";", i + getNumChromosomeInputs(chromo) + getNumChromosomeNodes(chromo));
+	}
+	fprintf(fp, " }\n");
+	
+	
+	
+	/* last line of dot file */
+	fprintf(fp, "}");
+	
+	fclose(fp);
+}
+
+
+/*
+	Mutates the given chromosome using the mutation method described in parameters
+*/
+DLL_EXPORT void mutateChromosome(struct parameters *params, struct chromosome *chromo){
+
+	params->mutationType(params, chromo);
+
+	setChromosomeActiveNodes(chromo);
+}
+
+
+/*
+	removes the inactive nodes from the given chromosome
+*/
+DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
+
+	int i,j,k;
+
+	int originalNumNodes = chromo->numNodes;
+
+	/* set the active nodes */
+	setChromosomeActiveNodes(chromo);
+
+	/* for all nodes */
+	for(i=0; i<chromo->numNodes-1; i++){
+
+		/* if the node is inactive */
+		if(chromo->nodes[i]->active == 0){
+
+			/* set the node to be the next node */
+			for(j=i; j<chromo->numNodes-1; j++){
+				copyNode(chromo->nodes[j], chromo->nodes[j+1]);
+			}
+
+			/* */
+			for(j=0; j<chromo->numNodes; j++){
+				for(k=0; k<chromo->arity; k++){
+
+					if(chromo->nodes[j]->inputs[k] >= i + chromo->numInputs){
+						chromo->nodes[j]->inputs[k]--;
+					}
+				}
+			}
+			
+			/* for the number of chromosome outputs */
+			for(j=0; j<chromo->numOutputs; j++){
+
+				if(chromo->outputNodes[j] >= i + chromo->numInputs){
+					chromo->outputNodes[j]--;
+				}
+			}
+
+			/* de-increment the number of nodes */
+			chromo->numNodes--;
+
+			/* made the newly assigned node be evaluated */
+			i--;
+		}
+	}
+
+	for(i=chromo->numNodes; i<originalNumNodes; i++){
+		freeNode(chromo->nodes[i]);
+	}
+
+	if(chromo->nodes[chromo->numNodes-1]->active == 0){
+		freeNode(chromo->nodes[chromo->numNodes-1]);
+		chromo->numNodes--;
+	}
+
+	/* reallocate the memory associated with the chromosome */
+	chromo->nodes = realloc(chromo->nodes, chromo->numNodes * sizeof(struct node));
+	chromo->activeNodes = realloc(chromo->activeNodes, chromo->numNodes * sizeof(int));
+
+	/* set the active nodes */
+	setChromosomeActiveNodes(chromo);
+}
+
+
+/*
+	sets the fitness of the given chromosome
+*/
+DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+
+	float fitness;
+
+	setChromosomeActiveNodes(chromo);
+
+	fitness = params->fitnessFunction(params, chromo, data);
+
+	chromo->fitness = fitness;
+}
+
+
+/*
+	copies the contents of one chromosome to another. Provided the number of inputs, nodes, outputs and node arity are the same.
+*/
+DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc){
+
+	int i;
+
+	/* error checking  */
+	if(chromoDest->numInputs != chromoSrc->numInputs){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome inputs do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	if(chromoDest->numNodes != chromoSrc->numNodes){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome nodes do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	if(chromoDest->numOutputs != chromoSrc->numOutputs){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome outputs do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	if(chromoDest->arity != chromoSrc->arity){
+		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The arity of the chromosome nodes do not match.\n");
+		printf("Terminating CGP-Library.\n");
+		exit(0);
+	}
+
+	/* copy nodes */
+	for(i=0; i<chromoSrc->numNodes; i++){
+		copyNode(chromoDest->nodes[i],  chromoSrc->nodes[i]);
+	}
+
+	/* copy fuctionset */
+	copyFuctionSet(chromoDest->funcSet, chromoSrc->funcSet);
+
+	/* copy each of the chromosomes outputs */
+	for(i=0; i<chromoSrc->numOutputs; i++){
+		chromoDest->outputNodes[i] = chromoSrc->outputNodes[i];
+	}
+
+	/* copy the active node matrix */
+	for(i=0; i<chromoSrc->numNodes; i++){
+		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
+	}
+
+	/* copy the number of active node */
+	chromoDest->numActiveNodes = chromoSrc->numActiveNodes;
+
+	/* copy the fitness */
+	chromoDest->fitness = chromoSrc->fitness;
+
+	/* copy generation */
+	chromoDest->generation = chromoSrc->generation;
+}
+
+/*
+	Gets the number of chromosome inputs
+*/
+DLL_EXPORT int getNumChromosomeInputs(struct chromosome *chromo){
+	return chromo->numInputs;
+}
+
+/*
+	Gets the number of chromosome nodes
+*/
+DLL_EXPORT int getNumChromosomeNodes(struct chromosome *chromo){
+	return chromo->numNodes;
+}
+
+/*
+	Gets the number of chromosome active nodes
+*/
+DLL_EXPORT int getNumChromosomeActiveNodes(struct chromosome *chromo){
+	return chromo->numActiveNodes;
+}
+
+/*
+	Gets the number of chromosome outputs
+*/
+DLL_EXPORT int getNumChromosomeOutputs(struct chromosome *chromo){
+	return chromo->numOutputs;
+}
+
+/*
+	Gets the chromosome node arity
+*/
+DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo){
+	return chromo->arity;
+}
+
+/*
+	Gets the chromosome fitness
+*/
+DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo){
+	return chromo->fitness;
+}
+
+/*
+	Gets the number of generations required to find the given chromosome 
+*/
+DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo){
+	return chromo->generation;
+}
+
+
+/*
+	set the active nodes in the given chromosome
+*/
+static void setChromosomeActiveNodes(struct chromosome *chromo){
+
+	int i;
+
+	/* set the number of active nodes to zero */
+	chromo->numActiveNodes = 0;
+
+	/* reset the active nodes */
+	for(i = 0; i < chromo->numNodes; i++){
+		chromo->nodes[i]->active = 0;
+	}
+
+	/* start the recursive search for active nodes from the output nodes for the number of output nodes */
+	for(i=0; i < chromo->numOutputs; i++){
+
+		/* if the output connects to a chromosome input, skip */
+		if(chromo->outputNodes[i] < chromo->numInputs){
+			continue;
+		}
+
+		/* begin a recursive search for active nodes */
+		recursivelySetActiveNodes(chromo, chromo->outputNodes[i]);
+	}
+
+	/* place active nodes in order */
+	sortIntArray(chromo->activeNodes, chromo->numActiveNodes);
+}
+
+
+/*
+	used by setActiveNodes to recursively search for active nodes
+*/
+static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
+
+	int i;
+
+	/* if the given node is an input, stop */
+	if(nodeIndex < chromo->numInputs){
+		return;
+	}
+
+	/* if the given node has already been flagged as active */
+	if(chromo->nodes[nodeIndex - chromo->numInputs]->active == 1){
+		return;
+	}
+
+	/* log the node as active */
+	chromo->nodes[nodeIndex - chromo->numInputs]->active = 1;
+	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - chromo->numInputs;
+	chromo->numActiveNodes++;
+
+	/* recursively log all the nodes to which the current nodes connect as active */
+	for(i=0; i < chromo->arity; i++){
+		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
+	}
+}
+
+
+/*
+	Switches the first chromosome with the last and then sorts the population.
+*/
+static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
+
+	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
+}
+
+
+/*
+	used by qsort in sortChromosomeArray
+*/
+static int cmpChromosome(const void *a, const void *b){
+   
+   const struct chromosome *chromoA = (* (struct chromosome **) a);
+   const struct chromosome *chromoB = (* (struct chromosome **) b);
+        
+   if(chromoA->fitness < chromoB->fitness){
+	   return -1;
+   }    
+   else if(chromoA->fitness == chromoB->fitness){
+	   return 0;
+   }
+   else{
+	   return 1;
+   }  
+}
+
+
+
+/*
+	Dataset functions
+*/
+
+
+/*
+	Initialises data structure and assigns values of given arrays
+	arrays must take the form
+	inputs[numSamples][numInputs]
+	outputs[numSamples][numOutputs]
+*/
+DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
+
+	int i,j;
+	struct dataSet *data;
+
+	/* initialise memory for data structure */
+	data = malloc(sizeof(struct dataSet));
+
+	data->numInputs = numInputs;
+	data->numOutputs = numOutputs;
+	data->numSamples = numSamples;
+
+	data->inputData = malloc(data->numSamples * sizeof(float**));
+	data->outputData = malloc(data->numSamples * sizeof(float**));
+
+	for(i=0; i<data->numSamples; i++){
+
+		data->inputData[i] = malloc(data->numInputs * sizeof(float));
+		data->outputData[i] = malloc(data->numOutputs * sizeof(float));
+
+		for(j=0; j<data->numInputs; j++){
+			data->inputData[i][j] = inputs[(i*data->numInputs) + j];
+		}
+
+		for(j=0; j<data->numOutputs; j++){
+			data->outputData[i][j] = outputs[(i*data->numOutputs) + j];
+		}
+	}
+
+	return data;
+}
+
+
+/*
+	Initialises data structure and assigns values of given file
+*/
+DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char *file){
+
+	int i;
+	struct dataSet *data;
+	FILE *fp;
+	char *line, *record;
+	char buffer[1024];
+	int lineNum = -1;
+	int col;
+
+	/* attempt to open the given file */
+	fp = fopen(file, "r");
+
+	/* if the file cannot be found */
+	if(fp == NULL){
+		printf("Error: file '%s' cannot be found.\nTerminating CGP-Library.\n", file);
+		exit(0);
+	}
+
+	/* initialise memory for data structure */
+	data = malloc(sizeof(struct dataSet));
+
+	/* for every line in the given file */
+	while( (line=fgets(buffer, sizeof(buffer), fp)) != NULL){
+
+		/* deal with the first line containing meta data */
+		if(lineNum == -1){
+
+			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
+
+			data->inputData = malloc(data->numSamples * sizeof(float*));
+			data->outputData = malloc(data->numSamples * sizeof(float*));
+
+			for(i=0; i<data->numSamples; i++){
+				data->inputData[i] = malloc(data->numInputs * sizeof(float));
+				data->outputData[i] = malloc(data->numOutputs * sizeof(float));
+			}
+		}
+		/* the other lines contain input output pairs */
+		else{
+
+			/* get the first value on the given line */
+			record = strtok(line," ,\n");
+			col = 0;
+
+			/* until end of line */
+			while(record != NULL){
+
+				/* if its an input value */
+				if(col < data->numInputs){
+					data->inputData[lineNum][col] = atof(record);
+				}
+
+				/* if its an output value */
+				else{
+
+					data->outputData[lineNum][col - data->numInputs] = atof(record);
+				}
+
+				/* get the next value on the given line */
+				record = strtok(NULL," ,\n");
+
+				/* increment the current col index */
+				col++;
+			}
+		}
+
+		/* increment the current line index */
+		lineNum++;
+	}
+
+	fclose(fp);
+
+	return data;
+}
+
+
+/*
+	frees given dataSet
+*/
+DLL_EXPORT void freeDataSet(struct dataSet *data){
+
+	int i;
+
+	/* attempt to prevent user double freeing */
+	if(data == NULL){
+		return;
+	}
+
+	for(i=0; i<data->numSamples; i++){
+		free(data->inputData[i]);
+		free(data->outputData[i]);
+	}
+
+	free(data->inputData);
+	free(data->outputData);
+	free(data);
+}
+
+
+/*
+	prints the given data structure to the screen
+*/
+DLL_EXPORT void printDataSet(struct dataSet *data){
+
+	int i,j;
+
+	printf("DATA SET\n");
+	printf("Inputs: %d, ", data->numInputs);
+	printf("Outputs: %d, ", data->numOutputs);
+	printf("Samples: %d\n", data->numSamples);
+
+	for(i=0; i<data->numSamples; i++){
+
+		for(j=0; j<data->numInputs; j++){
+			printf("%f ", data->inputData[i][j]);
+		}
+
+		printf(" : ");
+
+		for(j=0; j<data->numOutputs; j++){
+			printf("%f ", data->outputData[i][j]);
+		}
+
+		printf("\n");
+	}
+}
+
+
+/*
+	saves dataset to file
+*/
+DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName){
+
+	int i,j;
+	FILE *fp;
+
+	fp = fopen(fileName, "w");
+
+	if(fp == NULL){
+		printf("Warning: cannot save data set to %s. Data set was not saved.\n", fileName);
+		return;
+	}
+
+	fprintf(fp, "%d,", data->numInputs);
+	fprintf(fp, "%d,", data->numOutputs);
+	fprintf(fp, "%d,", data->numSamples);
+	fprintf(fp, "\n");
+
+
+	for(i=0; i<data->numSamples; i++){
+
+		for(j=0; j<data->numInputs; j++){
+			fprintf(fp, "%f,", data->inputData[i][j]);
+		}
+
+		for(j=0; j<data->numOutputs; j++){
+			fprintf(fp, "%f,", data->outputData[i][j]);
+		}
+
+		fprintf(fp, "\n");
+	}
+
+	fclose(fp);
+}
+
+
+/*
+
+*/
+DLL_EXPORT int getNumDataSetInputs(struct dataSet *data){
+	return data->numInputs;
+}
+
+
+/*
+
+*/
+DLL_EXPORT int getNumDataSetOutputs(struct dataSet *data){
+	return data->numOutputs;
+}
+
+
+/*
+
+*/
+DLL_EXPORT int getNumDataSetSamples(struct dataSet *data){
+	return data->numSamples;
+}
+
+
+/*
+
+*/
+DLL_EXPORT float *getDataSetSampleInputs(struct dataSet *data, int sample){
+	return data->inputData[sample];
+}
+
+
+/*
+
+*/
+DLL_EXPORT float getDataSetSampleInput(struct dataSet *data, int sample, int input){
+	return data->inputData[sample][input];
+}
+
+
+/*
+
+*/
+DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample){
+	return data->outputData[sample];
+}
+
+
+/*
+
+*/
+DLL_EXPORT float getDataSetSampleOutput(struct dataSet *data, int sample, int output){
+	return data->outputData[sample][output];
+}
+
+
+
+/*
+	Results Functions
+*/
 
 
 /*
@@ -1189,6 +1740,7 @@ struct results* initialiseResults(struct parameters *params, int numRuns){
 	return rels;
 }
 
+
 /*
 	free a initialised results structure 
 */
@@ -1208,6 +1760,7 @@ DLL_EXPORT void freeResults(struct results *rels){
 	free(rels->bestChromosomes);
 	free(rels);
 }
+
 
 /*
 	saves results structure to file
@@ -1246,7 +1799,9 @@ DLL_EXPORT void saveResults(struct results *rels, char *fileName){
 }
 
 
-
+/*
+	Gets the number of chromosomes in the results structure
+*/
 DLL_EXPORT int getNumChromosomes(struct results *rels){
 	return rels->numRuns;
 }
@@ -1275,6 +1830,7 @@ DLL_EXPORT float getAverageActiveNodes(struct results *rels){
 	return avgActiveNodes;
 }
 
+
 /*
 	returns the average chromosome fitness from repeated
 	run results specified in rels.
@@ -1298,6 +1854,7 @@ DLL_EXPORT float getAverageFitness(struct results *rels){
 	return avgFit;
 }
 
+
 /*
 	returns the number of generations used by each run  specified in rels.
 */
@@ -1320,12 +1877,6 @@ DLL_EXPORT float getAverageGenerations(struct results *rels){
 	return avgGens;
 }
 
-/*
-	returns the number of generations required to find the given chromosome 
-*/
-DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo){
-	return chromo->generation;
-}
 
 /*
 	returns a pointer to a copy of the best chromosomes found on the given run in rels.
@@ -1344,6 +1895,211 @@ DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run){
 
 	return chromo;
 }
+
+
+
+
+
+/*
+	CGP Functions
+*/
+
+
+/*
+	Other Functions
+*/
+
+
+
+
+
+
+
+
+/*
+	Mutation Methods
+*/
+
+
+
+/*
+	Conductions point mutation on the give chromosome. A predetermined
+	number of chromosome genes are randomly selected and changed to
+	a random valid allele. The number of mutations is the number of chromosome
+	genes multiplied by the mutation rate. Each gene has equal probability
+	of being selected.
+*/
+static void pointMutation(struct parameters *params, struct chromosome *chromo){
+
+	int i;
+	int numGenes;
+	int numFunctionGenes, numInputGenes, numWeightGenes, numOutputGenes;
+	int numGenesToMutate;
+	int geneToMutate;
+	int nodeIndex;
+	int nodeInputIndex;
+
+	/* get the number of each type of gene */
+	numFunctionGenes = params->numNodes;
+	numInputGenes = params->numNodes * params->arity;
+	numWeightGenes = params->numNodes * params->arity;
+	numOutputGenes = params->numOutputs;
+
+	/* set the total number of chromosome genes */
+	numGenes = numFunctionGenes + numInputGenes + numWeightGenes + numOutputGenes;
+
+	/* calculate the number of genes to mutate */
+	numGenesToMutate = (int)roundf(numGenes * params->mutationRate);
+
+	/* for the number of genes to mutate */
+	for(i=0; i<numGenesToMutate; i++){
+
+		/* select a random gene */
+		geneToMutate = randInt(numGenes);
+
+		/* mutate function gene */
+		if(geneToMutate < numFunctionGenes){
+
+			nodeIndex = geneToMutate;
+
+			chromo->nodes[nodeIndex]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+
+		/* mutate node input gene */
+		else if(geneToMutate < numFunctionGenes + numInputGenes){
+
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
+
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
+		}
+
+		/* mutate connection weight */
+		else if(geneToMutate < numFunctionGenes + numInputGenes + numWeightGenes){
+
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes - numInputGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes - numInputGenes) % chromo->arity;
+
+			chromo->nodes[nodeIndex]->weights[nodeInputIndex] = getRandomConnectionWeight(params->connectionWeightRange);
+		}
+
+		/* mutate output gene */
+		else{
+			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes - numWeightGenes;
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
+
+
+/*
+	Conductions probabilistic mutation on the give chromosome. Each chromosome
+	gene is changed to a random valid allele with a probability specified in
+	parameters.
+*/
+static void probabilisticMutation(struct parameters *params, struct chromosome *chromo){
+
+	int i,j;
+
+	/* for every nodes in the chromosome */
+	for(i=0; i<params->numNodes; i++){
+
+		/* mutate the function gene */
+		if(randFloat() <= params->mutationRate){
+			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+
+		/* for every input to each chromosome */
+		for(j=0; j<params->arity; j++){
+
+			/* mutate the node input */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
+			}
+
+			/* mutate the node connection weight */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
+			}
+		}
+	}
+
+	/* for every chromosome output */
+	for(i=0; i<params->numOutputs; i++){
+
+		/* mutate the chromosome output */
+		if(randFloat() <= params->mutationRate){
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
+
+/*
+	Conductions probabilistic mutation on the active nodes in the give 
+	chromosome. Each chromosome gene is changed to a random valid allele 
+	with a probability specified in parameters.
+*/
+static void probabilisticMutationOnlyActive(struct parameters *params, struct chromosome *chromo){
+
+	int i,j;
+
+	/* for every nodes in the chromosome */
+	for(i=0; i<params->numNodes; i++){
+
+		/* skip inactive nodes */
+		if(chromo->nodes[i]->active == 0){
+			continue;
+		}
+
+		/* mutate the function gene */
+		if(randFloat() <= params->mutationRate){
+			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+
+		/* for every input to each chromosome */
+		for(j=0; j<params->arity; j++){
+
+			/* mutate the node input */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
+			}
+
+			/* mutate the node connection weight */
+			if(randFloat() <= params->mutationRate){
+				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
+			}
+		}
+	}
+
+	/* for every chromosome output */
+	for(i=0; i<params->numOutputs; i++){
+
+		/* mutate the chromosome output */
+		if(randFloat() <= params->mutationRate){
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
+
+
+
+/*
+	Sets the random number seed
+*/
+DLL_EXPORT void setRandomNumberSeed(unsigned int seed){
+	srand(seed);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns){
@@ -1611,224 +2367,12 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 
 
 
-/*
-	return the fitness of the given chromosome
-*/
-DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo){
-	return chromo->fitness;
-}
 
 
 
 
 
-/*
-	Initialises data structure and assigns values of given file
-*/
-DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char *file){
 
-	int i;
-	struct dataSet *data;
-	FILE *fp;
-	char *line, *record;
-	char buffer[1024];
-	int lineNum = -1;
-	int col;
-
-	/* attempt to open the given file */
-	fp = fopen(file, "r");
-
-	/* if the file cannot be found */
-	if(fp == NULL){
-		printf("Error: file '%s' cannot be found.\nTerminating CGP-Library.\n", file);
-		exit(0);
-	}
-
-	/* initialise memory for data structure */
-	data = malloc(sizeof(struct dataSet));
-
-	/* for every line in the given file */
-	while( (line=fgets(buffer, sizeof(buffer), fp)) != NULL){
-
-		/* deal with the first line containing meta data */
-		if(lineNum == -1){
-
-			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
-
-			data->inputData = malloc(data->numSamples * sizeof(float*));
-			data->outputData = malloc(data->numSamples * sizeof(float*));
-
-			for(i=0; i<data->numSamples; i++){
-				data->inputData[i] = malloc(data->numInputs * sizeof(float));
-				data->outputData[i] = malloc(data->numOutputs * sizeof(float));
-			}
-		}
-		/* the other lines contain input output pairs */
-		else{
-
-			/* get the first value on the given line */
-			record = strtok(line," ,\n");
-			col = 0;
-
-			/* until end of line */
-			while(record != NULL){
-
-				/* if its an input value */
-				if(col < data->numInputs){
-					data->inputData[lineNum][col] = atof(record);
-				}
-
-				/* if its an output value */
-				else{
-
-					data->outputData[lineNum][col - data->numInputs] = atof(record);
-				}
-
-				/* get the next value on the given line */
-				record = strtok(NULL," ,\n");
-
-				/* increment the current col index */
-				col++;
-			}
-		}
-
-		/* increment the current line index */
-		lineNum++;
-	}
-
-	fclose(fp);
-
-	return data;
-}
-
-
-/*
-	Initialises data structure and assigns values of given arrays
-	arrays must take the form
-	inputs[numSamples][numInputs]
-	outputs[numSamples][numOutputs]
-*/
-DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
-
-	int i,j;
-	struct dataSet *data;
-
-	/* initialise memory for data structure */
-	data = malloc(sizeof(struct dataSet));
-
-	data->numInputs = numInputs;
-	data->numOutputs = numOutputs;
-	data->numSamples = numSamples;
-
-	data->inputData = malloc(data->numSamples * sizeof(float**));
-	data->outputData = malloc(data->numSamples * sizeof(float**));
-
-	for(i=0; i<data->numSamples; i++){
-
-		data->inputData[i] = malloc(data->numInputs * sizeof(float));
-		data->outputData[i] = malloc(data->numOutputs * sizeof(float));
-
-		for(j=0; j<data->numInputs; j++){
-			data->inputData[i][j] = inputs[(i*data->numInputs) + j];
-		}
-
-		for(j=0; j<data->numOutputs; j++){
-			data->outputData[i][j] = outputs[(i*data->numOutputs) + j];
-		}
-	}
-
-	return data;
-}
-
-
-/*
-	frees given dataSet
-*/
-DLL_EXPORT void freeDataSet(struct dataSet *data){
-
-	int i;
-
-	/* attempt to prevent user double freeing */
-	if(data == NULL){
-		return;
-	}
-
-	for(i=0; i<data->numSamples; i++){
-		free(data->inputData[i]);
-		free(data->outputData[i]);
-	}
-
-	free(data->inputData);
-	free(data->outputData);
-	free(data);
-}
-
-/*
-	saves dataset to file
-*/
-DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName){
-
-	int i,j;
-	FILE *fp;
-
-	fp = fopen(fileName, "w");
-
-	if(fp == NULL){
-		printf("Warning: cannot save data set to %s. Data set was not saved.\n", fileName);
-		return;
-	}
-
-	fprintf(fp, "%d,", data->numInputs);
-	fprintf(fp, "%d,", data->numOutputs);
-	fprintf(fp, "%d,", data->numSamples);
-	fprintf(fp, "\n");
-
-
-	for(i=0; i<data->numSamples; i++){
-
-		for(j=0; j<data->numInputs; j++){
-			fprintf(fp, "%f,", data->inputData[i][j]);
-		}
-
-		for(j=0; j<data->numOutputs; j++){
-			fprintf(fp, "%f,", data->outputData[i][j]);
-		}
-
-		fprintf(fp, "\n");
-	}
-
-	fclose(fp);
-}
-
-
-
-/*
-	prints the given data structure to the screen
-*/
-DLL_EXPORT void printDataSet(struct dataSet *data){
-
-	int i,j;
-
-	printf("DATA SET\n");
-	printf("Inputs: %d, ", data->numInputs);
-	printf("Outputs: %d, ", data->numOutputs);
-	printf("Samples: %d\n", data->numSamples);
-
-	for(i=0; i<data->numSamples; i++){
-
-		for(j=0; j<data->numInputs; j++){
-			printf("%f ", data->inputData[i][j]);
-		}
-
-		printf(" : ");
-
-		for(j=0; j<data->numOutputs; j++){
-			printf("%f ", data->outputData[i][j]);
-		}
-
-		printf("\n");
-	}
-}
 
 
 
@@ -1972,91 +2516,7 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 
 
 
-/*
-	Frees the memory associated with the given chromosome structure
-*/
-DLL_EXPORT void freeChromosome(struct chromosome *chromo){
 
-	int i;
-
-	/* attempt to prevent user double freeing */
-	if(chromo == NULL){
-		return;
-	}
-
-	for(i=0; i < chromo->numNodes; i++){
-		freeNode(chromo->nodes[i]);
-	}
-
-	free(chromo->nodeInputsHold);
-	free(chromo->funcSet);
-	free(chromo->outputValues);
-	free(chromo->nodes);
-	free(chromo->outputNodes);
-	free(chromo->activeNodes);
-	free(chromo);
-}
-
-
-/*
-
-*/
-DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc){
-
-	int i;
-
-	/* error checking  */
-	if(chromoDest->numInputs != chromoSrc->numInputs){
-		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome inputs do not match.\n");
-		printf("Terminating CGP-Library.\n");
-		exit(0);
-	}
-
-	if(chromoDest->numNodes != chromoSrc->numNodes){
-		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome nodes do not match.\n");
-		printf("Terminating CGP-Library.\n");
-		exit(0);
-	}
-
-	if(chromoDest->numOutputs != chromoSrc->numOutputs){
-		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The number of chromosome outputs do not match.\n");
-		printf("Terminating CGP-Library.\n");
-		exit(0);
-	}
-
-	if(chromoDest->arity != chromoSrc->arity){
-		printf("Error: cannot copy a chromosome to a chromosome of different dimensions. The arity of the chromosome nodes do not match.\n");
-		printf("Terminating CGP-Library.\n");
-		exit(0);
-	}
-
-	/* copy nodes */
-	for(i=0; i<chromoSrc->numNodes; i++){
-		copyNode(chromoDest->nodes[i],  chromoSrc->nodes[i]);
-	}
-
-	/* copy fuctionset */
-	copyFuctionSet(chromoDest->funcSet, chromoSrc->funcSet);
-
-	/* copy each of the chromosomes outputs */
-	for(i=0; i<chromoSrc->numOutputs; i++){
-		chromoDest->outputNodes[i] = chromoSrc->outputNodes[i];
-	}
-
-	/* copy the active node matrix */
-	for(i=0; i<chromoSrc->numNodes; i++){
-		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
-	}
-
-	/* copy the number of active node */
-	chromoDest->numActiveNodes = chromoSrc->numActiveNodes;
-
-	/* copy the fitness */
-	chromoDest->fitness = chromoSrc->fitness;
-
-	/* copy generation */
-	chromoDest->generation = chromoSrc->generation;
-}
 
 
 /*
@@ -2081,19 +2541,7 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 	}
 }
 
-/*
-	sets the fitness of the given chromosome
-*/
-DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
-	float fitness;
-
-	setChromosomeActiveNodes(chromo);
-
-	fitness = params->fitnessFunction(params, chromo, data);
-
-	chromo->fitness = fitness;
-}
 
 
 /*
@@ -2148,97 +2596,6 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 	}
 }
 
-
-/*
-	Executes the given chromosome
-*/
-DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs){
-
-	int i,j;
-	int nodeInputLocation;
-	int currentActiveNode;
-	int currentActiveNodeFuction;
-
-	const int numInputs = chromo->numInputs;
-	const int numActiveNodes = chromo->numActiveNodes;
-	const int numOutputs = chromo->numOutputs;
-	const int arity = chromo->arity;
-
-	/* error checking */
-	if(chromo == NULL){
-		printf("Error: cannot execute uninitialised chromosome.\n Terminating CGP-Library.\n");
-		exit(0);
-	}
-
-
-	/* for all of the active nodes */
-	for(i=0; i<numActiveNodes; i++){
-
-		/* get the index of the current active node */
-		currentActiveNode = chromo->activeNodes[i];
-
-		/* for each of the active nodes inputs */
-		for(j=0; j<arity; j++){
-
-			/* gather the nodes inputs */
-			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
-
-			if(nodeInputLocation < numInputs){
-				chromo->nodeInputsHold[j] = inputs[nodeInputLocation];
-			}
-			else{
-				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - numInputs]->output;
-			}
-		}
-
-		/* get the index of the active node under evaluation */
-		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
-
-		/* calculate the output of the active node under evaluation */
-		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
-
-
-		/* prevent float form going to inf and -inf */
-		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
-
-			if(chromo->nodes[currentActiveNode]->output > 0){
-				chromo->nodes[currentActiveNode]->output = FLT_MAX;
-			}
-			else{
-				chromo->nodes[currentActiveNode]->output = FLT_MIN;
-			}
-		}
-
-		/* deal with floats becoming NAN */
-		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
-			chromo->nodes[currentActiveNode]->output = 0;
-		}
-	}
-
-	/* Set the chromosome outputs */ 
-	for(i=0; i<numOutputs; i++){
-
-		if(chromo->outputNodes[i] < numInputs){
-			chromo->outputValues[i] = inputs[chromo->outputNodes[i]];
-		}
-		else{
-			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - numInputs]->output;
-		}
-	}
-	
-	/*
-	for(i=0; i<numInputs; i++){
-		printf("%d, ", (int)inputs[i]);
-	}
-	
-	printf("\n%d\n", (int)chromo->outputValues[0]);
-	
-	printChromosome(chromo);
-	
-	
-	getchar();
-	*/
-}
 
 
 /*
@@ -2345,222 +2702,6 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 
 
 
-/*
-	Prints the given chromosome to the screen
-*/
-DLL_EXPORT void printChromosome(struct chromosome *chromo){
-
-	int i,j;
-
-	/* set the active nodes in the given chromosome */
-	setChromosomeActiveNodes(chromo);
-
-	/* for all the chromo inputs*/
-	for(i=0; i<chromo->numInputs; i++){
-		printf("(%d):\tinput\n", i);
-	}
-
-	/* for all the hidden nodes */
-	for(i = 0; i < chromo->numNodes; i++){
-
-		/* print the node function */
-		printf("(%d):\t%s\t", chromo->numInputs + i, chromo->funcSet->functionNames[chromo->nodes[i]->function]);
-
-		/* for the arity of the node */
-		for(j = 0; j < chromo->arity; j++){
-
-			/* print the node input information */
-			printf("%d,%+.1f\t", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
-		}
-
-		/* Highlight active nodes */
-		if(chromo->nodes[i]->active == 1){
-			printf("*");
-		}
-
-		printf("\n");
-	}
-
-	/* for all of the outputs */
-	printf("outputs: ");
-	for(i = 0; i < chromo->numOutputs; i++){
-
-		/* print the output node locations */
-		printf("%d ", chromo->outputNodes[i]);
-	}
-
-	printf("\n\n");
-}
-
-/*
-	Mutates the given chromosome using the mutation method described in parameters
-*/
-DLL_EXPORT void mutateChromosome(struct parameters *params, struct chromosome *chromo){
-
-	params->mutationType(params, chromo);
-
-	setChromosomeActiveNodes(chromo);
-}
-
-
-/*
-	Conductions point mutation on the give chromosome. A predetermined
-	number of chromosome genes are randomly selected and changed to
-	a random valid allele. The number of mutations is the number of chromosome
-	genes multiplied by the mutation rate. Each gene has equal probability
-	of being selected.
-*/
-static void pointMutation(struct parameters *params, struct chromosome *chromo){
-
-	int i;
-	int numGenes;
-	int numFunctionGenes, numInputGenes, numWeightGenes, numOutputGenes;
-	int numGenesToMutate;
-	int geneToMutate;
-	int nodeIndex;
-	int nodeInputIndex;
-
-	/* get the number of each type of gene */
-	numFunctionGenes = params->numNodes;
-	numInputGenes = params->numNodes * params->arity;
-	numWeightGenes = params->numNodes * params->arity;
-	numOutputGenes = params->numOutputs;
-
-	/* set the total number of chromosome genes */
-	numGenes = numFunctionGenes + numInputGenes + numWeightGenes + numOutputGenes;
-
-	/* calculate the number of genes to mutate */
-	numGenesToMutate = (int)roundf(numGenes * params->mutationRate);
-
-	/* for the number of genes to mutate */
-	for(i=0; i<numGenesToMutate; i++){
-
-		/* select a random gene */
-		geneToMutate = randInt(numGenes);
-
-		/* mutate function gene */
-		if(geneToMutate < numFunctionGenes){
-
-			nodeIndex = geneToMutate;
-
-			chromo->nodes[nodeIndex]->function = getRandomFunction(chromo->funcSet->numFunctions);
-		}
-
-		/* mutate node input gene */
-		else if(geneToMutate < numFunctionGenes + numInputGenes){
-
-			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
-			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
-
-			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
-		}
-
-		/* mutate connection weight */
-		else if(geneToMutate < numFunctionGenes + numInputGenes + numWeightGenes){
-
-			nodeIndex = (int) ((geneToMutate - numFunctionGenes - numInputGenes) / chromo->arity);
-			nodeInputIndex = (geneToMutate - numFunctionGenes - numInputGenes) % chromo->arity;
-
-			chromo->nodes[nodeIndex]->weights[nodeInputIndex] = getRandomConnectionWeight(params->connectionWeightRange);
-		}
-
-		/* mutate output gene */
-		else{
-			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes - numWeightGenes;
-			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
-		}
-	}
-}
-
-
-/*
-	Conductions probabilistic mutation on the give chromosome. Each chromosome
-	gene is changed to a random valid allele with a probability specified in
-	parameters.
-*/
-static void probabilisticMutation(struct parameters *params, struct chromosome *chromo){
-
-	int i,j;
-
-	/* for every nodes in the chromosome */
-	for(i=0; i<params->numNodes; i++){
-
-		/* mutate the function gene */
-		if(randFloat() <= params->mutationRate){
-			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
-		}
-
-		/* for every input to each chromosome */
-		for(j=0; j<params->arity; j++){
-
-			/* mutate the node input */
-			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
-			}
-
-			/* mutate the node connection weight */
-			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
-			}
-		}
-	}
-
-	/* for every chromosome output */
-	for(i=0; i<params->numOutputs; i++){
-
-		/* mutate the chromosome output */
-		if(randFloat() <= params->mutationRate){
-			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
-		}
-	}
-}
-
-/*
-	Conductions probabilistic mutation on the active nodes in the give 
-	chromosome. Each chromosome gene is changed to a random valid allele 
-	with a probability specified in parameters.
-*/
-static void probabilisticMutationOnlyActive(struct parameters *params, struct chromosome *chromo){
-
-	int i,j;
-
-	/* for every nodes in the chromosome */
-	for(i=0; i<params->numNodes; i++){
-
-		/* skip inactive nodes */
-		if(chromo->nodes[i]->active == 0){
-			continue;
-		}
-
-		/* mutate the function gene */
-		if(randFloat() <= params->mutationRate){
-			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
-		}
-
-		/* for every input to each chromosome */
-		for(j=0; j<params->arity; j++){
-
-			/* mutate the node input */
-			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
-			}
-
-			/* mutate the node connection weight */
-			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
-			}
-		}
-	}
-
-	/* for every chromosome output */
-	for(i=0; i<params->numOutputs; i++){
-
-		/* mutate the chromosome output */
-		if(randFloat() <= params->mutationRate){
-			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
-		}
-	}
-}
 
 
 
@@ -2958,71 +3099,7 @@ static float sumWeigtedInputs(const int numInputs, const float *inputs, const fl
 }
 
 
-/*
-	removes the inactive nodes from the given chromosome
-*/
-DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
 
-	int i,j,k;
-
-	int originalNumNodes = chromo->numNodes;
-
-	/* set the active nodes */
-	setChromosomeActiveNodes(chromo);
-
-	/* for all nodes */
-	for(i=0; i<chromo->numNodes-1; i++){
-
-		/* if the node is inactive */
-		if(chromo->nodes[i]->active == 0){
-
-			/* set the node to be the next node */
-			for(j=i; j<chromo->numNodes-1; j++){
-				copyNode(chromo->nodes[j], chromo->nodes[j+1]);
-			}
-
-			/* */
-			for(j=0; j<chromo->numNodes; j++){
-				for(k=0; k<chromo->arity; k++){
-
-					if(chromo->nodes[j]->inputs[k] >= i + chromo->numInputs){
-						chromo->nodes[j]->inputs[k]--;
-					}
-				}
-			}
-			
-			/* for the number of chromosome outputs */
-			for(j=0; j<chromo->numOutputs; j++){
-
-				if(chromo->outputNodes[j] >= i + chromo->numInputs){
-					chromo->outputNodes[j]--;
-				}
-			}
-
-			/* de-increment the number of nodes */
-			chromo->numNodes--;
-
-			/* made the newly assigned node be evaluated */
-			i--;
-		}
-	}
-
-	for(i=chromo->numNodes; i<originalNumNodes; i++){
-		freeNode(chromo->nodes[i]);
-	}
-
-	if(chromo->nodes[chromo->numNodes-1]->active == 0){
-		freeNode(chromo->nodes[chromo->numNodes-1]);
-		chromo->numNodes--;
-	}
-
-	/* reallocate the memory associated with the chromosome */
-	chromo->nodes = realloc(chromo->nodes, chromo->numNodes * sizeof(struct node));
-	chromo->activeNodes = realloc(chromo->activeNodes, chromo->numNodes * sizeof(int));
-
-	/* set the active nodes */
-	setChromosomeActiveNodes(chromo);
-}
 
 
 /*
