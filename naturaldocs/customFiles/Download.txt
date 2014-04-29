@@ -2,9 +2,9 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
-Version 1.0:
+Version 0.0 (beta):
 	
-	Comment: Initial release of CGP-Library.
+	Comment: Initial beta release of CGP-Library.
 	
 	Date: 29/04/2014
 	

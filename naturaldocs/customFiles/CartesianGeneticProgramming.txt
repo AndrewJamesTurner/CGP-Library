@@ -49,18 +49,57 @@ Title: Cartesian Genetic Programming
 
 Now Evolutionary Algorithms have been explained CGP can be introduced.
 
-Cartesian Genetic Programming evolves chromosomes which represent functioning programs. That is the solution being evolved is a program which completes a given task. These programs can be 
+Cartesian Genetic Programming evolves chromosomes which represent functioning programs. That is the solutions being evolved is a program which completes a given task. These programs can be symbolic equations, Boolean logic circuits, neural networks or pretty much anything which consists of connected computational elements.
 
+CGP chromosomes describe acyclic (or sometimes cyclic) graphs of functioning nodes index by their Cartesian coordinates. The chromosomes are typically comprised of three types of gene: connection genes, function genes and output genes. Connection genes describe where each nodes inputs are connected; either to the inputs of the graph of other nodes. In the typical acyclic case nodes can only connect to graph inputs of previous nodes. Function genes describe the functionality performed by each node. The set of possible functions which can be performed by each node is defined by the user in a function set. Output genes describe which nodes in the graph represent the graph's output(s). Outputs can be any of the graph's inputs or any nodes within the graph.
 
+Example Chromosome:
 
+An example CGP chromosome is given below. This chromosome describes an acyclic graph comprising of three inputs, three nodes and one output. 
 
+(see feedForward.png)
 
+There are a few things to note form this chromosome
 
+- Firstly not all of the nodes contribute the output of the graph. Nodes which do not contribute to the output are said to be inactive and are describe by inactive genes. Note: inactive genes can become active when subject to mutation. These inactive genes are though to enable neutral genetic drift; an evolutionary phenomenon where some genes do not contribute to the operation of the phenotype (animal). Neutral genetic drift is though to be useful due to inactive genes still being subject to mutation and are passed on during reproduction. Therefore a population which appears evolutionary static can maintain genetic diversity making it more capable to adapt to a changing environment and more easily escaping evolutionary local optima. 
 
+- Secondly not all of the graphs inputs have to be used when calculating the outputs. This is important as sometimes it is not known which variables will be important to solve a give task. Here CGP can evolve solutions which only used inputs found useful during evolution.
 
+- Thirdly the outputs of nodes can be used multiple times by other nodes and graph outputs. This is an advantage over other genetic programming methods which typically require the same functionality to be evolved multiple times if an internally calculated value is required multiple times. 
 
+- Finally the nodes are arrange in one row and multiple columns. Although CGP originally arrange its nodes in multiple rows and columns this constraint is now often removed. This is due to the fact that any topology possible with multiple rows and columns is also possible with one row and multiple columns; provided the total number of nodes remains the same and nodes can connect to to any previous nodes. Additionally there are topologies which are possible when using one row and multiple columns which are not possible with multiple rows and columns; making the same assumptions. Therefore typically for CGP (and for CGP-library) only the number of nodes (columns) is specified. 
 
+Typical Evolutionary process:
 
+Now the typical evolutionary process used by CGP shall be described. However nearly aspect can be altered.
 
+Evolutionary Strategy:
+
+The evolutionary strategy commonly used by CGP is (1 + lambda)-ES. This is an elitist strategy (the best chromosome is always preserved in the next generation) which includes parents and children in the next generation. The population size is 1 + lambda. Common values for lambda are four and ten.
+
+Initial Population:
+
+The initial population is usually populated with randomly generated chromosomes. The user defines the number of inputs, nodes, outputs, node arity and the function set and the chromosomes are randomly generated using these constraints. 
+
+For instance each node will be given a random function gene from the function set, each node connection will be given a random connection gene and the outputs shall index random inputs or nodes within the graph. 
+
+Calculating the Fitness:
+
+Typically before the fitness of a CGP chromosome is calculated the active nodes are determined. This is because chromosomes are often ran multiple times by the fitness function and calculating the outputs of nodes which never contribute to the operation of the chromosome is a waste of computational time. Calculating the the active nodes is an O(n) operation which is only undertaken once for each chromosome.
+
+To calculate the output(s) of a CGP chromosome the input(s) are loaded into the input nodes. Then the output of each active node is calculated in tern starting at those closest to the input(s) and working towards the output(s). Finally the outputs of the output node(s) are used as the chromosome output(s).  
+
+The exact fitness of the chromosomes depend on the given task but typically lower fitnesses represent a better solution.
+
+Selection Scheme:
+
+CGP typically selects the mu fittest chromosomes to become the parents.
+
+Reproduction Scheme:
+
+CGP typically only uses mutation alone to create the lambda children form the parents. Common mutation methods used are probabilistic mutation and point mutation.
+
+Probabilistic mutation changes each gene to a new random valid allele with a given probability. This allows for the number of genes actually mutated to have a Gaussian distribution. Point mutation randomly selects a given number of genes in the parent and mutates these to create the child. The number of genes selected is the mutation rate time the number of genes. This fixes the number of genes mutated.   
+ 
 
  
