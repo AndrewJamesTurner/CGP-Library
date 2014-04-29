@@ -67,7 +67,7 @@
 			> update frequency:			1
 			> mutation type:			probabilistic
 			> fitness function: 		supervisedLearning
-			> selection scheme:			pickHighest
+			> selection scheme:			selectFittest
 			> reproduction scheme:		mutateRandomParent
 
 			- Mu, lambda and evolutionary strategy control the type and

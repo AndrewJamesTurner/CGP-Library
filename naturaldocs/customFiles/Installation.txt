@@ -37,7 +37,7 @@ Now update the system so it knows about libcgp.so
 
     >$ sudo ldconfig
    
-Finally to check that CGP-Library has been installed    
+Finally check that CGP-Library has been installed    
     
 	>ldconfig -p | grep libcgp    
 

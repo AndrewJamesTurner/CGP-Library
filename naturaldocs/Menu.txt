@@ -65,7 +65,6 @@ Group: Tutorials  {
    File: Average Behaviour  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/AverageBehaviour.txt)
    File: Manipulating Chromosomes  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt)
    File: NeuroEvolution  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt)
-   File: Cartesian Genetic Programming  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CartesianGeneticProgramming.txt)
    }  # Group: Tutorials
 
 Group: Index  {

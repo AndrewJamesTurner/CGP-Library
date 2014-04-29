@@ -91,7 +91,7 @@ First standard headers and cgp.h are included.
 
 Next we defined our custom reproduction scheme to be used. 
 
-The custom reproduction scheme prototype must take the following form. Where params is a pointer to an initialised <parameters> structure, parents is a pointer to an array of <chromosomes> which contains the parents to select for reproduction, children is a pointer to an array of <chromosomes> which will contain the created children after reproduction, numParents give the number of parent <chromosomes> to be selected from and numChildren gives the number of children to be created.
+The custom reproduction scheme prototype must take the following form. Where params is a pointer to an initialised <parameters> structure, parents is a pointer to an array of <chromosomes> which contains the parents to select for reproduction, children is a pointer to an array of <chromosomes> which will contain the created children after reproduction, numParents gives the number of parent <chromosomes> to be selected from and numChildren gives the number of children to be created.
 
 (begin code)
 void reproductionSchemeName(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);

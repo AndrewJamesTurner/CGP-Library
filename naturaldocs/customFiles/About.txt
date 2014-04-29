@@ -16,9 +16,9 @@ As a result the basic use of CGP-Library is very simple (see <Getting Started>) 
 
 Tutorials:
 
-A number of tutorials are provided to walk new users though the CGG-Library. For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (on ubuntu you may also need to also install xterm for codeblocks to run the programs in its default terminal). 
+A number of tutorials are provided to walk new users though the CGP-Library. For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (under ubuntu you may also need to also install xterm for codeblocks to run the programs in its default terminal). 
 
-Although the tutorials cover basic and advance usage they do not cover every function described in the <API> so be sure to give it a read.
+Although the tutorials cover basic and advance usage they do not cover every function specified in the <API> so be sure to give it a read.
 
 Author:
 

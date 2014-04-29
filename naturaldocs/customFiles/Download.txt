@@ -1,1 +1,11 @@
 Title: Download
+
+The current and previous versions of CGP-Library will be available here for download.
+
+Version 1.0:
+	
+	Comment: Initial release of CGP-Library.
+	
+	Date: 29/04/2014
+	
+	Download: <http://andrewjamesturner.co.uk/CGP-Library/CGP-Library.zip>
