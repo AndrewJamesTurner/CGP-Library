@@ -25,6 +25,16 @@
 #ifndef CGPLIB
 #define CGPLIB
 
+/*
+	Under windows NO_DLL must be #defined at compile time when compiling cgp_library
+	with other sorce files.
+	
+	Under windows BUILD_DLL must be #defined at compile time when compiling CGP-Library.dll to allow DLL_EXPORT to define functions as library functions.
+	
+	Under windows when using the compiled library no #defines are required.
+	
+	Under Linux no #defines are required.
+*/
 #if defined(_WIN32) && defined(NO_DLL)
 	#define DLL_EXPORT
 #elif  defined(_WIN32) && defined(BUILD_DLL)
@@ -34,7 +44,6 @@
 #else
     #define DLL_EXPORT
 #endif
-
 
 
 /*
@@ -1549,8 +1558,5 @@
 			<initialiseParameters>
 	*/
 	DLL_EXPORT void setRandomNumberSeed(unsigned int seed);
-
-
-
 
 #endif
