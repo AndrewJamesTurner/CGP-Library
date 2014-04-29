@@ -27,7 +27,7 @@
 
 /*
 	Under windows NO_DLL must be #defined at compile time when compiling cgp_library
-	with other sorce files.
+	with other source files.
 	
 	Under windows BUILD_DLL must be #defined at compile time when compiling CGP-Library.dll to allow DLL_EXPORT to define functions as library functions.
 	
