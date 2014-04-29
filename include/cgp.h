@@ -1358,9 +1358,14 @@
 	*/
 	DLL_EXPORT void freeResults(struct results *rels);
 
-
 	/*
 		Function: saveResults
+		
+			Saves the given <results> to a csv file.
+		
+		Parameters:
+			els - pointer to an initialised results structure.
+			fileName - char array giving the location of the <results> to be saved.
 	*/
 	DLL_EXPORT void saveResults(struct results *rels, char *fileName);
 
