@@ -184,7 +184,7 @@ int randInt(int n);
 static void sortIntArray(int *array, const int length);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 static int cmpInt(const void * a, const void * b);
-
+static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB);
 
 /*
 	parameters function definitions
@@ -1832,6 +1832,32 @@ DLL_EXPORT float getAverageActiveNodes(struct results *rels){
 
 
 /*
+	returns the average number of chromosome active nodes from repeated
+	run results specified in rels.
+*/
+/*
+DLL_EXPORT float getMedianActiveNodes(struct results *rels){
+
+	int i;
+	float medActiveNodes = 0;
+	
+	int *array = malloc(getNumChromosomes(rels) * sizeof(int));
+
+
+	for(i=0; i<getNumChromosomes(rels); i++){
+		array[i] = getNumChromosomeActiveNodes(rels->bestChromosomes[i]);
+	}
+
+	sortIntArray(array, getNumChromosomes(rels));
+	
+	free(array);
+
+	return medActiveNodes;
+}
+*/
+
+
+/*
 	returns the average chromosome fitness from repeated
 	run results specified in rels.
 */
@@ -2091,17 +2117,9 @@ DLL_EXPORT void setRandomNumberSeed(unsigned int seed){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+/*
+	repetitively applies runCGP to obtain average behaviour
+*/
 DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns){
 
 	int i;
@@ -2140,10 +2158,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	int i;
 	int gen;
 
-	/* */
+	/* chromo is the chromosome to be returned */
 	struct chromosome *chromo;
+	
+	/* bestChromo points to the fittest chromosome throughout runCGP */
 	struct chromosome *bestChromo;
 	
+	/* arrays of the parents and children */
 	struct chromosome **parentChromos;
 	struct chromosome **childrenChromos;
 
@@ -2225,23 +2246,8 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 		}
 
 		/* get best chromosome */
-		bestChromo = parentChromos[0];
+		bestChromo = getBestChromosome(parentChromos, childrenChromos, params->mu, params->lambda);
 
-		for(i=1; i<params->mu; i++){
-
-			if(parentChromos[i]->fitness <= bestChromo->fitness){
-				bestChromo = parentChromos[i];
-			}	
-		}
-
-		for(i=0; i<params->lambda; i++){
-
-			if(childrenChromos[i]->fitness <= bestChromo->fitness){
-				bestChromo = childrenChromos[i];
-			}	
-		}
-
-		
 		/* check termination conditions */
 		if(getChromosomeFitness(bestChromo) <= params->targetFitness){
 
@@ -2252,13 +2258,11 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			break;
 		}
 
-
 		/* display progress to the user at the update frequency specified */
 		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
 			printf("%d\t%f\n", gen, bestChromo->fitness);
 		}
 		
-
 		/*
 			Set the chromosomes which will be used by the selection scheme
 			dependant upon the evolutionary strategy. i.e. '+' all are used
@@ -2289,8 +2293,6 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 			}
 		}
 		
-		
-
 		/* select the parents from the candidateChromos */
 		params->selectionScheme(params, parentChromos, candidateChromos, params->mu, numCandidateChromos);
 
@@ -2304,38 +2306,23 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
     }
 
 	/* get the fittest chromosome form the evolutionary run */
-	bestChromo = parentChromos[0];
+	bestChromo = getBestChromosome(parentChromos, childrenChromos, params->mu, params->lambda);
 
-	for(i=1; i<params->mu; i++){
-
-		if(parentChromos[i]->fitness <= bestChromo->fitness){
-			bestChromo = parentChromos[i];
-		}	
-	}
-
-	for(i=0; i<params->lambda; i++){
-
-		if(childrenChromos[i]->fitness <= bestChromo->fitness){
-			bestChromo = childrenChromos[i];
-		}	
-	}
-
+	/* copy the best best chromosome */
 	bestChromo->generation = gen;
 	copyChromosome(chromo, bestChromo);
 
-	
-
+	/* free parent chromosomes */
 	for(i=0; i<params->mu; i++){
 		freeChromosome(parentChromos[i]);
 	}
 	free(parentChromos);
 
-
+	/* free children chromosomes */
 	for(i=0; i<params->lambda; i++){
 		freeChromosome(childrenChromos[i]);
 	}
 	free(childrenChromos);
-
 
 	/* free the used chromosomes and population */
 	for(i=0; i<numCandidateChromos; i++){
@@ -2346,6 +2333,33 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	return chromo;
 }
 
+/*
+	returns a points to the fittest chromosome in the two arrays of chromosomes
+*/
+static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB){
+	
+	int i;
+	struct chromosome *bestChromo;
+	
+	bestChromo = chromoArrayA[0];
+
+	for(i=1; i<numChromosA; i++){
+
+		if(chromoArrayA[i]->fitness <= bestChromo->fitness){
+			bestChromo = chromoArrayA[i];
+		}	
+	}
+
+	for(i=0; i<numChromosB; i++){
+
+		if(chromoArrayB[i]->fitness <= bestChromo->fitness){
+			bestChromo = chromoArrayB[i];
+		}	
+	}
+	
+	return bestChromo;
+}
+
 
 /* copies the contents of funcSetSrc to funcSetDest */
 static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc){
@@ -2354,36 +2368,11 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 
 	funcSetDest->numFunctions = funcSetSrc->numFunctions;
 
-
 	for(i=0; i<funcSetDest->numFunctions; i++){
-
 		strncpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i], FUNCTIONNAMELENGTH);
-		
 		funcSetDest->functions[i] = funcSetSrc->functions[i];
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
@@ -2394,31 +2383,25 @@ DLL_EXPORT int getMu(struct parameters *params){
 }
 
 
-
-
-
-
-
-
-
-
 /*
+	get the number of chromosome inputs set in params
 */
 DLL_EXPORT int getNumInputs(struct parameters *params){
 	return params->numInputs;
 }
 
+
 /*
+	get the number of chromosome outputs set in params
 */
 DLL_EXPORT int getNumOutputs(struct parameters *params){
 	return params->numOutputs;
 }
 
 
-
-
 /*
-	used as an interface to adding pre-set node functions
+	used as an interface to adding pre-set node functions.
+	returns one if successful, zero otherwise.    
 */
 static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName){
 
@@ -2509,17 +2492,8 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 
 
 
-
-
-
-
-
-
-
-
-
-
 /*
+	copys the contence for the src node into dest node.
 */
 static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 
@@ -2531,7 +2505,7 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 	/* copy active flag */
 	nodeDest->active = nodeSrc->active;
 
-	/* */
+	/* copy the node arity */
 	nodeDest->arity = nodeSrc->arity;
 
 	/* copy the nodes inputs and connection weights */
@@ -2540,8 +2514,6 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 		nodeDest->weights[i] = nodeSrc->weights[i];
 	}
 }
-
-
 
 
 /*
@@ -2571,27 +2543,9 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 
 	int i;
 
-	/*
-	for(i=0; i<numCandidateChromos; i++){
-		printf("%.0f, ", getChromosomeFitness(candidateChromos[i]));
-	}
-
-	printf("\n");
-*/
 	sortChromosomeArray(candidateChromos, numCandidateChromos);
 
-/*
-
-	for(i=0; i<numCandidateChromos; i++){
-		printf("%.0f, ", getChromosomeFitness(candidateChromos[i]));
-	}
-
-	printf("\n");
-	
-	getchar();
-*/
 	for(i=0; i<numParents; i++){
-
 		copyChromosome(parents[i], candidateChromos[i]);
 	}
 }
@@ -2626,10 +2580,10 @@ static struct node *initialiseNode(int numInputs, int arity, int numFunctions, f
 		n->weights[i] = getRandomConnectionWeight(connectionWeightRange);
 	}
 
-	/* */
+	/* set the output of the node to zero*/
 	n->output = 0;
 
-	/* */
+	/* set the arity of the node */
 	n->arity = arity;
 
 	return n;
@@ -2637,7 +2591,7 @@ static struct node *initialiseNode(int numInputs, int arity, int numFunctions, f
 
 
 /*
-
+	Free memory associated with given node
 */
 static void freeNode(struct node *n){
 
@@ -2685,8 +2639,6 @@ static int getRandomNodeInput(int numChromoInputs, int nodePosition){
 }
 
 
-
-
 /*
 	returns a random chromosome output
 */
@@ -2698,11 +2650,6 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 
 	return output;
 }
-
-
-
-
-
 
 
 /*
@@ -3104,7 +3051,7 @@ static float sumWeigtedInputs(const int numInputs, const float *inputs, const fl
 
 /*
 	The default fitness function used by CGP-Library.
-	Simply assigns an error of the sum of the absolute differences between the target and actual outputs
+	Simply assigns an error of the sum of the absolute differences between the target and actual outputs for all outputs over all samples
 */
 static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
@@ -3185,7 +3132,6 @@ static void printFunctionSet(struct parameters *params){
 
 /*
 	random integer between zero and n without modulo bias.
-	
 	adapted from: http://zuttobenkyou.wordpress.com/2012/10/18/generating-random-numbers-without-modulo-bias/
 */
 int randInt(int n){
