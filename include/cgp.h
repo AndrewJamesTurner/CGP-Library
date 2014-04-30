@@ -898,6 +898,7 @@
 			
 		Parameters:
 			chromo - pointer to chromosome structure.
+			weights - whether or not to include connection weights, 0 - without weights, 1 - with weights.
 			fileName - char array giving the location of the 
 			chromosome dot file to be saved.
 			
