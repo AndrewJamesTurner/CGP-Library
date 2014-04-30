@@ -3190,9 +3190,6 @@ static void printFunctionSet(struct parameters *params){
 */
 int randInt(int n){
 	
-	return rand() % n;
-	
-	/*
 	int x;
 	int randLimit;
 	int randExcess;
@@ -3206,5 +3203,4 @@ int randInt(int n){
 	while (x > randLimit);
 		
 	return x % n;
-	*/
 }
