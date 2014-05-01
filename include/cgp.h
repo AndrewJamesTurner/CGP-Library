@@ -1419,6 +1419,22 @@
 
 
 	/*
+		Function: getMedianFitness
+			Gets the median fitness of the best chromosome found for each run in results.
+
+		Parameters:
+			rels - pointer to an initialised results structure.
+
+		Returns:
+			The median fitness of the best chromosome found for each run in results.
+
+		See Also:
+			<repeatCGP>, <getMedianActiveNodes>, <getMedianGenerations>
+	*/
+	DLL_EXPORT float getMedianFitness(struct results *rels);
+
+
+	/*
 		Function: getAverageActiveNodes
 			Gets the average number of active nodes of the best chromosome found for each run in results.
 
@@ -1435,6 +1451,23 @@
 	DLL_EXPORT float getAverageActiveNodes(struct results *rels);
 
 	/*
+		Function: getMedianActiveNodes
+			Gets the median number of active nodes of the best chromosome found for each run in results.
+
+		Parameters:
+			rels - pointer to an initialised results structure.
+
+		Returns:
+			The median number of active nodes of the best chromosome found for each run in results.
+
+		See Also:
+			<repeatCGP>, <getMedianFitness>, <getMedianGenerations>
+
+	*/
+	DLL_EXPORT float getMedianActiveNodes(struct results *rels);
+
+
+	/*
 		Function: getAverageGenerations
 			Gets the average number generations required to find the best best chromosome for each run in results.
 
@@ -1449,6 +1482,23 @@
 
 	*/
 	DLL_EXPORT float getAverageGenerations(struct results *rels);
+	
+	
+	/*
+		Function: getMedianGenerations
+			Gets the median number generations required to find the best best chromosome for each run in results.
+
+		Parameters:
+			rels - pointer to an initialised results structure.
+
+		Returns:
+			The median number generations required to find the best chromosome found for each run in results.
+
+		See Also:
+			<repeatCGP>, <getMedianFitness>, <getMedianActiveNodes>
+
+	*/
+	DLL_EXPORT float getMedianGenerations(struct results *rels);
 
 
 /*

@@ -180,11 +180,16 @@ static float hyperbolicTangent(const int numInputs, const float *inputs, const f
 
 /* other */
 static float randFloat(void);
-int randInt(int n);
+static int randInt(int n);
 static void sortIntArray(int *array, const int length);
 static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
 static int cmpInt(const void * a, const void * b);
 static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB);
+static void sortFloatArray(float *array, const int length);
+static int cmpFloat(const void * a, const void * b);
+static float medianInt(const int *anArray, const int length);
+static float medianFloat(const float *anArray, const int length);
+
 
 /*
 	parameters function definitions
@@ -1832,10 +1837,9 @@ DLL_EXPORT float getAverageActiveNodes(struct results *rels){
 
 
 /*
-	returns the average number of chromosome active nodes from repeated
+	returns the median number of chromosome active nodes from repeated
 	run results specified in rels.
 */
-/*
 DLL_EXPORT float getMedianActiveNodes(struct results *rels){
 
 	int i;
@@ -1848,13 +1852,72 @@ DLL_EXPORT float getMedianActiveNodes(struct results *rels){
 		array[i] = getNumChromosomeActiveNodes(rels->bestChromosomes[i]);
 	}
 
-	sortIntArray(array, getNumChromosomes(rels));
+	medActiveNodes = medianInt(array, getNumChromosomes(rels));
 	
 	free(array);
 
 	return medActiveNodes;
 }
-*/
+
+
+static float medianInt(const int *anArray, const int length){
+	
+	int i;
+	int *copyArray = malloc(length * sizeof(int));
+	float median;
+	
+	/* make a copy of the array */
+	for(i=0; i< length; i++){
+		copyArray[i] = anArray[i];
+	} 
+	
+	/* sort the copy array */
+	sortIntArray(copyArray, length);
+	
+	/* if even */
+	if(length % 2 == 0){
+		median = (copyArray[(length/2)] + copyArray[(length/2) - 1] ) /2; 
+	}
+	
+	/* if odd */
+	else{
+		median = copyArray[ (length-1) /2];	
+	}
+	
+	free(copyArray);
+	
+	return median;
+}
+
+static float medianFloat(const float *anArray, const int length){
+	
+	int i;
+	float *copyArray = malloc(length * sizeof(float));
+	float median;
+	
+	/* make a copy of the array */
+	for(i=0; i< length; i++){
+		copyArray[i] = anArray[i];
+	} 
+	
+	/* sort the copy array */
+	sortFloatArray(copyArray, length);
+	
+	/* if even */
+	if(length % 2 == 0){
+		median = (copyArray[(length/2)] + copyArray[(length/2) - 1] ) /2; 
+	}
+	
+	/* if odd */
+	else{
+		median = copyArray[ (length-1) /2];	
+	}
+	
+	free(copyArray);
+	
+	return median;
+}
+
 
 
 /*
@@ -1882,7 +1945,32 @@ DLL_EXPORT float getAverageFitness(struct results *rels){
 
 
 /*
-	returns the number of generations used by each run  specified in rels.
+	returns the median chromosome fitness from repeated
+	run results specified in rels.
+*/
+DLL_EXPORT float getMedianFitness(struct results *rels){
+
+	int i;
+	float med = 0;
+	
+	float *array = malloc(getNumChromosomes(rels) * sizeof(float));
+
+
+	for(i=0; i<getNumChromosomes(rels); i++){
+		array[i] = getChromosomeFitness(rels->bestChromosomes[i]);
+	}
+
+	med = medianFloat(array, getNumChromosomes(rels));
+	
+	free(array);
+
+	return med;
+}
+
+
+
+/*
+	returns the average number of generations used by each run  specified in rels.
 */
 DLL_EXPORT float getAverageGenerations(struct results *rels){
 
@@ -1902,6 +1990,29 @@ DLL_EXPORT float getAverageGenerations(struct results *rels){
 
 	return avgGens;
 }
+
+
+/*
+	returns the median number of generations used by each run  specified in rels.
+*/
+DLL_EXPORT float getMedianGenerations(struct results *rels){
+
+	int i;
+	float med = 0;
+	
+	int *array = malloc(getNumChromosomes(rels) * sizeof(int));
+
+	for(i=0; i<getNumChromosomes(rels); i++){
+		array[i] = getChromosomeGenerations(rels->bestChromosomes[i]);
+	}
+
+	med = medianInt(array, getNumChromosomes(rels));
+	
+	free(array);
+
+	return med;
+}
+
 
 
 /*
@@ -2144,6 +2255,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 
 	printf("----------------------------------------------------\n");
 	printf("MEAN\t%f\t%f\t%f\n", getAverageFitness(rels), getAverageGenerations(rels), getAverageActiveNodes(rels));
+	printf("MEDIAN\t%f\t%f\t%f\n", getMedianFitness(rels), getMedianGenerations(rels), getMedianActiveNodes(rels));
 	printf("----------------------------------------------------\n\n");
 
 	/* restore the original value for the update frequency */
@@ -3111,6 +3223,31 @@ static int cmpInt(const void * a, const void * b){
 }
 
 
+/*
+	sort float array using qsort
+*/
+static void sortFloatArray(float *array, const int length){
+
+	qsort(array, length, sizeof(float), cmpFloat);
+}
+
+/*
+	used by qsort in sortFloatArray 
+*/
+static int cmpFloat(const void * a, const void * b){
+   
+	if( *(float*)a < *(float*)b){
+		return -1;
+	}
+	if( *(float*)a == *(float*)b ){
+		return 0;
+	}
+	else{
+		return 1;
+	}
+}
+
+
 
 /*
 	Prints the current functions in the function set to
@@ -3134,7 +3271,7 @@ static void printFunctionSet(struct parameters *params){
 	random integer between zero and n without modulo bias.
 	adapted from: http://zuttobenkyou.wordpress.com/2012/10/18/generating-random-numbers-without-modulo-bias/
 */
-int randInt(int n){
+static int randInt(int n){
 	
 	int x;
 	int randLimit;
