@@ -10,7 +10,7 @@ CGP-Library was designed with three use cases in mind
 
 1) Teaching and learning about CGP
 
-2) Undertaking academic research into CGP
+2) Undertaking academic research into CGP 
 
 3) Using CGP for real world applications
 
@@ -28,9 +28,24 @@ Andrew James Turner, Phd student at The University of York, 2014.
 
 Homepage: <http://andrewjamesturner.co.uk/>
 
+Email: andrew.turner@york.ac.uk
+
 Open Source:
 
 CGP-Library is an open source project released under the GNU Lesser General Public License. See <Licenses> for more details. The CGP-Library project is hosted with github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project and get the latest (possibly unstable) version of the code.
 
+Contact:
+
+Bugs, clarification and feature requests can be sent to author, see above.
+
 (see github.jpg)
+
+
+
+
+
+
+
+
+
 
