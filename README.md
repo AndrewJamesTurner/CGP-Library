@@ -1,10 +1,10 @@
 CGP Library
 ======
 
-A platform independent Cartesian Genetic Programming Library written in C.
+A cross platform Cartesian Genetic Programming Library written in C.
 
 Author: Andrew James Turner
-Webpage: 
+Webpage: http://andrewjamesturner.co.uk/CGP-Library/ 
 Email: andrew.turner@york.ac.uk  
 License: Lesser General Public License (LGPL) 
 
