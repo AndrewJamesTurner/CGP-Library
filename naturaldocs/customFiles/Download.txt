@@ -8,4 +8,4 @@ Version 0.0 (beta):
 	
 	Date: 29/04/2014
 	
-	Download: <http://andrewjamesturner.co.uk/CGP-Library/CGP-Library-V0.0.zip>
+	Download: <http://cgplibrary.co.uk/CGP-Library-V0.0.zip>
