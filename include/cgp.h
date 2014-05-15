@@ -777,6 +777,8 @@
 		
 		Initialises a chromosome from a given chromosome.
 		
+		This functions can be used to create a copy of a chromosome.
+		
 		Parameters:
 			chromo - pointer to an initialised chromosome structure.
 			
@@ -825,19 +827,28 @@
 		Example:
 
 			for a chromosome with three inputs and one outputs.
-
-			(begin code)
-			struct parameters *params;
-			struct chromosome *chromo;
-
-			float inputs[3] = {1,2,3};
-
-			params = initialiseParameters(3,10,1,2);
-			chromo = initialiseChromosome(params);
-
-			executeChromosome(chromo, inputs);
-
-			printf("Output: %f\n", getChromosomeOutput(chromo, 0));
+		
+				(begin code)
+							
+				struct parameters *params = NULL;
+				struct chromosome *chromo = NULL;
+						
+				float chromoInputs[] = {1, 2};		
+				float chromoOutput;	
+								
+				params = initialiseParameters(2, 10, 1, 2);
+				addNodeFunction(params, "add,sub,mul,sq,cube,sin");
+				
+				chromo = initialiseChromosome(params);
+				
+				executeChromosome(chromo, chromoInputs);
+				
+				chromoOutput = getChromosomeOutput(chromo, 0);
+				
+				freeParameters(params);
+				freeChromosome(chromo);
+				
+				(end)
 
 			(end)
 
@@ -851,14 +862,17 @@
 
 	/*
 		Function: getChromosomeOutput
-			gets the outputs of the given chromosome.
+			Gets the outputs of the given chromosome *after* it has been executed using <executeChromosome>.
 
 			After a given chromosome has been executed using <executeChromosome> the chromosome outputs are made available using <getChromosomeOutput>.
 
 			Parameters:
 				chromo - pointer to an initialised chromosome structure.
 				output - The index of the output to be retrieved
-
+				
+			Example:
+				See <executeChromosome>
+				
 		See Also:
 				<executeChromosome>
 	*/
@@ -869,6 +883,8 @@
 	/*
 		Function: saveChromosome
 			Saves the given chromosome to a file which can used to initialise new chromosomes.
+			
+			New chromosomes can be initialised using the saved chromosomes by calling <initialiseChromosomeFromFile>. 
 
 		Node:
 			Only chromosome which use node functions defined by the CGP-library can be loaded. Chromosomes which use custom node functions cannot be loaded.
@@ -1298,7 +1314,7 @@
 			input - index of the input for the given sample
 
 		Returns:
-			The input value for the given input for the given sample.
+			The input value for the given input of the given sample.
 
 		See Also:
 			<getDataSetSampleInputs>, <getDataSetSampleOutput>, <getDataSetSampleOutputs>
