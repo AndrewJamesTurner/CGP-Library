@@ -692,15 +692,37 @@
 	/*
 		Function: setMutationType
 
-			Sets the mutation methods used when mutating chromosomes.
+			Sets the mutation method used when mutating chromosomes.
 
-			There are two mutation type options: the default "probabilistic" mutation and "point" mutation. Where "probabilistic" mutates each chromosome give with a given probability and "point" mutation always mutates a fixed randomly selected proportion of the chromosome.
-			
+			Used to set the mutation method used when running <runCGP> and <repeatCGP> or when mutating an individual chromosome using <mutateChromosome>. The type of mutation used is set the parameters structure.
+
 			If an invalid mutation type is given a warning is displayed and the mutation type is left unchanged.
+
+			Mutation Methods:
+			
+				These are the mutation methods which can be selected from.
+				
+				- "probabilistic". The *default* mutation method. Mutates each chromosome gene with a given probability; set with <setMutationRate>.
+				- "point". Always mutates the same number of randomly selected genes. The number of mutated genes is the total number of genes times the mutation rate. Note: does not mutation weight genes, see pointANN.
+				- "pointANN". Point mutation for when evolving neural networks; includes mutations to weight genes. 
+				- "onlyActive". Conducts probabilistic mutation on active nodes only. Genes belonging to inactive nodes are not mutated.
 
 		Parameters:
 			params - pointer to parameters structure.
 			mutationType - char array specifying the mutation type.
+			
+		Example:
+			(begin code)
+				struct parameters *params = NULL;
+				
+				params = initialiseParameters(1,10,1,2);
+				setMutationType(params, "point");
+			
+				setMutationType()
+			(end)	
+			
+		See Also:
+				<setMutationRate>
 
 	*/
 	DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType);

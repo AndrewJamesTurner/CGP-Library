@@ -140,6 +140,7 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 /* mutation functions  */
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
+static void pointMutationANN(struct parameters *params, struct chromosome *chromo);
 static void probabilisticMutationOnlyActive(struct parameters *params, 
 struct chromosome *chromo);
 
@@ -562,6 +563,12 @@ DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
 		strncpy(params->mutationTypeName, "point", MUTATIONTYPENAMELENGTH);
 	}
 	
+	else if(strncmp(mutationType, "pointANN", MUTATIONTYPENAMELENGTH) == 0){
+
+		params->mutationType = pointMutationANN;
+		strncpy(params->mutationTypeName, "pointANN", MUTATIONTYPENAMELENGTH);
+	}
+	
 	else if(strncmp(mutationType, "onlyActive", MUTATIONTYPENAMELENGTH) == 0){
 
 		params->mutationType = probabilisticMutationOnlyActive;
@@ -772,10 +779,11 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 		record = strtok(NULL,",\n");
 		chromo->outputNodes[i] = atoi(record);
 	}
-
+ 
 	fclose(fp);
-
 	freeParameters(params);
+	
+	setChromosomeActiveNodes(chromo);
 
 	return chromo;
 }
@@ -950,7 +958,6 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs
 		printf("Error: cannot execute uninitialised chromosome.\n Terminating CGP-Library.\n");
 		exit(0);
 	}
-
 
 	/* for all of the active nodes */
 	for(i=0; i<numActiveNodes; i++){
@@ -1373,7 +1380,6 @@ static void setChromosomeActiveNodes(struct chromosome *chromo){
 	if(chromo == NULL){
 		printf("Error: chromosome has not been initialised and so the active nodes cannot be set.\n");
 	}
-
 
 	/* set the number of active nodes to zero */
 	chromo->numActiveNodes = 0;
@@ -2076,8 +2082,69 @@ DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run){
 	a random valid allele. The number of mutations is the number of chromosome
 	genes multiplied by the mutation rate. Each gene has equal probability
 	of being selected.
+	
+	DO NOT USE WITH ANN
 */
 static void pointMutation(struct parameters *params, struct chromosome *chromo){
+
+	int i;
+	int numGenes;
+	int numFunctionGenes, numInputGenes, numOutputGenes;
+	int numGenesToMutate;
+	int geneToMutate;
+	int nodeIndex;
+	int nodeInputIndex;
+
+	/* get the number of each type of gene */
+	numFunctionGenes = params->numNodes;
+	numInputGenes = params->numNodes * params->arity;
+	numOutputGenes = params->numOutputs;
+
+	/* set the total number of chromosome genes */
+	numGenes = numFunctionGenes + numInputGenes + numOutputGenes;
+
+	/* calculate the number of genes to mutate */
+	numGenesToMutate = (int)roundf(numGenes * params->mutationRate);
+
+	/* for the number of genes to mutate */
+	for(i=0; i<numGenesToMutate; i++){
+
+		/* select a random gene */
+		geneToMutate = randInt(numGenes);
+
+		/* mutate function gene */
+		if(geneToMutate < numFunctionGenes){
+
+			nodeIndex = geneToMutate;
+
+			chromo->nodes[nodeIndex]->function = getRandomFunction(chromo->funcSet->numFunctions);
+		}
+
+		/* mutate node input gene */
+		else if(geneToMutate < numFunctionGenes + numInputGenes){
+
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
+
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
+		}
+
+		/* mutate output gene */
+		else{
+			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes;
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+		}
+	}
+}
+
+
+/*
+	Same as pointMutation but also mutates weight genes. The reason this is separated is
+	that point mutation should always mutate the same number of genes. When weight genes are not
+	used many mutations will not do anything and so the number of actual mutations varies.
+	- needs explaining better... 
+*/
+static void pointMutationANN(struct parameters *params, struct chromosome *chromo){
 
 	int i;
 	int numGenes;
@@ -2138,6 +2205,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo){
 		}
 	}
 }
+
 
 
 /*

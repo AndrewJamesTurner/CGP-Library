@@ -41,7 +41,7 @@ int main(void){
 	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
-
+z
 	printParameters(params);
 
 	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
