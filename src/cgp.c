@@ -883,6 +883,11 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo){
 
 	int i,j;
 
+	/* error checking */
+	if(chromo == NULL){
+		printf("Error: chromosome has not been initialised and cannot be printed.\n");
+	}
+
 	/* set the active nodes in the given chromosome */
 	setChromosomeActiveNodes(chromo);
 
