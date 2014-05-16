@@ -1369,6 +1369,12 @@ static void setChromosomeActiveNodes(struct chromosome *chromo){
 
 	int i;
 
+	/* error checking */
+	if(chromo == NULL){
+		printf("Error: chromosome has not been initialised and so the active nodes cannot be set.\n");
+	}
+
+
 	/* set the number of active nodes to zero */
 	chromo->numActiveNodes = 0;
 
