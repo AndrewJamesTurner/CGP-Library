@@ -246,13 +246,13 @@
 
 		Adds pre-defined node function(s) to the set of functions stored by a parameters structure. These are the node functions available when using <runCGP>, <repeatCGP> and <mutateChromosome>.
 
-		If one function name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
+		If one function name is given that function is added to the function set. If multiple node function names are given then each must be separated by a ','.
 
 		If a node function name is given which is not recognised, a warning is given and that function is not added to the function set.
 
 		Parameters:
 			params - pointer to parameters structure
-			functionNames - the name(s) of the function(s) to add to the function set
+			functionNames - the name(s) of the function(s) to be added to the function set
 
 		Node Functions:
 
