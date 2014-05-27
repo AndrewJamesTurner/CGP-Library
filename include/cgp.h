@@ -196,10 +196,10 @@
 	/*
 		Function: freeParameters
 
-		Frees parameters instance.
+		Frees parameters structure instance.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to initialised parameters structure.
 
 		See Also:
 			<initialiseParameters>
