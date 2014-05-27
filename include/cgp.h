@@ -828,11 +828,37 @@
 
 	/*
 		Function: printChromosome
-			Prints the given chromosome to the screen in a human readable format.
+			Displays the given chromosome to the terminal / command prompt in a human readable format.
 
 		Parameters:
 			chromo - pointer to chromosome structure.
 			weights - if set as 1 display connections weights
+		
+		Example:
+		
+			Typical output from <printChromosome>.
+			
+			Each input and functioning node is labelled with its index in the chromosome. There is a textual description of the node e.g. *input* for input nodes or the operation for the function nodes. Function node operations are followed by space separated values describing each nodes inputs. Active nodes are also labelled with an *. Finally the last line gives the  nodes used as chromosome outputs. 
+			
+			(begin code)
+			(0):	input
+			(1):	mul	0 0 *
+			(2):	add	0 1 *
+			(3):	sub	2 0 *
+			(4):	mul	0 1 *
+			(5):	add	4 3 *
+			(6):	sub	4 2 *
+			(7):	mul	6 5 *
+			(8):	add	5 7 *
+			(9):	mul	1 6 
+			(10):	mul	5 3 
+			(11):	add	4 1 
+			(12):	add	10 3 
+			(13):	add	5 11 
+			(14):	sub	3 6 
+			(15):	div	5 13 
+			outputs: 8 
+			(end)
 	*/
 	DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights);
 
