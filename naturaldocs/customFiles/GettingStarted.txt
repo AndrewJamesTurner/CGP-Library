@@ -1,13 +1,13 @@
 Title: Getting Started   
 
-This tutorial introduces and steps though a simple program which uses the CGP-Library to solve a symbolic regression problem.
+This tutorial introduces and steps through a simple program which uses the CGP-Library to solve a symbolic regression problem.
 
-Symbolic regression is the task of fitting a symbolic equaltion to a
-series of data points. If you have not already downloaded and/or installed the CGP-Library please see the <Installation> tutorial. 
+Symbolic regression is the task of fitting a symbolic equation to a
+series of data points. If you have not already downloaded and/or installed the CGP-Library please see the <Installation> tutorial.  
 
 Title: The Program
 
-A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library.
+A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library. 
 
 The program below is provided in the CGP-Library download within /examples/gettingStarted.c and is included in the code:blocks project.
 
@@ -70,7 +70,7 @@ The CGP-Library provides a number of structures which describe, among
 other things, the CGP parameters and CGP chromosomes. These parameters
 are initialised and free'd using provided functions. The attributes of
 these structures should not, and in fact cannot, be accessed directly
-and must also be accessed using provided functions.
+and must also be accessed using provided getter and setter functions.
 
 Below three CGP-Library structures are defined which will be used later in this
 tutorial.
@@ -82,10 +82,13 @@ strategy to use and the mutation rate.
 - The <dataSet> structure is used to store input output pairs of data
 which may be used by the fitness function. For instance in this
 example a <dataSet> structure will be used to store the data points to
-which an equation should be fitted.
+which an equation shall be fitted.
 
 - The <chromosome> structure is used to store the fittest chromosome
-found after CGP has been applied towards the task.   
+found after CGP has been applied towards the symbolic regression task.
+
+Note: all of the structures have been initialised to NULL. This is best practice and many of the CGP library functions check to
+see if structures have been initialised by seeing of they are not equal to NULL.   
 
 (begin code)
 struct parameters *params = NULL;
@@ -95,7 +98,7 @@ struct chromosome *chromo = NULL;
 
 Later when the parameters structure is initialise using
 <initialiseparameters> we will need to specify the structure of the
-chromosomes to evolves. This involves specifying the number of
+chromosomes to be evolved. This requires specifying the number of
 chromosome inputs, nodes, outputs and the arity of each node. 
 
 (begin code)
@@ -105,15 +108,14 @@ int numOutputs = 1;
 int nodeArity = 2;
 (end)
 
-Later when CGP is applied towards the symbolic task the number of allowed generations before terminating the search will be needed to bespecified. 
-search.
+Later when CGP is applied towards the symbolic task the number of allowed generations before terminating the search will be needed to be specified. 
 
 (begin code)
 int numGens = 10000; 
 (end)
 
 Later when the <parameters> structure is initialise using <initialiseparameters>
-many CGP-Library parameters will be set to typical default values.
+many CGP-Library parameters will be set to default values.
 However all of these CGP-Library parameters can be changed using
 provided functions. This will be demonstrated by changing the default
 target fitness and the frequency at which the user is updated on
@@ -140,8 +142,8 @@ which contains the set of possible node functions. Newly initialised
 <parameters> contain an empty function set. It is therefore up to the user to 
 populate this function set with node functions. Node functions are added
 to the function set using <addNodeFunction>. For a complete list of
-possible functions see <addNodeFunction>. To clear the functions
-currently stored in the function use <clearFunctionSet>.
+possible node functions see <addNodeFunction>. To clear the functions
+currently stored in the function set use <clearFunctionSet>.
 
 The functions added in this tutorial are: addition, subtraction, multiplication, 
 division and sine.
@@ -157,7 +159,6 @@ default target fitness can be altered using <setTargetFitness>.
 setTargetFitness(params, 0.1);
 (end)
 
-
 The update frequency defined in <parameters> specifies the
 number of generations which elapse between updating the user of the
 progress made by CGP.
@@ -169,17 +170,17 @@ default value is altered using <setUpdateFrequency>.
 setUpdateFrequency(params, updateFrequency);
 (end)
 
-The current state of the <parameters> structure can be displayed in the
+The values stored in the <parameters> structure can be displayed to the
 terminal by calling <printParameters>.
 
 (begin code)
 printParameters(params);
 (end)
 
-When printed, the parameters should appear in the terminal as follows.
+When printed, the parameters should appear in the terminal as below.
 Most of the parameters have been left as the defaults but the target
 fitness and update frequency have been altered. Additionally the
-function set contains the the functions specified.
+function set contains the the node functions specified.
 
 For details of the parameters stored in <parameters> see <parameters>.
 
@@ -202,8 +203,7 @@ For details of the parameters stored in <parameters> see <parameters>.
 > Function Set: add sub mul div sin (5)
 > ---------------------------------------------------
 
-
-Now the parameters associated with the CGP-Library are set up we next 
+Now the parameters associated with the CGP-Library are initialised we next 
 need to define the task to be solved. By default a supervised learning 
 fitness function is used. The supervised learning fitness function
 applies sets of user defined input output pairs to each chromosome 
@@ -221,7 +221,7 @@ from a predefined file using <initialiseDataSetFromFile>. <initialiseDataSetFrom
 returns an initialised <dataSet> structure containing the data in
 the file specified.
 
-Here we load in a data set containing 101 evenly sampled points from y 
+Here we load a data set containing 101 evenly sampled points from y 
 = x^6 - 2x^4 + x^2 within the range x = [-5,5]. The data set is given in
 the /examples/symbolic.data directory.
 
@@ -231,7 +231,7 @@ trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 
 In order for <initialiseDataSetFromFile> to parse the given file it must 
 use the following format below. Where the first line contains the
-number of inputs of each sample ,followed by the number of outputs, followed by the total number of samples. The remaining
+number of inputs for each sample, followed by the number of outputs, followed by the total number of samples. The remaining
 lines give each individual sample specifying the inputs values followed by
 the output values. All values must be comma separated.
 
@@ -243,7 +243,7 @@ the output values. All values must be comma separated.
 
 After we have set up a <parameters> structure and a <dataSet> structure we
 now run CGP! This is achieved using the <runCGP> function.
-<runCGP> takes as augments our defined parameters, the training
+<runCGP> takes as augments our initialised parameters, the training
 <dataSet> and the allowed number of generations before terminating the
 search. The <runCGP> function returns an initialised <chromosome>
 structure which contains the best found solution to the given task.
@@ -267,29 +267,26 @@ The printed chromosome take the following form. Each line starting
 with an number represents a node; where a node can be an input node or
 a function node. Each function node is labelled with a textural
 description of the operation it undertakes i.e. 'add'. This is followed
-by pairs of number for each node input. Each pair gives the node to
-which that node input connects and a connection weight associated with
-that connection. Connection weights are used when evolving neural
-networks and can be ignored in this example. Additionally some function
-nodes are labelled with an '*' indicating that they are active in
-calculating the outputs. 
+by the inputs to each node. Additionally the function
+nodes labelled with an '*' indicate that they are active in
+calculating the overall outputs. The output nodes are given on the last line. 
 
 > (0):	input
-> (1):	mul	0,-0.0	0,+0.1	*
-> (2):	mul	1,-0.7	1,-0.2	*
-> (3):	sub	2,+0.2	1,+0.4	*
-> (4):	add	2,+0.8	3,-0.1	*
-> (5):	sub	3,-0.6	4,-0.1	*
-> (6):	div	0,+0.0	1,-0.1	
-> (7):	sub	0,-0.9	0,+0.8	
-> (8):	add	1,+0.1	5,+0.6	*
-> (9):	mul	3,+0.8	1,-0.1	*
-> (10):	sin	2,-0.5	3,+0.2	
-> (11):	sin	6,+0.3	0,+0.2	
-> (12):	div	0,+0.9	9,-1.0	
-> (13):	add	8,+0.8	9,-0.4	*
-> (14):	mul	7,+0.9	7,+0.8	
-> (15):	add	7,+0.3	3,+0.7	
+> (1):	mul		0 0	*
+> (2):	mul		1 1	*
+> (3):	sub		2 1	*
+> (4):	add		2 3	*
+> (5):	sub		3 4	*
+> (6):	div		0 1	
+> (7):	sub		0 0	
+> (8):	add		1 5	*
+> (9):	mul		3 1	*
+> (10):	sin		2 3	
+> (11):	sin		6 0	
+> (12):	div		0 9	
+> (13):	add		8 9	*
+> (14):	mul		7 7	
+> (15):	add		7 3	
 > outputs: 13 
 
 Finally at the end of the program the memory associated with the structures used should be 
