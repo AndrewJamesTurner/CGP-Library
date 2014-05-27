@@ -887,7 +887,7 @@ DLL_EXPORT void freeChromosome(struct chromosome *chromo){
 /*
 	Prints the given chromosome to the screen
 */
-DLL_EXPORT void printChromosome(struct chromosome *chromo){
+DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights){
 
 	int i,j;
 
@@ -915,7 +915,12 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo){
 		for(j = 0; j < chromo->arity; j++){
 
 			/* print the node input information */
-			printf("%d,%+.1f\t", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
+			if(weights == 1){
+				printf("%d,%+.1f\t", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
+			}
+			else{
+				printf("%d ", chromo->nodes[i]->inputs[j]);
+			}
 		}
 
 		/* Highlight active nodes */

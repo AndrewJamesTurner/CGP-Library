@@ -832,8 +832,9 @@
 
 		Parameters:
 			chromo - pointer to chromosome structure.
+			weights - if set as 1 display connections weights
 	*/
-	DLL_EXPORT void printChromosome(struct chromosome *chromo);
+	DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights);
 
 
 	/*

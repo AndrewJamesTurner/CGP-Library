@@ -41,14 +41,14 @@ int main(void){
 	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
-z
+
 	printParameters(params);
 
 	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 
 	chromo = runCGP(params, trainingData, numGens);
 
-	printChromosome(chromo);
+	printChromosome(chromo, 0);
 
 	freeDataSet(trainingData);
 	freeChromosome(chromo);

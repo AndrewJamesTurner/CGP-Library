@@ -54,10 +54,10 @@ int main(void){
 	removeInactiveNodes(chromoB);	
 	
 	printf("chromoA with inactive nodes.\n");
-	printChromosome(chromoA);
+	printChromosome(chromoA, 0);
 	
 	printf("chromoB without inactive nodes.\n");
-	printChromosome(chromoB);
+	printChromosome(chromoB, 0);
 	
 	saveChromosome(chromoB, "chromoB.chromo");
 	
@@ -168,10 +168,10 @@ To see the effect of <removeInactiveNodes> chromoA and chromoB are printed to th
 
 (begin code)
 printf("chromoA with inactive nodes.\n");
-printChromosome(chromoA);
+printChromosome(chromoA, 0);
 
 printf("chromoB without inactive nodes.\n");
-printChromosome(chromoB);
+printChromosome(chromoB, 0);
 (end)
 
 Chromosomes can be saved to a file and read back using <saveChromosome> and <initialiseChromosomeFromFile> respectively. Here chromoB is saved to a file called "chromoB.chromo" and then read back into chromoC. It is important to node that only chromosomes which used node functions provide by the CGP-Library can be loaded using <initialiseChromosomeFromFile>; chromosomes containing custom node functions cannot be loaded. 

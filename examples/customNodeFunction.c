@@ -16,6 +16,7 @@
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdio.h>
 #include <math.h>
 #include "../include/cgp.h"
 
@@ -50,7 +51,7 @@ int main(void){
 
 	addNodeFunctionCustom(params, hypotenuse, "hypt");
 
-	printFunctionSet(params);
+	printParameters(params);
 
 	freeParameters(params);
 

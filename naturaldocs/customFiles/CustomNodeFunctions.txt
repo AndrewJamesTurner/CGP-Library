@@ -11,6 +11,7 @@ A simple program demonstrating how to create and add a custom nodefunction to th
 The program below is provided in the CGP-Library download within /examples/customNodeFunction.c and is included in the code:blocks project.
 
 (begin code)
+#include <stdio.h>
 #include <math.h>
 #include "../include/cgp.h"  
 
@@ -45,7 +46,7 @@ int main(void){
 
 	addNodeFunctionCustom(params, hypotenuse, "hypt");
 	
-	printFunctionSet(params);
+	printParameters(params);
 	
 	freeParameters(params);
 	
@@ -108,10 +109,10 @@ However the newly defined hypotenuse function can also be added using <addNodeFu
 addNodeFunctionCustom(params, hypotenuse, "hypt");
 (end)
 
-In order to see that the hypotenuse node function has been added the entire function set can be displayed using <printFunctionSet>.
+In order to see that the hypotenuse node function has been added the entire function set can be displayed using <printParameters>.
 
 (begin code)
-printFunctionSet(params);
+printParameters(params);
 (end)
 
 Finally the parameters structure should be free'd.

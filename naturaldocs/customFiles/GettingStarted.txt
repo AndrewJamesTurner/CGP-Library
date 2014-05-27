@@ -44,7 +44,7 @@ int main(void){
 	
 	chromo = runCGP(params, trainingData, numGens);	
 			
-	printChromosome(chromo);
+	printChromosome(chromo, 0);
 	
 	freeDataSet(trainingData);
 	freeChromosome(chromo);		
@@ -260,7 +260,7 @@ To inspect the best found solution the returned <chromosome> can be
 displayed in the terminal using <printChromosome>. 
 
 (begin code)
-printChromosome(chromo);
+printChromosome(chromo, 0);
 (end)
 
 The printed chromosome take the following form. Each line starting

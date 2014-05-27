@@ -73,7 +73,7 @@ int main(void){
 
 	chromo = runCGP(params, NULL, numGens);
 
-	printChromosome(chromo);
+	printChromosome(chromo, 1);
 
 	freeChromosome(chromo);
 	freeParameters(params);

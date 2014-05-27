@@ -53,10 +53,10 @@ int main(void){
 	removeInactiveNodes(chromoB);
 
 	printf("chromoA with inactive nodes.\n");
-	printChromosome(chromoA);
+	printChromosome(chromoA, 0);
 
 	printf("chromoB without inactive nodes.\n");
-	printChromosome(chromoB);
+	printChromosome(chromoB, 1);
 
 	saveChromosome(chromoB, "chromoB.chromo");
 

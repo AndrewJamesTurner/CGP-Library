@@ -59,7 +59,7 @@ int main(void){
 	
 	printf("The best chromosome found on run 4:\n");
 	
-	printChromosome(chromo);
+	printChromosome(chromo, 0);
 
 	saveResults(rels, "results.csv");
 
