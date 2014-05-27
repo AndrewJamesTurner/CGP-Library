@@ -244,7 +244,7 @@
 	/*
 		Function: addNodeFunction
 
-		Adds pre-defined node function(s) to the set of functions made available to chromosome nodes.
+		Adds pre-defined node function(s) to the set of functions stored by a parameters structure. These are the node functions available when using <runCGP>, <repeatCGP> and <mutateChromosome>.
 
 		If one function name is given that function is added to the function set. If multiple node function's names are given then each must be separated by a ','.
 
