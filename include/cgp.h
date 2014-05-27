@@ -162,7 +162,7 @@
 	/*
 		Function: initialiseParameters
 
-		Initialises parameters used throughout the CGP-Library. The inputs describe the structure of the chromosomes created when using <initialiseChromosome>, <runCGP> or <repeatCGP>.
+		Initialises a parameters structure used throughout the CGP-Library. The arguments describe the structure of the chromosomes created when using <initialiseChromosome>, <runCGP> or <repeatCGP>.
 
 		Parameters:
 			numInputs - the number of chromosome inputs required.
