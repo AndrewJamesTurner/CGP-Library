@@ -213,7 +213,31 @@
 
 		Parameters:
 			params - pointer to parameters structure.
-
+			
+		Example:
+		
+			Typical parameters structure printed using <printParameters>.
+			
+			(begin code)
+			---------------------------------------------------
+                   Parameters                      
+			---------------------------------------------------
+			Evolutionary Strategy:		(1+4)-ES
+			Inputs:						1
+			Nodes:						15
+			Outputs:					1
+			Node Arity:					2
+			Connection weights range:	+/- 1.000000
+			Mutation Type:				probabilistic
+			Mutation rate:				0.050000
+			Fitness Function:			supervisedLearning
+			Target Fitness:				0.100000
+			Selection scheme:			selectFittest
+			Reproduction scheme:		mutateRandomParent
+			Update frequency:			500
+			Function Set: add sub mul div sin (5)
+			---------------------------------------------------
+			(end)
 	*/
 	DLL_EXPORT void printParameters(struct parameters *params);
 	
