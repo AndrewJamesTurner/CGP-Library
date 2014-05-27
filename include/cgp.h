@@ -306,9 +306,9 @@
 	/*
 		Function: addNodeFunctionCustom
 
-		Adds a custom node function to the set of functions made available to chromosome nodes.
+		Adds custom node function to the set of functions stored by a parameters structure. See <addNodeFunction>.
 
-		The custom fitness function must take the form
+		The custom fitness function prototype must take the form
 
 		(begin code)
 		float nodeFunctionName(const int numInputs, const float *inputs, const float *weights);
@@ -317,13 +317,13 @@
 		where the user replaces 'nodeFunctionName' with their own function name.
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to an initialised parameters structure
 			function - the custom node function
 			functionName - the name of the added function
 
 		Example:
 
-			custom node function, add
+			Creating a custom node function 'add'
 
 			(begin code)
 			float add(const int numInputs, const float *inputs, const float *connectionWeights){
@@ -339,11 +339,15 @@
 			}
 			(end)
 
-			Adding the new custom node function
+			Adding the new custom node function to the function set
 
 			(begin code)
 			addNodeFunctionCustom(params, add, "add");
 			(end)
+
+		Note:
+		
+			The connections weights are used for when creating custom node functions for Artificial Neural Networks. If required they are accessed in the same way as the inputs.
 
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
@@ -354,10 +358,10 @@
 	/*
 		Function: clearFunctionSet
 
-		Resets the function set to contain no functions.
+		Resets the function set stored by a parameters structure to contain no functions.
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to an initialised parameters structure
 
 		See Also:
 			<addNodeFunction>, <addNodeFunctionCustom>
