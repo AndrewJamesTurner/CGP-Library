@@ -1,6 +1,6 @@
 Title: About  
 
-CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C (with binding to python and Java possibly coming soon) and is compatible with Linux and Windows. 
+CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C (with binding to python and Java possibly coming soon) and is compatible with Linux, Windows and Mac OS. 
 
 Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. This documentation also includes a short introduction to CGP in <Cartesian Genetic Programming>.
 

@@ -4,20 +4,20 @@ Cartesian Genetic Programming (CGP) is a form of Genetic Programming (GP) which 
 
 Title: Evolutionary Algorithms
 
-Evolutionary Algorithms are a super set of CGP. In order to explain CGP first Evolutionary Algorithms are introduced. 
+Evolutionary Algorithms are a superset of CGP. In order to explain CGP first Evolutionary Algorithms are introduced. 
 
-Evolutionary Algorithms are a set Artificial Intelligence / Machine Learning search heuristics based on Darwinian evolution. The idea is to describe a 'population' of multiple solutions to a given task in software. Here each solution is called a 'chromosome' or 'genotype' taking the terminology form biology. Each of these chromosomes (solutions) is then assessed and given a 'fitness' score indicating how well it performs on a given task. The fittest of these chromosome are then kept and the weakest removed mimicking survival of the fittest or natural selection. The remaining chromosomes are then treated as 'parents' and used to create new 'child' chromosomes. This process can involve sexual or asexual reproduction i.e. use one parent or two. These new 'child' chromosomes (with/without their parents) form the population of the next 'generation'. This process is repeated until a 'termination condition' is reached. Termination conditions often include a target fitness for a chromosome to reach and a time restraint. 
+Evolutionary Algorithms are a set Artificial Intelligence / Machine Learning search heuristics based on Darwinian evolution. The idea is to describe a 'population' of possible solutions to a given task in software. Here each solution is called a 'chromosome' or 'genotype' taking the terminology form biology. Each of these chromosomes (solutions) is then assessed and given a 'fitness' score indicating how well it performs on a given task. The fittest of these chromosome are then kept and the weakest removed mimicking survival of the fittest or natural selection. The remaining chromosomes are then treated as 'parents' and used to create new 'child' chromosomes. This process can involve sexual or asexual reproduction i.e. use one parent or two. These new 'child' chromosomes (with/without their parents) form the population of the next 'generation'. This process is repeated until a 'termination condition' is reached. Termination conditions often include finding a suitable solution and a time restraint. 
 
 The process is shown below in pseudo code
 
 
-> create initial population
+> create initial population of chromosomes
 > 
-> while(! terminated)
+> while(solution not found)
 > 
 > 	calculate chromosome fitnesses
 > 	Select parent chromosomes
-> 	create new population
+> 	create next generation chromosomes
 > 
 > end
 
@@ -31,7 +31,7 @@ Evolutionary Algorithms therefore involve several stages which are now described
 
 Creating Initial Population:
 
-The original population typically takes one of two forms. Either it is populated with randomly generated chromosomes or it is seeded with specific chromosomes. These specific chromosomes may include partial solutions which need to be completed or known solutions to be improved. 
+The original population typically takes one of two forms. Either it is populated with randomly generated chromosomes or it is seeded with specific chromosomes. These specific chromosomes may include partial solutions which need to be completed or known solutions to be refined. 
 
 Calculating Fitnesses:
 
@@ -39,15 +39,15 @@ The function which assigns a fitness to each chromosome is commonly called the '
 
 Selection:
 
-The method used to select the members of the population to be kept is referred to as the 'selection scheme'. Selections schemes can be very simple, just select the fittest chromosomes, or more complex, select chromosomes which represent the most novel solutions.
+The method used to select the members of the population to survive and/or breed is referred to as the 'selection scheme'. Selections schemes can be very simple, just select the fittest chromosomes, or more complex, select chromosomes which represent the most novel solutions.
 
 Reproduction:
 
-There are two main ways in which new child chromosomes can be created from their parents. The first mimics asexual reproduction where the child is simply a mutated copy of the parent chromosome. The second mimics sexual reproduction where the child contains genetic material from both parents with or without mutation. This former method is refereed to as 'recombination' or 'crossover'. How mutation and recombination are implemented depends on the encoding of the chromosomes and the type of mutation and recombination used.
+There are two main ways in which new child chromosomes can be created from their parents. The first mimics asexual reproduction where the child is simply a mutated copy of the parent chromosome. The second mimics sexual reproduction where the child contains genetic material from both parents with or without mutation. This former method is refereed to as 'recombination' or 'crossover'. How mutation and recombination are implemented again depends on the encoding of the chromosomes and the type of mutation and recombination used.
 
 Title: Cartesian Genetic Programming
 
-Now Evolutionary Algorithms have been explained CGP can be introduced.
+Now Evolutionary Algorithms have been introduced CGP can be described.
 
 Cartesian Genetic Programming evolves chromosomes which represent functioning programs. That is the solutions being evolved is a program which completes a given task. These programs can be symbolic equations, Boolean logic circuits, neural networks or pretty much anything which consists of connected computational elements.
 
