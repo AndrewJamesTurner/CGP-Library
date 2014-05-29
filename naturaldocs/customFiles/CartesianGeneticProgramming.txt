@@ -49,57 +49,60 @@ Title: Cartesian Genetic Programming
 
 Now Evolutionary Algorithms have been introduced CGP can be described.
 
-Cartesian Genetic Programming evolves chromosomes which represent functioning programs. That is the solutions being evolved is a program which completes a given task. These programs can be symbolic equations, Boolean logic circuits, neural networks or pretty much anything which consists of connected computational elements.
+Cartesian Genetic Programming (CGP) evolves chromosomes which represent functioning programs. That is, the solutions being evolved are computer programs which compute outputs based on inputs. These programs can be symbolic equations, Boolean logic circuits, neural networks or pretty much anything which consists of connected computational elements. For instance in the case of symbolic equations each equation is made up of separate functions (addition, subtraction, multiplication etc). CGP could be used to create programs which "link" together these separate functions to create a symbolic equation. This equation could then be used to do something useful.
 
-CGP chromosomes describe acyclic (or sometimes cyclic) graphs of functioning nodes index by their Cartesian coordinates. The chromosomes are typically comprised of three types of gene: connection genes, function genes and output genes. Connection genes describe where each nodes inputs are connected; either to the inputs of the graph of other nodes. In the typical acyclic case nodes can only connect to graph inputs of previous nodes. Function genes describe the functionality performed by each node. The set of possible functions which can be performed by each node is defined by the user in a function set. Output genes describe which nodes in the graph represent the graph's output(s). Outputs can be any of the graph's inputs or any nodes within the graph.
+CGP chromosomes describe acyclic (or sometimes cyclic) graphs of functioning nodes. Each chromosomes is comprised of three types of genes: connection genes, function genes and output genes. Connection genes describe how each node is connected together. Each node in the graph can connect to any of the program inputs or to other nodes. Function genes describe the functionality performed by each node in the graph (in the symbolic equations case they may be addition, subtraction, multiplication etc). The set of possible functions which can be performed by each node is defined by the user. Output genes describe which nodes in the graph are used as the program outputs. Program outputs can be taken from any of the program inputs or the output of any node within the graph.
 
 Example Chromosome:
 
-An example CGP chromosome is given below. This chromosome describes an acyclic graph comprising of three inputs, three nodes and one output. 
+An example CGP chromosome is given below. This chromosome describes an acyclic graph comprised of three inputs, three nodes and one output. The arity of each node is two. 
 
 (see feedForward.png)
 
-There are a few things to note form this chromosome
+When the chromosome is executed as a program the inputs to the program are applied to the input nodes (0, 1 and 2 in this case). Then each of the function nodes calculate their output based on their inputs (nodes 3, 4 and 5 in this case). Finally the output of the program is taken (in this case the output of node 4). Typically a CGP chromosome will be ran multiple times with different inputs to assess its behaviour. If the program operates as desired it will score a good fitness, if not a bad fitness.
 
-- Firstly not all of the nodes contribute the output of the graph. Nodes which do not contribute to the output are said to be inactive and are describe by inactive genes. Note: inactive genes can become active when subject to mutation. These inactive genes are though to enable neutral genetic drift; an evolutionary phenomenon where some genes do not contribute to the operation of the phenotype (animal). Neutral genetic drift is though to be useful due to inactive genes still being subject to mutation and are passed on during reproduction. Therefore a population which appears evolutionary static can maintain genetic diversity making it more capable to adapt to a changing environment and more easily escaping evolutionary local optima. 
+There are a few additional interesting things to note form the given chromosome
 
-- Secondly not all of the graphs inputs have to be used when calculating the outputs. This is important as sometimes it is not known which variables will be important to solve a give task. Here CGP can evolve solutions which only used inputs found useful during evolution.
+- Not all of the nodes contribute the output of the graph (in this case node 5 is not used). Nodes which do not contribute to the output are said to be inactive. Note: inactive nodes can later become active if an active node connects to them when mutated. These inactive genes are though to enable neutral genetic drift; an evolutionary phenomenon where some genes do not contribute to the operation of the phenotype (animal). Neutral genetic drift is though to be useful due to inactive genes still being subject to mutation and are passed on during reproduction. Therefore a population which appears evolutionary static can maintain genetic diversity making it more capable of adapting to a changing environment and more easily escaping evolutionary local optima. 
 
-- Thirdly the outputs of nodes can be used multiple times by other nodes and graph outputs. This is an advantage over other genetic programming methods which typically require the same functionality to be evolved multiple times if an internally calculated value is required multiple times. 
+- Not all of the program inputs have to be used when calculating the outputs (in this case input 0 is not used). This is important as sometimes it is not known which variables will be important to solve a give task. Here CGP can evolve solutions which only used inputs found useful during evolution.
 
-- Finally the nodes are arrange in one row and multiple columns. Although CGP originally arrange its nodes in multiple rows and columns this constraint is now often removed. This is due to the fact that any topology possible with multiple rows and columns is also possible with one row and multiple columns; provided the total number of nodes remains the same and nodes can connect to to any previous nodes. Additionally there are topologies which are possible when using one row and multiple columns which are not possible with multiple rows and columns; making the same assumptions. Therefore typically for CGP (and for CGP-library) only the number of nodes (columns) is specified. 
+- The outputs of nodes can be used multiple times by other nodes and by multiple program outputs (in this case the output of node 3 is used twice). This is an advantage over other genetic programming methods which typically require the same functionality to be evolved multiple times if an internally calculated value is required more than once. 
+
 
 Typical Evolutionary process:
 
-Now the typical evolutionary process used by CGP shall be described. However nearly aspect can be altered.
+Now the typical evolutionary process used by CGP shall be described. However nearly aspect can be altered if desired.
 
 Evolutionary Strategy:
 
-The evolutionary strategy commonly used by CGP is (1 + lambda)-ES. This is an elitist strategy (the best chromosome is always preserved in the next generation) which includes parents and children in the next generation. The population size is 1 + lambda. Common values for lambda are four and ten.
+The evolutionary strategy commonly used by CGP is to select one parent from each generation and use it to produce four children via mutation alone. The next generation then comprises of the selected parent and the four generated children. The population size is there for five; four children plus one parent. This strategy is formally written as (1 + 4)-ES. 
 
 Initial Population:
 
-The initial population is usually populated with randomly generated chromosomes. The user defines the number of inputs, nodes, outputs, node arity and the function set and the chromosomes are randomly generated using these constraints. 
+The initial population is usually populated with randomly generated chromosomes. The user defines the number of program inputs, internal nodes, the arity of each node and the number of program outputs. The chromosomes are randomly generated using these given constraints. 
 
-For instance each node will be given a random function gene from the function set, each node connection will be given a random connection gene and the outputs shall index random inputs or nodes within the graph. 
+For instance each of the specified chromosome nodes will be given a random function gene from the available function set. Each of the inputs of each of the nodes will be given a random connection gene. Finally each output gene shall be set as randomly chosen program input or node within the graph. 
 
 Calculating the Fitness:
 
 Typically before the fitness of a CGP chromosome is calculated the active nodes are determined. This is because chromosomes are often ran multiple times by the fitness function and calculating the outputs of nodes which never contribute to the operation of the chromosome is a waste of computational time. Calculating the the active nodes is an O(n) operation which is only undertaken once for each chromosome.
 
-To calculate the output(s) of a CGP chromosome the input(s) are loaded into the input nodes. Then the output of each active node is calculated in tern starting at those closest to the input(s) and working towards the output(s). Finally the outputs of the output node(s) are used as the chromosome output(s).  
-
-The exact fitness of the chromosomes depend on the given task but typically lower fitnesses represent a better solution.
+The exact fitness of the chromosomes depend on how well the chromosome performs on a given task.
 
 Selection Scheme:
 
-CGP typically selects the mu fittest chromosomes to become the parents.
+CGP typically selects the fittest member(s) of the population to become the parent(s).
 
 Reproduction Scheme:
 
-CGP typically only uses mutation alone to create the lambda children form the parents. Common mutation methods used are probabilistic mutation and point mutation.
+CGP typically only uses mutation to create the children form the selected parents. Common mutation methods used are probabilistic mutation and point mutation.
 
-Probabilistic mutation changes each gene to a new random valid allele with a given probability. This allows for the number of genes actually mutated to have a Gaussian distribution. Point mutation randomly selects a given number of genes in the parent and mutates these to create the child. The number of genes selected is the mutation rate time the number of genes. This fixes the number of genes mutated.   
+Probabilistic mutation changes each gene to a new random valid allele with a given probability. This allows for the number of genes actually mutated to have a Gaussian distribution. Point mutation randomly selects a given number of genes in the parent and mutates these to create the child. The number of genes selected is the mutation rate time the number of genes. This fixes the number of genes mutated each time a child is created.   
+
+Summary:
+
+That concludes a very brief introduction to CGP. For more details see the CGP homepage <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. Additionally there is a CGP book called, you've guessed it, "Cartesian Genetic programming" ISBN-10: 3642173098 ISBN-13: 978-3642173097. Finally there are multiple academic publications, just search "Cartesian Genetic programming" into google scholar.
  
 
  
