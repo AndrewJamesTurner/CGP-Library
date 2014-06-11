@@ -97,7 +97,7 @@ struct chromosome *chromo = NULL;
 (end)
 
 Later when the parameters structure is initialise using
-<initialiseparameters> we will need to specify the structure of the
+<initialiseParameters> we will need to specify the structure of the
 chromosomes to be evolved. This requires specifying the number of
 chromosome inputs, nodes, outputs and the arity of each node. 
 
@@ -114,7 +114,7 @@ Later when CGP is applied towards the symbolic task the number of allowed genera
 int numGens = 10000; 
 (end)
 
-Later when the <parameters> structure is initialise using <initialiseparameters>
+Later when the <parameters> structure is initialise using <initialiseParameters>
 many CGP-Library parameters will be set to default values.
 However all of these CGP-Library parameters can be changed using
 provided functions. This will be demonstrated by changing the default
