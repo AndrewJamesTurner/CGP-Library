@@ -232,7 +232,7 @@ trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
 In order for <initialiseDataSetFromFile> to parse the given file it must 
 use the following format below. Where the first line contains the
 number of inputs for each sample, followed by the number of outputs, followed by the total number of samples. The remaining
-lines give each individual sample specifying the inputs values followed by
+lines give each individual sample specifying the input values followed by
 the output values. All values must be comma separated.
 
 >1,1,101,
@@ -264,12 +264,12 @@ printChromosome(chromo, 0);
 (end)
 
 The printed chromosome take the following form. Each line starting
-with an number represents a node; where a node can be an input node or
+with a number represents a node; where a node can be an input node or
 a function node. Each function node is labelled with a textural
 description of the operation it undertakes i.e. 'add'. This is followed
 by the inputs to each node. Additionally the function
 nodes labelled with an '*' indicate that they are active in
-calculating the overall outputs. The output nodes are given on the last line. 
+calculating the overall program outputs. The output nodes are given on the last line. 
 
 > (0):	input
 > (1):	mul		0 0	*
@@ -289,7 +289,7 @@ calculating the overall outputs. The output nodes are given on the last line.
 > (15):	add		7 3	
 > outputs: 13 
 
-Finally at the end of the program the memory associated with the structures used should be 
+Finally at the end of the program the memory associated with the structures should be 
 free'd using <freeDataSet>, <freeChromosome> and <freeParameters>.
 
 (begin code)	
