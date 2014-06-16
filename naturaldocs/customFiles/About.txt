@@ -30,15 +30,16 @@ Homepage: <http://andrewjamesturner.co.uk/>
 
 Email: andrew.turner@york.ac.uk
 
-Open Source:
-
-CGP-Library is an open source project released under the GNU Lesser General Public License. See <Licenses> for more details. The CGP-Library project is hosted with github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project and get the latest (possibly unstable) version of the code.
-
 Contact:
 
 Bugs, clarification and feature requests can be sent to author, see above.
 
-(see github.jpg)
+Open Source:
+
+CGP-Library is an open source project released under the GNU Lesser General Public License. See <Licenses> for more details. The CGP-Library project is hosted with github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project and get the latest (possibly unstable) version of the code.
+
+(see github_sml.jpg)
+
 
 
 
