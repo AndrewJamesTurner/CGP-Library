@@ -54,3 +54,4 @@ docs: ./include/cgp.h ./naturaldocs/customFiles/*
 
 clean:
 	@rm -f src/cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*
+
