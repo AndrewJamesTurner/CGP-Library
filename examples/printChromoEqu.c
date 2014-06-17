@@ -28,11 +28,11 @@ int main(void){
 	int numInputs = 2;
 	int numNodes = 10;
 	int numOutputs = 1;
-	int nodeArity = 2;
+	int nodeArity = 3;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sub,sin,exp");
+	addNodeFunction(params, "add,sin,exp,div");
 
 	chromo = initialiseChromosome(params);
 	

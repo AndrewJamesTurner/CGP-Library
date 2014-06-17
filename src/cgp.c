@@ -1328,15 +1328,15 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 	
 		
 	/* document footer */
-	fprintf(fp, "\\end{equation}\n");
-	fprintf(fp, "\\end{document}\n");
+	fprintf(fp, "\n\\end{equation}");
+	fprintf(fp, "\n\\end{document}");
 	
 	fclose(fp);
 		
 }
 
 /*
-	
+	used by saveChromosomeLatex
 */
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp){
 	
@@ -1390,13 +1390,27 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	/* div (change to frac)*/
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "div", FUNCTIONNAMELENGTH) == 0 ){
 		
-		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
-		
-		for(i=1; i<chromo->arity; i++){
+		if(getChromosomeNodeArity(chromo, index - chromo->numInputs) == 1){
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		}
+		else{
 			
-			fprintf(fp, " \\div ");
-			
-			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+			for(i=0; i<chromo->arity; i++){
+				
+				if(i+1 < chromo->arity){
+					fprintf(fp, "\\frac{");
+					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+					fprintf(fp, "}{");
+				}
+				else if(i+1 == chromo->arity && chromo->arity>2){
+					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+					fprintf(fp, "}}");
+				}
+				else{
+					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+					fprintf(fp, "}");
+				}
+			}	
 		}
 	}
 	
@@ -1459,7 +1473,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	/* sin */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sin", FUNCTIONNAMELENGTH) == 0 ){
 		
-		fprintf(fp, " sin(");
+		fprintf(fp, "\\sin(");
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
@@ -1470,7 +1484,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	/* cos */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "cos", FUNCTIONNAMELENGTH) == 0 ){
 		
-		fprintf(fp, " cos(");
+		fprintf(fp, " \\cos(");
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
@@ -1481,7 +1495,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	/* tan */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "tan", FUNCTIONNAMELENGTH) == 0 ){
 		
-		fprintf(fp, " tan(");
+		fprintf(fp, " \\tan(");
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
