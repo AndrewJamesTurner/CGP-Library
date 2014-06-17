@@ -35,6 +35,9 @@ averageBehaviour: examples/averageBehaviour.c src/cgp.c include/cgp.h
 
 neuroEvolution: examples/neuroEvolution.c src/cgp.c include/cgp.h
 	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
+	
+recurrentConnections: examples/recurrentConnections.c src/cgp.c include/cgp.h
+	@$(CC) -o recurrentConnections examples/recurrentConnections.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm	
 
 customES: examples/customES.c src/cgp.c include/cgp.h
 	@$(CC) -o customES examples/customES.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
@@ -47,4 +50,4 @@ docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*
+	@rm -f src/cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*

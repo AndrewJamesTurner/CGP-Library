@@ -500,16 +500,31 @@
 		Sets the mutation rate in the given parameters.
 
 		The given mutation rate is also parsed to ensure a valid mutation rate.
-		mutation rate <0 or >1 are invalid. If an invalid mutation rate is give a
+		Mutation rate <0 or >1 are invalid. If an invalid mutation rate is give a
 		warning is displayed and the mutation rate is left unchanged.
 
 		Parameters:
 			params - pointer to parameters structure.
 			mutationRate - The value of the mutation rate to be set.
-
 	*/
 	DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate);
 
+
+
+	/*
+		Function: setRecurrentConnectionProbability
+
+		Sets the recurrent connection probability in the given parameters.
+
+		The given recurrent connection probability is also parsed to ensure a valid recurrent connection probability.
+		Recurrent connection probability <0 or >1 are invalid. If an invalid recurrent connection probability is give a
+		warning is displayed and the recurrent connection probability is left unchanged.
+
+		Parameters:
+			params - pointer to parameters structure.
+			recurrentConnectionProbability - The value of the recurrent connection probability to be set.
+	*/
+	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, float recurrentConnectionProbability);
 
 	/*
 		Function: setConnectionWeightRange
@@ -1048,6 +1063,13 @@
 			<getChromosomeFitness>
 	*/
 	DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+
+
+
+	/*
+		Function: resetChromosome
+	*/
+	DLL_EXPORT void resetChromosome(struct chromosome *chromo);
 
 
 	/*

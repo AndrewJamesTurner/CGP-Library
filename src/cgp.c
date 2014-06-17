@@ -46,6 +46,7 @@ struct parameters{
 	int lambda;
 	char evolutionaryStrategy;
 	float mutationRate;
+	float recurrentConnectionProbability;
 	float connectionWeightRange;
 	int numInputs;
 	int numNodes;
@@ -121,13 +122,13 @@ static int cmpChromosome(const void *a, const void *b);
 static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB);
 
 /* node functions */
-static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
+static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, float connectionWeightRange, float recurrentConnectionProbability, int nodePosition);
 static void freeNode(struct node *n);
 static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 
 /* getting gene value functions  */
 static float getRandomConnectionWeight(float weightRange);
-static int getRandomNodeInput(int numChromoInputs, int nodePosition);
+static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, float recurrentConnectionProbability);
 static int getRandomFunction(int numFunctions);
 static int getRandomChromosomeOutput(int numInputs, int numNodes);
 
@@ -213,6 +214,7 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 	params->lambda = 4;
 	params->evolutionaryStrategy = '+';
 	params->mutationRate = 0.05;
+	params->recurrentConnectionProbability = 0.0;
 	params->connectionWeightRange = 1;
 
 	params->targetFitness = 0;
@@ -270,24 +272,25 @@ DLL_EXPORT void printParameters(struct parameters *params){
 		exit(0);
 	}
 
-	printf("---------------------------------------------------\n");
-	printf("                   Parameters                      \n");
-	printf("---------------------------------------------------\n");
-	printf("Evolutionary Strategy:\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
-	printf("Inputs:\t\t\t\t%d\n", params->numInputs);
-	printf("Nodes:\t\t\t\t%d\n", params->numNodes);
-	printf("Outputs:\t\t\t%d\n", params->numOutputs);
-	printf("Node Arity:\t\t\t%d\n", params->arity);
-	printf("Connection weights range:\t+/- %f\n", params->connectionWeightRange);
-	printf("Mutation Type:\t\t\t%s\n", params->mutationTypeName);
-	printf("Mutation rate:\t\t\t%f\n", params->mutationRate);
-	printf("Fitness Function:\t\t%s\n", params->fitnessFunctionName);
-	printf("Target Fitness:\t\t\t%f\n", params->targetFitness);
-	printf("Selection scheme:\t\t%s\n", params->selectionSchemeName);
-	printf("Reproduction scheme:\t\t%s\n", params->reproductionSchemeName);
-	printf("Update frequency:\t\t%d\n", params->updateFrequency);
+	printf("-----------------------------------------------------------\n");
+	printf("                       Parameters                          \n");
+	printf("-----------------------------------------------------------\n");
+	printf("Evolutionary Strategy:\t\t\t(%d%c%d)-ES\n", params->mu, params->evolutionaryStrategy, params->lambda);
+	printf("Inputs:\t\t\t\t\t%d\n", params->numInputs);
+	printf("Nodes:\t\t\t\t\t%d\n", params->numNodes);
+	printf("Outputs:\t\t\t\t%d\n", params->numOutputs);
+	printf("Node Arity:\t\t\t\t%d\n", params->arity);
+	printf("Connection weights range:\t\t+/- %f\n", params->connectionWeightRange);
+	printf("Mutation Type:\t\t\t\t%s\n", params->mutationTypeName);
+	printf("Mutation rate:\t\t\t\t%f\n", params->mutationRate);
+	printf("Recurrent Connection Probability:\t%f\n", params->recurrentConnectionProbability);
+	printf("Fitness Function:\t\t\t%s\n", params->fitnessFunctionName);
+	printf("Target Fitness:\t\t\t\t%f\n", params->targetFitness);
+	printf("Selection scheme:\t\t\t%s\n", params->selectionSchemeName);
+	printf("Reproduction scheme:\t\t\t%s\n", params->reproductionSchemeName);
+	printf("Update frequency:\t\t\t%d\n", params->updateFrequency);
 	printFunctionSet(params);
-	printf("---------------------------------------------------\n\n");
+	printf("-----------------------------------------------------------\n\n");
 }
 
 
@@ -562,7 +565,7 @@ DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutio
 
 
 /*
-	Sets the mutation rate given in parameters. IF an invalid mutation
+	Sets the mutation rate given in parameters. If an invalid mutation
 	rate is given a warning is displayed and the mutation rate is left
 	unchanged.
 */
@@ -573,6 +576,21 @@ DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate){
 	}
 	else{
 		printf("\nWarning: mutation rate '%f' is invalid. The mutation rate must be in the range [0,1]. The mutation rate has been left unchanged as '%f'.\n", mutationRate, params->mutationRate);
+	}
+}
+
+
+/*
+	Sets the recurrent connection probability given in parameters. If an invalid
+	value is given a warning is displayed and the value is left	unchanged.
+*/
+DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, float recurrentConnectionProbability){
+
+	if(recurrentConnectionProbability >= 0 && recurrentConnectionProbability <= 1){
+		params->recurrentConnectionProbability = recurrentConnectionProbability;
+	}
+	else{
+		printf("\nWarning: recurrent connection probability '%f' is invalid. The recurrent connection probability must be in the range [0,1]. The recurrent connection probability has been left unchanged as '%f'.\n", recurrentConnectionProbability, params->recurrentConnectionProbability);
 	}
 }
 
@@ -733,7 +751,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<params->numNodes; i++){
-		chromo->nodes[i] = initialiseNode(params->numInputs, params->arity, params->funcSet->numFunctions, params->connectionWeightRange, i);
+		chromo->nodes[i] = initialiseNode(params->numInputs, params->numNodes, params->arity, params->funcSet->numFunctions, params->connectionWeightRange, params->recurrentConnectionProbability, i);
 	}
 
 	/* set each of the chromosomes outputs */
@@ -921,7 +939,7 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<chromo->numNodes; i++){
-		chromoNew->nodes[i] = initialiseNode(chromo->numInputs, chromo->arity, chromo->funcSet->numFunctions, 0, i);
+		chromoNew->nodes[i] = initialiseNode(chromo->numInputs, chromo->numNodes, chromo->arity, chromo->funcSet->numFunctions, 0, 0, i);
 		copyNode(chromoNew->nodes[i], chromo->nodes[i]);
 	}
 
@@ -1360,11 +1378,25 @@ DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosom
 
 	setChromosomeActiveNodes(chromo);
 
+	resetChromosome(chromo);
+
 	fitness = params->fitnessFunction(params, chromo, data);
 
 	chromo->fitness = fitness;
 }
 
+
+/*
+	reset the output values of all chromosome nodes to zero
+*/
+DLL_EXPORT void resetChromosome(struct chromosome *chromo){
+	
+	int i;
+	
+	for(i=0; i<chromo->numNodes; i++){
+		chromo->nodes[i]->output = 0;
+	}
+}
 
 /*
 	copies the contents of one chromosome to another. Provided the number of inputs, nodes, outputs and node arity are the same.
@@ -2234,7 +2266,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo){
 			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
 			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
 
-			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, nodeIndex, params->recurrentConnectionProbability);
 		}
 
 		/* mutate output gene */
@@ -2294,7 +2326,7 @@ static void pointMutationANN(struct parameters *params, struct chromosome *chrom
 			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
 			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
 
-			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, nodeIndex);
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, nodeIndex, params->recurrentConnectionProbability);
 		}
 
 		/* mutate connection weight */
@@ -2338,7 +2370,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 
 			/* mutate the node input */
 			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
@@ -2385,7 +2417,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 
 			/* mutate the node input */
 			if(randFloat() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, i);
+				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
@@ -2766,7 +2798,7 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 	returns a pointer to an initialised node. Initialised means that necessary
 	memory has been allocated and values set.
 */
-static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition){
+static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, float connectionWeightRange, float recurrentConnectionProbability, int nodePosition){
 
 	struct node *n;
 	int i;
@@ -2786,7 +2818,7 @@ static struct node *initialiseNode(int numInputs, int arity, int numFunctions, f
 
 	/* set the nodes inputs and connection weights */
 	for(i=0; i<arity; i++){
-		n->inputs[i] = getRandomNodeInput(numInputs,nodePosition);
+		n->inputs[i] = getRandomNodeInput(numInputs, numNodes, nodePosition, recurrentConnectionProbability);
 		n->weights[i] = getRandomConnectionWeight(connectionWeightRange);
 	}
 
@@ -2839,11 +2871,16 @@ static int getRandomFunction(int numFunctions){
 /*
  returns a random input for the given node
 */
-static int getRandomNodeInput(int numChromoInputs, int nodePosition){
+static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, float recurrentConnectionProbability){
 
 	int input;
 
-	input = randInt(numChromoInputs + nodePosition);
+	if(randFloat() < recurrentConnectionProbability){
+		input = randInt(numNodes - nodePosition) + nodePosition + 1;
+	}
+	else{
+		input = randInt(numChromoInputs + nodePosition);
+	}
 
 	return input;
 }
