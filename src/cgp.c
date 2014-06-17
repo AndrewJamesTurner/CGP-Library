@@ -1276,6 +1276,9 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 
 /*
 	save the given chromosome as a latex equation
+	
+	Only compatible with feed-forward networks
+	Only fully compatible with custom node functions
 */
 DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName){
 	
@@ -1328,6 +1331,9 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 		
 }
 
+/*
+	
+*/
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp){
 	
 	int i;
@@ -1337,20 +1343,164 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		return;
 	}
 	
-	
-	fprintf(fp, "%s(", chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function]);
-	
-	for(i=0; i<chromo->arity; i++){
+	/* add */
+	if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "add", FUNCTIONNAMELENGTH) == 0 ){
 		
-		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
-		if(i < chromo->arity-1)
-			fprintf(fp, ", ");
+		for(i=1; i<chromo->arity; i++){
+						
+			fprintf(fp, " + ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
 	}
 	
-	fprintf(fp, ")");
+	
+	/* sub */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sub", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " - ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	}
+	
+	/* mul */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "mul", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " \\times ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	} 
+	
+	/* div (change to frac)*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "div", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " \\div ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	}
+	
+	/* abs*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "abs", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " \\left|");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " \\right|");
+		
+	}
+	
+	/* sqrt*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sqrt", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " \\sqrt{");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " }");
+		
+	}
 	
 	
+	/* sq */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sq", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " (");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )^2");
+		
+	}
+	
+	/* cube */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "cube", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " (");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )^3");
+		
+	}
+	
+	/* exp */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "exp", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " e^{");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " }");
+		
+	}
+	
+	/* sin */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sin", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " sin(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* cos */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "cos", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " cos(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* tan */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "tan", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " tan(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* other */
+	else{
+	
+		fprintf(fp, "%s(", chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function]);
+	
+		for(i=0; i<chromo->arity; i++){
+		
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		
+			if(i < chromo->arity-1)
+				fprintf(fp, ", ");
+		}
+	
+		fprintf(fp, ")");
+	}
+
 }
 
 

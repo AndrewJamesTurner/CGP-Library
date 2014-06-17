@@ -34,7 +34,7 @@ int main(void){
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sub,mul,div,sin");
+	addNodeFunction(params, "add,sin,exp");
 
 	
 	chromo = initialiseChromosome(params);
