@@ -1036,7 +1036,7 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights){
 		printf("(%d):\t%s\t", chromo->numInputs + i, chromo->funcSet->functionNames[chromo->nodes[i]->function]);
 
 		/* for the arity of the node */
-		for(j = 0; j < chromo->arity; j++){
+		for(j = 0; j < getChromosomeNodeArity(chromo,i); j++){
 
 			/* print the node input information */
 			if(weights == 1){

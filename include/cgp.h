@@ -718,8 +718,6 @@
 
 
 	
-
-
 	/*
 		Function: setTargetFitness
 
