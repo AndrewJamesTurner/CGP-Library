@@ -1000,6 +1000,13 @@
 	*/
 	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName);
 
+
+	/*
+		Function: saveChromosomeLatex
+	*/
+	DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName);
+	
+
 	/*
 		Function: mutateChromosome
 			Mutate the given chromosome using the mutation method described in the given parameters.

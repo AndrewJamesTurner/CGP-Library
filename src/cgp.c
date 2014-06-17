@@ -119,6 +119,7 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
 static int cmpChromosome(const void *a, const void *b);
 static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB);
+static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
 /* node functions */
 static struct node *initialiseNode(int numInputs, int arity, int numFunctions, float connectionWeightRange, int nodePosition);
@@ -1270,6 +1271,86 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 	fprintf(fp, "}");
 	
 	fclose(fp);
+}
+
+
+/*
+	save the given chromosome as a latex equation
+*/
+DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName){
+	
+	int i;
+	FILE *fp;
+	
+	
+	/* later need to deal with printing recursive programs */
+	
+	/* need to deal with multiple outputs... use separate equation for each... */
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		return;
+	}
+	
+	/* document header */
+	fprintf(fp, "\\documentclass{article}\n");
+	fprintf(fp, "\\begin{document}\n");
+	fprintf(fp, "\\begin{equation}\n");
+	
+	/* function inputs */
+	if(chromo->numInputs == 0){
+		fprintf(fp, "f()=");
+	}
+	else{
+	
+		fprintf(fp, "f(x_0");
+	
+		for(i=1; i<chromo->numInputs; i++){
+		
+			fprintf(fp, ",x_%d", i);
+		}
+	
+		fprintf(fp, ")=");
+	}
+	
+	
+	saveChromosomeLatexRecursive(chromo, chromo->outputNodes[0], fp);
+	
+
+	
+		
+	/* document footer */
+	fprintf(fp, "\\end{equation}\n");
+	fprintf(fp, "\\end{document}\n");
+	
+	fclose(fp);
+		
+}
+
+static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp){
+	
+	int i;
+	
+	if(index < chromo->numInputs){
+		fprintf(fp, "x_%d", index);
+		return;
+	}
+	
+	
+	fprintf(fp, "%s(", chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function]);
+	
+	for(i=0; i<chromo->arity; i++){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		
+		if(i < chromo->arity-1)
+			fprintf(fp, ", ");
+	}
+	
+	fprintf(fp, ")");
+	
+	
 }
 
 

@@ -38,6 +38,9 @@ neuroEvolution: examples/neuroEvolution.c src/cgp.c include/cgp.h
 
 customES: examples/customES.c src/cgp.c include/cgp.h
 	@$(CC) -o customES examples/customES.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
+	
+printChromoEqu: examples/printChromoEqu.c src/cgp.c include/cgp.h
+	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
 
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
