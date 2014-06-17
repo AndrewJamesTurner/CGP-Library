@@ -9,7 +9,7 @@
 
     CGP-Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
@@ -17,52 +17,31 @@
 */
 
 #include <stdio.h>
-#include <math.h>
 #include "../include/cgp.h"
-
-float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
-
-	int i;
-	float sumOfSqrs = 0;
-	float hypt;
-
-	for(i=0; i<numInputs; i++){
-		sumOfSqrs += powf(inputs[i], 2);
-	}
-
-	hypt = sqrtf(sumOfSqrs);
-
-	return hypt;
-}
-
 
 int main(void){
 
 	struct parameters *params = NULL;
+	
+	struct chromosome *chromo = NULL;
 
 	int numInputs = 2;
 	int numNodes = 10;
 	int numOutputs = 1;
-	int arity = 3;
+	int nodeArity = 2;
 
-	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sub");
+	addNodeFunction(params, "add,sub,sin,exp");
 
-	addNodeFunctionCustom(params, hypotenuse, "hypt", -1);
+	chromo = initialiseChromosome(params);
+	
+	printChromosome(chromo, 0);
 
-	printParameters(params);
-
+	saveChromosomeLatex(chromo, 0, "tmp.tex");
+		
+	freeChromosome(chromo);
 	freeParameters(params);
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-

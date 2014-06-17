@@ -93,6 +93,7 @@ struct node{
 struct functionSet{
 	int numFunctions;
 	char functionNames[FUNCTIONSETSIZE][FUNCTIONNAMELENGTH];
+	int maxNumInputs[FUNCTIONSETSIZE];
 	float (*functions[FUNCTIONSETSIZE])(const int numInputs, const float *inputs, const float *connectionWeights);
 };
 
@@ -120,6 +121,7 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
 static int cmpChromosome(const void *a, const void *b);
 static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB);
+static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
 /* node functions */
 static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, float connectionWeightRange, float recurrentConnectionProbability, int nodePosition);
@@ -331,7 +333,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 	Adds given node function to given function set with given name.
 	Disallows exceeding the function set size.
 */
-DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName){
+DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName, int maxNumInputs){
 
 	if(params->funcSet->numFunctions >= FUNCTIONSETSIZE){
 		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
@@ -343,6 +345,9 @@ DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*functio
 
 	/* */
 	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName, FUNCTIONNAMELENGTH);
+
+	/* */
+	params->funcSet->maxNumInputs[params->funcSet->numFunctions-1] = maxNumInputs;
 
 	/* */
 	params->funcSet->functions[params->funcSet->numFunctions-1] = function;
@@ -360,82 +365,82 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	/* Symbolic functions */
 	
 	if(strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, add, "add");
+		addNodeFunctionCustom(params, add, "add", -1);
 	}
 	else if(strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sub, "sub");
+		addNodeFunctionCustom(params, sub, "sub", -1);
 	}
 	else if(strncmp(functionName, "mul", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, mul, "mul");
+		addNodeFunctionCustom(params, mul, "mul", -1);
 	}
 	else if(strncmp(functionName, "div", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, divide, "div");
+		addNodeFunctionCustom(params, divide, "div", -1);
 	}
 	else if(strncmp(functionName, "abs", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, absolute, "abs");
+		addNodeFunctionCustom(params, absolute, "abs", 1);
 	}
 	else if(strncmp(functionName, "sqrt", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, squareRoot, "sqrt");
+		addNodeFunctionCustom(params, squareRoot, "sqrt", 1);
 	}
 	else if(strncmp(functionName, "sq", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, square, "sq");
+		addNodeFunctionCustom(params, square, "sq", 1);
 	}
 	else if(strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, cube, "cube");
+		addNodeFunctionCustom(params, cube, "cube", 1);
 	}
 	else if(strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, exponential, "exp");
+		addNodeFunctionCustom(params, exponential, "exp", 1);
 	}
 	else if(strncmp(functionName, "sin", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sine, "sin");
+		addNodeFunctionCustom(params, sine, "sin", 1);
 	}
 	else if(strncmp(functionName, "cos", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, cosine, "cos");
+		addNodeFunctionCustom(params, cosine, "cos", 1);
 	}
 	else if(strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, tangent, "tan");
+		addNodeFunctionCustom(params, tangent, "tan", 1);
 	}
 
 	/* Boolean logic gates */
 
 	else if(strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, and, "and");
+		addNodeFunctionCustom(params, and, "and", -1);
 	}
 	else if(strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, nand, "nand");
+		addNodeFunctionCustom(params, nand, "nand", -1);
 	}
 	else if(strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, or, "or");
+		addNodeFunctionCustom(params, or, "or", -1);
 	}
 	else if(strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, nor, "nor");
+		addNodeFunctionCustom(params, nor, "nor", -1);
 	}
 	else if(strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, xor, "xor");
+		addNodeFunctionCustom(params, xor, "xor", -1);
 	}
 	else if(strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, xnor, "xnor");
+		addNodeFunctionCustom(params, xnor, "xnor", -1);
 	}
 	else if(strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, not, "not");
+		addNodeFunctionCustom(params, not, "not", -1);
 	}
 
 	/* Neuron functions */
 
 	else if(strncmp(functionName, "sig", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sigmoid, "sig");
+		addNodeFunctionCustom(params, sigmoid, "sig", -1);
 	}
 	else if(strncmp(functionName, "gauss", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, gaussian, "gauss");
+		addNodeFunctionCustom(params, gaussian, "gauss", -1);
 	}
 	else if(strncmp(functionName, "step", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, step, "step");
+		addNodeFunctionCustom(params, step, "step", -1);
 	}
 	else if(strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, softsign, "soft");
+		addNodeFunctionCustom(params, softsign, "soft", -1);
 	}
 	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, hyperbolicTangent, "tanh");
+		addNodeFunctionCustom(params, hyperbolicTangent, "tanh", -1);
 	}
 	
 	/* Warning */
@@ -1243,7 +1248,7 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 		fprintf(fp, "node%d [label=\"%s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
 		
 		/* for each node input */
-		for(j=0; j<getChromosomeNodeArity(chromo); j++){
+		for(j=0; j<getChromosomeNodeArity(chromo, i); j++){
 			
 			if(weights == 1){
 				snprintf(weight, 20, "%f", chromo->nodes[i]->weights[j]);
@@ -1288,6 +1293,236 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 	fprintf(fp, "}");
 	
 	fclose(fp);
+}
+
+
+/*
+	save the given chromosome as a latex equation
+	
+	Only compatible with feed-forward networks
+	Only fully compatible with custom node functions
+*/
+DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName){
+	
+	int i;
+	FILE *fp;
+	
+	
+	/* later need to deal with printing recursive programs */
+	
+	/* need to deal with multiple outputs... use separate equation for each... */
+	
+	fp = fopen(fileName, "w");
+	
+	if(fp == NULL){
+		return;
+	}
+	
+	/* document header */
+	fprintf(fp, "\\documentclass{article}\n");
+	fprintf(fp, "\\begin{document}\n");
+	fprintf(fp, "\\begin{equation}\n");
+	
+	/* function inputs */
+	if(chromo->numInputs == 0){
+		fprintf(fp, "f()=");
+	}
+	else{
+	
+		fprintf(fp, "f(x_0");
+	
+		for(i=1; i<chromo->numInputs; i++){
+		
+			fprintf(fp, ",x_%d", i);
+		}
+	
+		fprintf(fp, ")=");
+	}
+	
+	
+	saveChromosomeLatexRecursive(chromo, chromo->outputNodes[0], fp);
+	
+
+	
+		
+	/* document footer */
+	fprintf(fp, "\\end{equation}\n");
+	fprintf(fp, "\\end{document}\n");
+	
+	fclose(fp);
+		
+}
+
+/*
+	
+*/
+static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp){
+	
+	int i;
+	
+	if(index < chromo->numInputs){
+		fprintf(fp, "x_%d", index);
+		return;
+	}
+	
+	/* add */
+	if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "add", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+						
+			fprintf(fp, " + ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	}
+	
+	
+	/* sub */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sub", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " - ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	}
+	
+	/* mul */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "mul", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " \\times ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	} 
+	
+	/* div (change to frac)*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "div", FUNCTIONNAMELENGTH) == 0 ){
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		for(i=1; i<chromo->arity; i++){
+			
+			fprintf(fp, " \\div ");
+			
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		}
+	}
+	
+	/* abs*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "abs", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " \\left|");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " \\right|");
+		
+	}
+	
+	/* sqrt*/
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sqrt", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " \\sqrt{");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " }");
+		
+	}
+	
+	
+	/* sq */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sq", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " (");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )^2");
+		
+	}
+	
+	/* cube */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "cube", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " (");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )^3");
+		
+	}
+	
+	/* exp */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "exp", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " e^{");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " }");
+		
+	}
+	
+	/* sin */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sin", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " sin(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* cos */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "cos", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " cos(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* tan */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "tan", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " tan(");
+		
+		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
+		
+		fprintf(fp, " )");
+		
+	}
+	
+	/* other */
+	else{
+	
+		fprintf(fp, "%s(", chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function]);
+	
+		for(i=0; i<chromo->arity; i++){
+		
+			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
+		
+			if(i < chromo->arity-1)
+				fprintf(fp, ", ");
+		}
+	
+		fprintf(fp, ")");
+	}
+
 }
 
 
@@ -1489,8 +1724,17 @@ DLL_EXPORT int getNumChromosomeOutputs(struct chromosome *chromo){
 /*
 	Gets the chromosome node arity
 */
-DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo){
-	return chromo->arity;
+DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index){
+	
+	if(chromo->funcSet->maxNumInputs[chromo->nodes[index]->function] == -1){
+		return chromo->arity;
+	}
+	else if(chromo->funcSet->maxNumInputs[chromo->nodes[index]->function] < chromo->arity){
+		return chromo->funcSet->maxNumInputs[chromo->nodes[index]->function];
+	}
+	else{
+		return chromo->arity; 
+	}
 }
 
 /*
@@ -1569,7 +1813,7 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 	chromo->numActiveNodes++;
 
 	/* recursively log all the nodes to which the current nodes connect as active */
-	for(i=0; i < chromo->arity; i++){
+	for(i=0; i < getChromosomeNodeArity(chromo, nodeIndex-chromo->numInputs); i++){
 		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
 	}
 }
@@ -2665,7 +2909,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 }
 
 /*
-	returns a points to the fittest chromosome in the two arrays of chromosomes
+	returns a pointer to the fittest chromosome in the two arrays of chromosomes
 */
 static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB){
 	
@@ -2702,6 +2946,7 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 	for(i=0; i<funcSetDest->numFunctions; i++){
 		strncpy(funcSetDest->functionNames[i], funcSetSrc->functionNames[i], FUNCTIONNAMELENGTH);
 		funcSetDest->functions[i] = funcSetSrc->functions[i];
+		funcSetDest->maxNumInputs[i] = funcSetSrc->maxNumInputs[i];		
 	}
 }
 
