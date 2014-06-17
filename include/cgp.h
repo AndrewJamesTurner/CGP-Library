@@ -320,6 +320,7 @@
 			params - pointer to an initialised parameters structure
 			function - the custom node function
 			functionName - the name of the added function
+			maxNumInputs - maximum number of inputs to function (-1 is unlimited)
 
 		Example:
 
@@ -342,7 +343,7 @@
 			Adding the new custom node function to the function set
 
 			(begin code)
-			addNodeFunctionCustom(params, add, "add");
+			addNodeFunctionCustom(params, add, "add", -1);
 			(end)
 
 		Note:
@@ -352,7 +353,7 @@
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
 	*/
-	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName);
+	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName, int maxNumInputs);
 
 
 	/*
@@ -1145,6 +1146,7 @@
 
 		Parameters:
 			chromo - pointer to an initialised chromosome structure.
+			index - index of chromosome node
 
 		Returns:
 			Arity of chromosome nodes
@@ -1152,7 +1154,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo);
+	DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index);
 
 
 	/*

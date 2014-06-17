@@ -26,24 +26,20 @@ int main(void){
 	struct chromosome *chromo = NULL;
 
 	int numInputs = 2;
-	int numNodes = 5;
+	int numNodes = 10;
 	int numOutputs = 1;
 	int nodeArity = 2;
 
-	
-
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sin,exp");
+	addNodeFunction(params, "add,sub,sin,exp");
 
-	
 	chromo = initialiseChromosome(params);
 	
 	printChromosome(chromo, 0);
 
-	saveChromosomeLatex(chromo, 0, "Tmp.tex");
-	
-	
+	saveChromosomeLatex(chromo, 0, "tmp.tex");
+		
 	freeChromosome(chromo);
 	freeParameters(params);
 
