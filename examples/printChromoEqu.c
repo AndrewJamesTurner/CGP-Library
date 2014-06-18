@@ -16,13 +16,13 @@
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "../include/cgp.h"
 
 int main(void){
 
 	struct parameters *params = NULL;
-	
 	struct chromosome *chromo = NULL;
 
 	int numInputs = 2;
@@ -34,6 +34,8 @@ int main(void){
 
 	addNodeFunction(params, "add,sin,exp,div");
 
+	setRecurrentConnectionProbability(params, 0.0);
+
 	chromo = initialiseChromosome(params);
 	
 	printChromosome(chromo, 0);
@@ -42,6 +44,8 @@ int main(void){
 		
 	freeChromosome(chromo);
 	freeParameters(params);
+
+	system("pdflatex tmp.tex > /dev/null");
 
 	return 0;
 }
