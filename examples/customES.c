@@ -38,7 +38,7 @@ int main(void){
 	float targetFitness = 0;
 	int maxGens = 10000;
 		
-	float testInputs[NUMINPUTS];
+	/*float testInputs[NUMINPUTS];*/
 		
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	
@@ -47,7 +47,7 @@ int main(void){
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.08);
 	
-	trainingData = initialiseDataSetFromFile("parity3bit.data");
+	trainingData = initialiseDataSetFromFile("./examples/parity3bit.data");
 	
 	for(i=0; i<POPULATIONSIZE; i++){
 		population[i] = initialiseChromosome(params);
@@ -55,36 +55,36 @@ int main(void){
 	
 	fittestChromosome = initialiseChromosome(params);
 	
-	// for the number of allowed generations
+	/* for the number of allowed generations*/
 	for(gen=0; gen<maxGens; gen++){
 		
-		// set the fitnesses of the population of chromosomes
+		/* set the fitnesses of the population of chromosomes*/
 		for(i=0; i<POPULATIONSIZE; i++){
 			setChromosomeFitness(params, population[i], trainingData);
 		}
 		
-		// copy over the last chromosome to fittestChromosome
+		/* copy over the last chromosome to fittestChromosome*/
 		copyChromosome(fittestChromosome, population[POPULATIONSIZE - 1]);
 		
-		// for all chromosomes except the last
+		/* for all chromosomes except the last*/
 		for(i=0; i<POPULATIONSIZE-1; i++){
 			
-			// copy ith chromosome to fittestChromosome if fitter
+			/* copy ith chromosome to fittestChromosome if fitter*/
 			if(getChromosomeFitness(population[i]) < getChromosomeFitness(fittestChromosome)){
 				copyChromosome(fittestChromosome, population[i]);
 			}
 		}
 				
-		// termination condition
+		/* termination condition*/
 		if(getChromosomeFitness(fittestChromosome) <= targetFitness){
 			break;
 		}
 				
-		// set the first member of the population to be the fittest chromosome
+		/* set the first member of the population to be the fittest chromosome*/
 		copyChromosome(population[0], fittestChromosome);
 		
-		// set remaining member of the population to be mutations of the
-		// fittest chromosome
+		/* set remaining member of the population to be mutations of the
+		 fittest chromosome*/
 		for(i=1; i<POPULATIONSIZE; i++){
 			
 			copyChromosome(population[i], fittestChromosome);
@@ -95,30 +95,7 @@ int main(void){
 	printf("gen\tfitness\n");
 	printf("%d\t%f\n", gen, getChromosomeFitness(fittestChromosome));
 	
-	/*
-	printf("Fittest chromosome found has fitness: %f (target %.2f) and %d active nodes.\n", getChromosomeFitness(fittestChromosome), targetFitness, getNumChromosomeActiveNodes(fittestChromosome));
 	
-	printf("\nFittest chromosome");
-	printChromosome(fittestChromosome);
-	
-	removeInactiveNodes(fittestChromosome);
-		
-	saveChromosome(fittestChromosome, "fittestChromosome.chromo");
-	
-	freeChromosome(fittestChromosome);
-	
-	fittestChromosome = initialiseChromosomeFromFile("fittestChromosome.chromo");
-	
-	printf("\nFittest chromosome without inactive nodes (loaded from file).\n");
-	printChromosome(fittestChromosome);
-		
-	testInputs[0] = 3;
-	
-	executeChromosome(fittestChromosome, testInputs);
-	printf("Using the generated chromosome\n");
-	printf("Applied input: %f\n", testInputs[0]);
-	printf("Generated output: %f\n", getChromosomeOutput(fittestChromosome,0));
-	*/
 	
 	for(i=0; i<POPULATIONSIZE; i++){
 		freeChromosome(population[i]);
