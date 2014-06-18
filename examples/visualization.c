@@ -25,7 +25,7 @@ int main(void){
 	struct chromosome *chromo = NULL;
 
 	int numInputs = 1;
-	int numNodes = 15;
+	int numNodes = 8;
 	int numOutputs = 1;
 	int nodeArity = 2;
 
@@ -34,12 +34,11 @@ int main(void){
 	addNodeFunction(params, "add,sub,mul,div,sin");
 
 	chromo = initialiseChromosome(params);
-	
+
 	printChromosome(chromo, 0);
-	
 	saveChromosomeDot(chromo, 0, "chromo.dot");
 	saveChromosomeLatex(chromo, 0, "chromo.tex");
-		
+
 	freeChromosome(chromo);
 	freeParameters(params);
 

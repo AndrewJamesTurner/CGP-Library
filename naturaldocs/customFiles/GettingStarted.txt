@@ -271,23 +271,24 @@ by the inputs to each node. Additionally the function
 nodes labelled with an '*' indicate that they are active in
 calculating the overall program outputs. The output nodes are given on the last line. 
 
-> (0):	input
-> (1):	mul		0 0	*
-> (2):	mul		1 1	*
-> (3):	sub		2 1	*
-> (4):	add		2 3	*
-> (5):	sub		3 4	*
-> (6):	div		0 1	
-> (7):	sub		0 0	
-> (8):	add		1 5	*
-> (9):	mul		3 1	*
-> (10):	sin		2 3	
-> (11):	sin		6 0	
-> (12):	div		0 9	
-> (13):	add		8 9	*
-> (14):	mul		7 7	
-> (15):	add		7 3	
-> outputs: 13 
+>(0):	input
+>(1):	mul	0 0 *
+>(2):	sin	1 
+>(3):	mul	0 0 *
+>(4):	add	1 2 
+>(5):	mul	3 1 *
+>(6):	sub	1 5 *
+>(7):	mul	4 3 
+>(8):	sub	5 1 *
+>(9):	mul	1 8 *
+>(10):	sin	7 
+>(11):	add	10 5 
+>(12):	sin	11 
+>(13):	add	6 9 *
+>(14):	div	7 0 
+>(15):	sub	4 13 
+outputs: 13 
+
 
 Finally at the end of the program the memory associated with the structures should be 
 free'd using <freeDataSet>, <freeChromosome> and <freeParameters>.
