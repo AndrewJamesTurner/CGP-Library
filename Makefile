@@ -38,6 +38,9 @@ neuroEvolution: examples/neuroEvolution.c src/cgp.c include/cgp.h
 
 customES: examples/customES.c src/cgp.c include/cgp.h
 	@$(CC) -o customES examples/customES.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
+
+visualization: examples/visualization.c src/cgp.c include/cgp.h
+	@$(CC) -o visualization examples/visualization.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
 	
 printChromoEqu: examples/printChromoEqu.c src/cgp.c include/cgp.h
 	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c include/cgp.h $(CFLAGS) -g -lm
@@ -50,4 +53,4 @@ docs: ./include/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./include -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/*

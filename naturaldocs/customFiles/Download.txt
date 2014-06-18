@@ -6,7 +6,7 @@ Version 1.0:
 	
 	Comment: Initial release.
 	
-	Date: 11/06/2014
+	Date: 18/06/2014
 	
 	Download: <http://cgplibrary.co.uk/CGP-Library-V1.0.zip>
 
