@@ -1286,11 +1286,14 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 */
 DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName){
 	
+	int output;
 	int i;
 	FILE *fp;
 	
 	
 	/* later need to deal with printing recursive programs */
+	
+	
 	
 	/* need to deal with multiple outputs... use separate equation for each... */
 	
@@ -1303,36 +1306,38 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 	/* document header */
 	fprintf(fp, "\\documentclass{article}\n");
 	fprintf(fp, "\\begin{document}\n");
-	fprintf(fp, "\\begin{equation}\n");
 	
-	/* function inputs */
-	if(chromo->numInputs == 0){
-		fprintf(fp, "f()=");
-	}
-	else{
 	
-		fprintf(fp, "f(x_0");
+	for(output=0; output<chromo->numOutputs; output++){
 	
-		for(i=1; i<chromo->numInputs; i++){
+		fprintf(fp, "\\begin{equation}\n");
 		
-			fprintf(fp, ",x_%d", i);
+		/* function inputs */
+		if(chromo->numInputs == 0){
+			fprintf(fp, "f()=");
 		}
-	
-		fprintf(fp, ")=");
+		else{
+		
+			fprintf(fp, "f_%d(x_0", output);
+		
+			for(i=1; i<chromo->numInputs; i++){
+			
+				fprintf(fp, ",x_%d", i);
+			}
+		
+			fprintf(fp, ")=");
+		}
+		
+		saveChromosomeLatexRecursive(chromo, chromo->outputNodes[output], fp);
+		
+		fprintf(fp, "\n\\end{equation}");
 	}
-	
-	
-	saveChromosomeLatexRecursive(chromo, chromo->outputNodes[0], fp);
-	
-
-	
+		
 		
 	/* document footer */
-	fprintf(fp, "\n\\end{equation}");
 	fprintf(fp, "\n\\end{document}");
 	
-	fclose(fp);
-		
+	fclose(fp);	
 }
 
 /*

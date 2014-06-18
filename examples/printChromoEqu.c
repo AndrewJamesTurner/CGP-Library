@@ -27,7 +27,7 @@ int main(void){
 
 	int numInputs = 2;
 	int numNodes = 10;
-	int numOutputs = 1;
+	int numOutputs = 2;
 	int nodeArity = 3;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
