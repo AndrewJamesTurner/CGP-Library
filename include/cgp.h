@@ -970,7 +970,7 @@
 			fileName - char array giving the location of the chromosome to be saved.
 
 		See Also:
-			<initialiseChromosomeFromFile>, <saveChromosomeDot>
+			<initialiseChromosomeFromFile>, <saveChromosomeDot> <saveChromosomeLatex>
 	*/
 	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName);
 
@@ -995,13 +995,39 @@
 			chromosome dot file to be saved.
 			
 		See Also:
-			<saveChromosome>
+			<saveChromosome> <saveChromosomeLatex>
 	*/
 	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName);
 
 
 	/*
 		Function: saveChromosomeLatex
+		
+			Saves the given <chromosome> to a latex .tex file for visulisation and inclusion in
+			written workes.
+		
+			LaTeX (www.http://latex-project.org/intro.html) is a free open 
+			source document preparation system. Once installed LaTeX can be used to draw the 
+			<chromosomes> saved using <saveChromosomeLatex> with the following 
+			command.
+		
+			(begin code)
+			latex chromosome.tex
+			(end)
+			
+			or
+			
+			(begin code)
+			pdflatex chromosome.tex
+			(end)
+			
+		Parameters:
+			chromo - pointer to chromosome structure.
+			weights - whether or not to include connection weights, 0 - without weights, 1 - with weights.
+			fileName - char array giving the location of the chromosome dot file to be saved.
+			
+		See Also:
+			<saveChromosome> <saveChromosomeLatex>
 	*/
 	DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName);
 	
