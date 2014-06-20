@@ -465,8 +465,8 @@ DLL_EXPORT void clearFunctionSet(struct parameters *params){
 DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 
 	/* error checking */
-	if(numInputs < 0){
-		printf("Error: number of chromosome inputs cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
+	if(numInputs <= 0){
+		printf("Error: number of chromosome inputs cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
 		exit(0);
 	}
 
@@ -480,7 +480,7 @@ DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
 
 	/* error checking */
-	if(numNodes < 0){
+	if(numNodes <= 0){
 		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
 		exit(0);
 	}
@@ -3650,6 +3650,11 @@ static int randInt(int n){
 	int x;
 	int randLimit;
 	int randExcess;
+	
+	if(n==0){
+		return 0;
+	}
+	
 	
 	randExcess = (RAND_MAX % n) + 1;
 	randLimit = RAND_MAX - randExcess;
