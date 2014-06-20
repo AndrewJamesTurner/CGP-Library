@@ -117,6 +117,16 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
+			<Target title="visualization">
+				<Option output="visualization" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DNO_DLL" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -156,6 +166,10 @@
 		<Unit filename="examples/neuroEvolution.c">
 			<Option compilerVar="CC" />
 			<Option target="neuroEvolution" />
+		</Unit>
+		<Unit filename="examples/visualization.c">
+			<Option compilerVar="CC" />
+			<Option target="visualization" />
 		</Unit>
 		<Unit filename="include/cgp.h" />
 		<Unit filename="src/cgp.c">

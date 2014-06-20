@@ -11,6 +11,7 @@ make averageBehaviour
 make neuroEvolution
 make printChromoEqu
 make customES
+make visualization
 
 echo "\n\n ** gettingStarted ** \n\n"
 valgrind --leak-check=yes --error-exitcode=1 ./gettingStarted > /dev/null
@@ -129,7 +130,20 @@ else
 	echo customES: PASS
 fi
 
+
+echo "\n\n ** visualization ** \n\n"
+valgrind --leak-check=yes --error-exitcode=1 ./visualization > /dev/null
+
+if [ $? -eq 1 ]; then
+	echo visualization: memory leak...
+	exit
+else
+	echo visualization: PASS
+fi
+
 echo "\n\n Test Complete :) \n\n"
 
+
+rm chromo.*
 
 make clean

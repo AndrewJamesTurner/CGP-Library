@@ -468,8 +468,8 @@ DLL_EXPORT void clearFunctionSet(struct parameters *params){
 DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 
 	/* error checking */
-	if(numInputs < 0){
-		printf("Error: number of chromosome inputs cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
+	if(numInputs <= 0){
+		printf("Error: number of chromosome inputs cannot be less than one; %d is invalid.\nTerminating CGP-Library.\n", numInputs);
 		exit(0);
 	}
 
@@ -483,7 +483,7 @@ DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
 
 	/* error checking */
-	if(numNodes < 0){
+	if(numNodes <= 0){
 		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
 		exit(0);
 	}
@@ -1373,6 +1373,8 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	/* add */
 	if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "add", FUNCTIONNAMELENGTH) == 0 ){
 		
+		fprintf(fp, "\\left(");
+		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
 		for(i=1; i<chromo->arity; i++){
@@ -1381,11 +1383,15 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 			
 			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 		}
+		
+		fprintf(fp, "\\right)");
 	}
 	
 	
 	/* sub */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sub", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, "\\left(");
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
@@ -1395,10 +1401,14 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 			
 			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 		}
+		
+		fprintf(fp, "\\right)");
 	}
 	
 	/* mul */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "mul", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, "\\left(");
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
@@ -1408,6 +1418,8 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 			
 			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 		}
+		
+		fprintf(fp, "\\right)");
 	} 
 	
 	/* div (change to frac)*/
@@ -3675,6 +3687,11 @@ static int randInt(int n){
 	int x;
 	int randLimit;
 	int randExcess;
+	
+	if(n==0){
+		return 0;
+	}
+	
 	
 	randExcess = (RAND_MAX % n) + 1;
 	randLimit = RAND_MAX - randExcess;
