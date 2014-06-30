@@ -25,20 +25,20 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 	struct chromosome *chromo = NULL;
 
-	int numInputs = 1;
-	int numNodes = 15;
+	int numInputs = 5;
+	int numNodes = 50;
 	int numOutputs = 1;
 	int nodeArity = 2;
 
-	int numGens = 10000;
+	int numGens = 100000;
 	float targetFitness = 0.1;
 	int updateFrequency = 500;
 	
-	float recurrentConnectionProbability = 0.05;
+	float recurrentConnectionProbability = 0.10;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sub,mul,div,sin");
+	addNodeFunction(params, "and,or,not");
 
 	setTargetFitness(params, targetFitness);
 
@@ -48,7 +48,7 @@ int main(void){
 
 	printParameters(params);
 
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./examples/parity5bit.data");
 
 	chromo = runCGP(params, trainingData, numGens);
 
