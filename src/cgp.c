@@ -1227,7 +1227,7 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 			strncpy(colour, "lightgrey", 20);
 		}
 		
-		fprintf(fp, "node%d [label=\"%s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
+		fprintf(fp, "node%d [label=\"(%d) %s\", color=%s, labelfontcolor=%s, fontcolor=%s];\n", i+getNumChromosomeInputs(chromo), i, chromo->funcSet->functionNames[chromo->nodes[i]->function], colour, colour, colour);
 		
 		/* for each node input */
 		for(j=0; j<getChromosomeNodeArity(chromo, i); j++){
