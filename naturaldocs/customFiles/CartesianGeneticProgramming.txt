@@ -82,7 +82,7 @@ Initial Population:
 
 The initial population is usually populated with randomly generated chromosomes. The user defines the number of program inputs, internal nodes, the arity of each node and the number of program outputs. The chromosomes are randomly generated using these given constraints. 
 
-For instance each of the specified chromosome nodes will be given a random function gene from the available function set. Each of the inputs of each of the nodes will be given a random connection gene. Finally each output gene shall be set as randomly chosen program input or node within the graph. 
+For instance each of the specified chromosome nodes will be given a random function gene from the available function set. Each of the inputs of each of the nodes will be given a random connection gene. Finally each output gene shall be set as a randomly chosen program input or node within the graph. 
 
 Calculating the Fitness:
 
