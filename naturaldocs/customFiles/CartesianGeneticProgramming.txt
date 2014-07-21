@@ -59,7 +59,7 @@ An example CGP chromosome is given below. This chromosome describes an acyclic g
 
 (see feedForward.png)
 
-When the chromosome is executed as a program the inputs to the program are applied to the input nodes (0, 1 and 2 in this case). Then each of the function nodes calculate their output based on their inputs (nodes 3, 4 and 5 in this case). Finally the output of the program is taken (in this case the output of node 4). Typically a CGP chromosome will be ran multiple times with different inputs to assess its behaviour. If the program operates as desired it will score a good fitness, if not a bad fitness.
+When the chromosome is executed, the inputs to the program are applied to the input nodes (0, 1 and 2 in this case). Then each of the function nodes calculate their output based on their inputs (nodes 3, 4 and 5 in this case). Finally the output of the program is taken (in this case the output of node 4). Typically a CGP chromosome will be ran multiple times with different inputs to assess its behaviour. If the program operates as desired it will score a good fitness, if not a bad fitness.
 
 There are a few additional interesting things to note form the given chromosome
 
