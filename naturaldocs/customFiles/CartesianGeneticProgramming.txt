@@ -76,7 +76,7 @@ Now the typical evolutionary process used by CGP shall be described. However nea
 
 Evolutionary Strategy:
 
-The evolutionary strategy commonly used by CGP is to select one parent from each generation and use it to produce four children via mutation alone. The next generation then comprises of the selected parent and the four generated children. The population size is there for five; four children plus one parent. This strategy is formally written as (1 + 4)-ES. 
+The evolutionary strategy commonly used by CGP is to select one parent from each generation and use it to produce four children via mutation alone. The next generation then comprises of the selected parent and the four generated children. The population size is therefore five; four children plus one parent. This strategy is formally written as (1 + 4)-ES. 
 
 Initial Population:
 
