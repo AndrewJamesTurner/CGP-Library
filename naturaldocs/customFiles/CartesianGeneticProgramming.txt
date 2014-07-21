@@ -86,7 +86,7 @@ For instance each of the specified chromosome nodes will be given a random funct
 
 Calculating the Fitness:
 
-Typically before the fitness of a CGP chromosome is calculated the active nodes are determined. This is because chromosomes are often ran multiple times by the fitness function and calculating the outputs of nodes which never contribute to the operation of the chromosome is a waste of computational time. Calculating the the active nodes is an O(n) operation which is only undertaken once for each chromosome.
+Typically before the fitness of a CGP chromosome is calculated the active nodes are determined. This is because chromosomes are often ran multiple times by the fitness function and calculating the outputs of nodes which never contribute to the operation of the phenotype is a waste of computational time. Calculating the the active nodes is an O(n) operation which is only undertaken once for each chromosome.
 
 The exact fitness of the chromosomes depend on how well the chromosome performs on a given task.
 
