@@ -102,7 +102,7 @@ Probabilistic mutation changes each gene to a new random valid allele with a giv
 
 Summary:
 
-That concludes a very brief introduction to CGP. For more details see the CGP homepage <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. Additionally there is a CGP book called, you've guessed it, "Cartesian Genetic programming" ISBN-10: 3642173098 ISBN-13: 978-3642173097. Finally there are multiple academic publications, just search "Cartesian Genetic programming" into google scholar.
+That concludes a very brief introduction to CGP. For more details see the CGP homepage <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. Additionally there is a CGP book called, you've guessed it, "Cartesian Genetic programming" ISBN-10: 3642173098 ISBN-13: 978-3642173097. Finally there are multiple academic publications, just search "Cartesian Genetic programming" in google scholar.
  
 
  
