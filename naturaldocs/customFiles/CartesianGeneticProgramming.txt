@@ -72,7 +72,7 @@ There are a few additional interesting things to note form the given chromosome
 
 Typical Evolutionary process:
 
-Now the typical evolutionary process used by CGP shall be described. However nearly aspect can be altered if desired.
+Now the typical evolutionary process used by CGP shall be described. However nearly every aspect can be altered if desired.
 
 Evolutionary Strategy:
 
