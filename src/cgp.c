@@ -168,6 +168,7 @@ static float absolute(const int numInputs, const float *inputs, const float *con
 static float squareRoot(const int numInputs, const float *inputs, const float *connectionWeights);
 static float square(const int numInputs, const float *inputs, const float *connectionWeights);
 static float cube(const int numInputs, const float *inputs, const float *connectionWeights);
+static float power(const int numInputs, const float *inputs, const float *connectionWeights);
 static float exponential(const int numInputs, const float *inputs, const float *connectionWeights);
 static float sine(const int numInputs, const float *inputs, const float *connectionWeights);
 static float cosine(const int numInputs, const float *inputs, const float *connectionWeights);
@@ -388,6 +389,9 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	else if(strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, cube, "cube", 1);
 	}
+	else if(strncmp(functionName, "pow", FUNCTIONNAMELENGTH) == 0){
+		addNodeFunctionCustom(params, power, "pow", 2);
+	}	
 	else if(strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, exponential, "exp", 1);
 	}
@@ -3273,6 +3277,14 @@ static float square(const int numInputs, const float *inputs, const float *conne
 static float cube(const int numInputs, const float *inputs, const float *connectionWeights){
 
 	return powf(inputs[0],3);
+}
+
+/*
+	Node function power.  Returns the first output to the power of the second
+*/
+static float power(const int numInputs, const float *inputs, const float *connectionWeights){
+
+	return powf(inputs[0],inputs[2]);
 }
 
 /*
