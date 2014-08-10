@@ -8,7 +8,7 @@ If you have been wondering why the CGP-Library contains connection weights which
 
 Title: The Program
 
-A simple program using demonstrating the use of the CGP-Library towards NeuroEvolution.
+A simple program demonstrating the use of the CGP-Library towards NeuroEvolution.
 
 The program below is provided in the CGP-Library download within /examples/neuroEvolution.c and is included in the code:blocks project.
 
