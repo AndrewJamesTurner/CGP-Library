@@ -311,7 +311,7 @@
 		The custom fitness function prototype must take the form
 
 		(begin code)
-		float nodeFunctionName(const int numInputs, const float *inputs, const float *weights);
+		double nodeFunctionName(const int numInputs, const double *inputs, const double *weights);
 		(end)
 
 		where the user replaces 'nodeFunctionName' with their own function name.
@@ -327,10 +327,10 @@
 			Creating a custom node function 'add'
 
 			(begin code)
-			float add(const int numInputs, const float *inputs, const float *connectionWeights){
+			double add(const int numInputs, const double *inputs, const double *connectionWeights){
 
 				int i;
-				float sum = 0;
+				double sum = 0;
 
 				for(i=0; i<numInputs; i++){
 					sum += inputs[i];
@@ -353,7 +353,7 @@
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
 	*/
-	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName, int maxNumInputs);
+	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs);
 
 
 	/*
@@ -508,7 +508,7 @@
 			params - pointer to parameters structure.
 			mutationRate - The value of the mutation rate to be set.
 	*/
-	DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate);
+	DLL_EXPORT void setMutationRate(struct parameters *params, double mutationRate);
 
 
 
@@ -525,7 +525,7 @@
 			params - pointer to parameters structure.
 			recurrentConnectionProbability - The value of the recurrent connection probability to be set.
 	*/
-	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, float recurrentConnectionProbability);
+	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
 
 	/*
 		Function: setConnectionWeightRange
@@ -536,7 +536,7 @@
 			params - pointer to parameters structure.
 			weightRange - The connection weight range to be set. (the range is +/- weightRange)
 	*/
-	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weightRange);
+	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange);
 
 	/*
 		Function: setFitnessFunction
@@ -548,7 +548,7 @@
 		All custom fitness function prototype must take the following form. Where params is a <parameters> structure, chromo is the <chromosome> to be assigned a fitness and data is a <dataSet> which may be used by the custom fitness function.
 
 		(begin code)
-		float functionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+		double functionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 		(end)
 
 		Parameters:
@@ -563,14 +563,14 @@
 			Defining a custom fitness function, full adder. Note that the <dataSet> does not have to be used.
 
 			(begin code)
-			float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
+			double fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
 
 			int i;
-			float error = 0;
+			double error = 0;
 
 			// full adder truth table
-			float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
-			float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
+			double inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+			double outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
 
 			 	//for each line in the truth table
 			 	for(i=0; i<8; i++){
@@ -601,7 +601,7 @@
 		
 
 	*/
-	DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
+	DLL_EXPORT void setFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 
 
 	/*
@@ -729,7 +729,7 @@
 			params - pointer to parameters structure.
 			targetFitness - The target fitness to be set.
 	*/
-	DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness);
+	DLL_EXPORT void setTargetFitness(struct parameters *params, double targetFitness);
 
 	/*
 		Function: setMutationType
@@ -924,8 +924,8 @@
 				struct parameters *params = NULL;
 				struct chromosome *chromo = NULL;
 						
-				float chromoInputs[] = {1, 2};		
-				float chromoOutput;	
+				double chromoInputs[] = {1, 2};		
+				double chromoOutput;	
 								
 				params = initialiseParameters(2, 10, 1, 2);
 				addNodeFunction(params, "add,sub,mul,sq,cube,sin");
@@ -947,7 +947,7 @@
 				<getChromosomeOutput>
 
 	*/
-	DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs);
+	DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *inputs);
 
 
 
@@ -967,7 +967,7 @@
 		See Also:
 				<executeChromosome>
 	*/
-	DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output);
+	DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output);
 
 
 
@@ -1216,7 +1216,7 @@
 		See Also:
 			<setChromosomeFitness> <getChromosomeGenerations> <getNumChromosomeActiveNodes>
 	*/
-	DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo);
+	DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
 
 
 	/*
@@ -1251,8 +1251,8 @@
 		The given arrays containing the input output pairs must take the form
 		
 		(begin code)
-		float inputs[numSamples][numInputs]
-		float outputs[numSamples][numOutputs]
+		double inputs[numSamples][numInputs]
+		double outputs[numSamples][numOutputs]
 		(end)
 		
 		Where the numInputs and numOutputs are the number of inputs and outputs per sample.
@@ -1279,8 +1279,8 @@
 			int numSamples = 8;
 
 			// full adder input output pairs
-			float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
-			float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
+			double inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+			double outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
 
 			trainingData = initialiseDataFromArrays(numInputs, numOutputs, numSamples, inputs[0], outputs[0]);
 			(end)
@@ -1288,7 +1288,7 @@
 		See Also:
 			<freeDataSet>, <initialiseDataSetFromFile>, <printDataSet>
 	*/
-	DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs);
+	DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, double *inputs, double *outputs);
 
 
 	/*
@@ -1433,7 +1433,7 @@
 		See Also:
 			<getDataSetSampleInput>, <getDataSetSampleOutputs>, <getDataSetSampleOutput>
 	*/
-	DLL_EXPORT float *getDataSetSampleInputs(struct dataSet *data, int sample);
+	DLL_EXPORT double *getDataSetSampleInputs(struct dataSet *data, int sample);
 
 
 	/*
@@ -1451,7 +1451,7 @@
 		See Also:
 			<getDataSetSampleInputs>, <getDataSetSampleOutput>, <getDataSetSampleOutputs>
 	*/
-	DLL_EXPORT float getDataSetSampleInput(struct dataSet *data, int sample, int input);
+	DLL_EXPORT double getDataSetSampleInput(struct dataSet *data, int sample, int input);
 
 
 	/*
@@ -1468,7 +1468,7 @@
 		See Also:
 			<getDataSetSampleOutput>, <getDataSetSampleInputs>, <getDataSetSampleInput>
 	*/
-	DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample);
+	DLL_EXPORT double *getDataSetSampleOutputs(struct dataSet *data, int sample);
 
 	/*
 		Function: getDataSetSampleOutput
@@ -1485,7 +1485,7 @@
 		See Also:
 			<getDataSetSampleOutputs>, <getDataSetSampleInput>, <getDataSetSampleInputs>
 	*/
-	DLL_EXPORT float getDataSetSampleOutput(struct dataSet *data, int sample, int output);
+	DLL_EXPORT double getDataSetSampleOutput(struct dataSet *data, int sample, int output);
 
 
 /*
@@ -1563,7 +1563,7 @@
 		See Also:
 			<repeatCGP>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
-	DLL_EXPORT float getAverageFitness(struct results *rels);
+	DLL_EXPORT double getAverageFitness(struct results *rels);
 
 
 	/*
@@ -1579,7 +1579,7 @@
 		See Also:
 			<repeatCGP>, <getMedianActiveNodes>, <getMedianGenerations>
 	*/
-	DLL_EXPORT float getMedianFitness(struct results *rels);
+	DLL_EXPORT double getMedianFitness(struct results *rels);
 
 
 	/*
@@ -1596,7 +1596,7 @@
 			<repeatCGP>, <getAverageFitness>, <getAverageGenerations>
 
 	*/
-	DLL_EXPORT float getAverageActiveNodes(struct results *rels);
+	DLL_EXPORT double getAverageActiveNodes(struct results *rels);
 
 	/*
 		Function: getMedianActiveNodes
@@ -1612,7 +1612,7 @@
 			<repeatCGP>, <getMedianFitness>, <getMedianGenerations>
 
 	*/
-	DLL_EXPORT float getMedianActiveNodes(struct results *rels);
+	DLL_EXPORT double getMedianActiveNodes(struct results *rels);
 
 
 	/*
@@ -1629,7 +1629,7 @@
 			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>
 
 	*/
-	DLL_EXPORT float getAverageGenerations(struct results *rels);
+	DLL_EXPORT double getAverageGenerations(struct results *rels);
 	
 	
 	/*
@@ -1646,7 +1646,7 @@
 			<repeatCGP>, <getMedianFitness>, <getMedianActiveNodes>
 
 	*/
-	DLL_EXPORT float getMedianGenerations(struct results *rels);
+	DLL_EXPORT double getMedianGenerations(struct results *rels);
 
 
 /*

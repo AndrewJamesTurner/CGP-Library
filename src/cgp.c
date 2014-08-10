@@ -45,19 +45,19 @@ struct parameters{
 	int mu;
 	int lambda;
 	char evolutionaryStrategy;
-	float mutationRate;
-	float recurrentConnectionProbability;
-	float connectionWeightRange;
+	double mutationRate;
+	double recurrentConnectionProbability;
+	double connectionWeightRange;
 	int numInputs;
 	int numNodes;
 	int numOutputs;
 	int arity;
 	struct functionSet *funcSet;
-	float targetFitness;
+	double targetFitness;
 	int updateFrequency;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
-	float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
+	double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
 	char fitnessFunctionName[FITNESSFUNCTIONNAMELENGTH];
 	void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
@@ -74,19 +74,19 @@ struct chromosome{
 	struct node **nodes;
 	int *outputNodes;
 	int *activeNodes;
-	float fitness;
-	float *outputValues;
+	double fitness;
+	double *outputValues;
 	struct functionSet *funcSet;
-	float *nodeInputsHold;
+	double *nodeInputsHold;
 	int generation;
 };
 
 struct node{
 	int function;
 	int *inputs;
-	float *weights;
+	double *weights;
 	int active;
-	float output;
+	double output;
 	int arity;
 };
 
@@ -94,15 +94,15 @@ struct functionSet{
 	int numFunctions;
 	char functionNames[FUNCTIONSETSIZE][FUNCTIONNAMELENGTH];
 	int maxNumInputs[FUNCTIONSETSIZE];
-	float (*functions[FUNCTIONSETSIZE])(const int numInputs, const float *inputs, const float *connectionWeights);
+	double (*functions[FUNCTIONSETSIZE])(const int numInputs, const double *inputs, const double *connectionWeights);
 };
 
 struct dataSet{
 	int numSamples;
 	int numInputs;
 	int numOutputs;
-	float **inputData;
-	float **outputData;
+	double **inputData;
+	double **outputData;
 };
 
 struct results{
@@ -124,13 +124,13 @@ static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, st
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
 /* node functions */
-static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, float connectionWeightRange, float recurrentConnectionProbability, int nodePosition);
+static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, double connectionWeightRange, double recurrentConnectionProbability, int nodePosition);
 static void freeNode(struct node *n);
 static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 
 /* getting gene value functions  */
-static float getRandomConnectionWeight(float weightRange);
-static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, float recurrentConnectionProbability);
+static double getRandomConnectionWeight(double weightRange);
+static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, double recurrentConnectionProbability);
 static int getRandomFunction(int numFunctions);
 static int getRandomChromosomeOutput(int numInputs, int numNodes);
 
@@ -156,45 +156,46 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 static void mutateRandomParent(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
 
 /* fitness function */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+static double supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 
 /* node functions defines in CGP-Library */
-static float add(const int numInputs, const float *inputs, const float *connectionWeights);
-static float sub(const int numInputs, const float *inputs, const float *connectionWeights);
-static float mul(const int numInputs, const float *inputs, const float *connectionWeights);
-static float divide(const int numInputs, const float *inputs, const float *connectionWeights);
-static float and(const int numInputs, const float *inputs, const float *connectionWeights);
-static float absolute(const int numInputs, const float *inputs, const float *connectionWeights);
-static float squareRoot(const int numInputs, const float *inputs, const float *connectionWeights);
-static float square(const int numInputs, const float *inputs, const float *connectionWeights);
-static float cube(const int numInputs, const float *inputs, const float *connectionWeights);
-static float power(const int numInputs, const float *inputs, const float *connectionWeights);
-static float exponential(const int numInputs, const float *inputs, const float *connectionWeights);
-static float sine(const int numInputs, const float *inputs, const float *connectionWeights);
-static float cosine(const int numInputs, const float *inputs, const float *connectionWeights);
-static float tangent(const int numInputs, const float *inputs, const float *connectionWeights);
-static float nand(const int numInputs, const float *inputs, const float *connectionWeights);
-static float or(const int numInputs, const float *inputs, const float *connectionWeights);
-static float nor(const int numInputs, const float *inputs, const float *connectionWeights);
-static float xor(const int numInputs, const float *inputs, const float *connectionWeights);
-static float xnor(const int numInputs, const float *inputs, const float *connectionWeights);
-static float not(const int numInputs, const float *inputs, const float *connectionWeights);
-static float sigmoid(const int numInputs, const float *inputs, const float *connectionWeights);
-static float gaussian(const int numInputs, const float *inputs, const float *connectionWeights);
-static float step(const int numInputs, const float *inputs, const float *connectionWeights);
-static float softsign(const int numInputs, const float *inputs, const float *connectionWeights);
-static float hyperbolicTangent(const int numInputs, const float *inputs, const float *connectionWeights);
+static double add(const int numInputs, const double *inputs, const double *connectionWeights);
+static double sub(const int numInputs, const double *inputs, const double *connectionWeights);
+static double mul(const int numInputs, const double *inputs, const double *connectionWeights);
+static double divide(const int numInputs, const double *inputs, const double *connectionWeights);
+static double and(const int numInputs, const double *inputs, const double *connectionWeights);
+static double absolute(const int numInputs, const double *inputs, const double *connectionWeights);
+static double squareRoot(const int numInputs, const double *inputs, const double *connectionWeights);
+static double square(const int numInputs, const double *inputs, const double *connectionWeights);
+static double cube(const int numInputs, const double *inputs, const double *connectionWeights);
+static double power(const int numInputs, const double *inputs, const double *connectionWeights);
+static double exponential(const int numInputs, const double *inputs, const double *connectionWeights);
+static double sine(const int numInputs, const double *inputs, const double *connectionWeights);
+static double cosine(const int numInputs, const double *inputs, const double *connectionWeights);
+static double tangent(const int numInputs, const double *inputs, const double *connectionWeights);
+static double nand(const int numInputs, const double *inputs, const double *connectionWeights);
+static double or(const int numInputs, const double *inputs, const double *connectionWeights);
+static double nor(const int numInputs, const double *inputs, const double *connectionWeights);
+static double xor(const int numInputs, const double *inputs, const double *connectionWeights);
+static double xnor(const int numInputs, const double *inputs, const double *connectionWeights);
+static double not(const int numInputs, const double *inputs, const double *connectionWeights);
+static double sigmoid(const int numInputs, const double *inputs, const double *connectionWeights);
+static double gaussian(const int numInputs, const double *inputs, const double *connectionWeights);
+static double step(const int numInputs, const double *inputs, const double *connectionWeights);
+static double softsign(const int numInputs, const double *inputs, const double *connectionWeights);
+static double hyperbolicTangent(const int numInputs, const double *inputs, const double *connectionWeights);
+
 
 /* other */
-static float randFloat(void);
+static double randFloat(void);
 static int randInt(int n);
-static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights);
+static double sumWeigtedInputs(const int numInputs, const double *inputs, const double *connectionWeights);
 static void sortIntArray(int *array, const int length);
-static void sortFloatArray(float *array, const int length);
+static void sortFloatArray(double *array, const int length);
 static int cmpInt(const void * a, const void * b);
 static int cmpFloat(const void * a, const void * b);
-static float medianInt(const int *anArray, const int length);
-static float medianFloat(const float *anArray, const int length);
+static double medianInt(const int *anArray, const int length);
+static double medianFloat(const double *anArray, const int length);
 
 
 /*
@@ -334,7 +335,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 	Adds given node function to given function set with given name.
 	Disallows exceeding the function set size.
 */
-DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, float (*function)(const int numInputs, const float *inputs, const float *weights), char *functionName, int maxNumInputs){
+DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs){
 
 	if(params->funcSet->numFunctions >= FUNCTIONSETSIZE){
 		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
@@ -578,7 +579,7 @@ DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutio
 	rate is given a warning is displayed and the mutation rate is left
 	unchanged.
 */
-DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate){
+DLL_EXPORT void setMutationRate(struct parameters *params, double mutationRate){
 
 	if(mutationRate >= 0 && mutationRate <= 1){
 		params->mutationRate = mutationRate;
@@ -593,7 +594,7 @@ DLL_EXPORT void setMutationRate(struct parameters *params, float mutationRate){
 	Sets the recurrent connection probability given in parameters. If an invalid
 	value is given a warning is displayed and the value is left	unchanged.
 */
-DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, float recurrentConnectionProbability){
+DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability){
 
 	if(recurrentConnectionProbability >= 0 && recurrentConnectionProbability <= 1){
 		params->recurrentConnectionProbability = recurrentConnectionProbability;
@@ -607,7 +608,7 @@ DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, flo
 /*
 	Sets the connection weight range given in parameters.
 */
-DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weightRange){
+DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange){
 
 	params->connectionWeightRange = weightRange;
 }
@@ -617,7 +618,7 @@ DLL_EXPORT void setConnectionWeightRange(struct parameters *params, float weight
 	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL
 	then the default supervisedLearning fitness function is used.
 */
-DLL_EXPORT void setFitnessFunction(struct parameters *params, float (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
+DLL_EXPORT void setFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
 
 	if(fitnessFunction == NULL){
 		params->fitnessFunction = supervisedLearning;
@@ -669,7 +670,7 @@ DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproduc
 /*
 	Sets the target fitness
 */
-DLL_EXPORT void setTargetFitness(struct parameters *params, float targetFitness){
+DLL_EXPORT void setTargetFitness(struct parameters *params, double targetFitness){
 	params->targetFitness = targetFitness;
 }
 
@@ -756,7 +757,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 	chromo->activeNodes = malloc(params->numNodes * sizeof(int));
 
 	/* allocate memory for chromosome outputValues */
-	chromo->outputValues = malloc(params->numOutputs * sizeof(float));
+	chromo->outputValues = malloc(params->numOutputs * sizeof(double));
 
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<params->numNodes; i++){
@@ -795,7 +796,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 	setChromosomeActiveNodes(chromo);
 
 
-	chromo->nodeInputsHold = malloc(params->arity * sizeof(float));
+	chromo->nodeInputsHold = malloc(params->arity * sizeof(double));
 
 	return chromo;
 }
@@ -894,7 +895,7 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 
 		for(j=0; j<arity; j++){
 			line=fgets(buffer, sizeof(buffer), fp);
-			sscanf(line,"%d,%f", &chromo->nodes[i]->inputs[j], &chromo->nodes[i]->weights[j]);
+			sscanf(line,"%d,%lf", &chromo->nodes[i]->inputs[j], &chromo->nodes[i]->weights[j]);
 		}
 	}
 
@@ -944,7 +945,7 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 	chromoNew->activeNodes = malloc(chromo->numNodes * sizeof(int));
 
 	/* allocate memory for chromosome outputValues */
-	chromoNew->outputValues = malloc(chromo->numOutputs * sizeof(float));
+	chromoNew->outputValues = malloc(chromo->numOutputs * sizeof(double));
 
 	/* Initialise each of the chromosomes nodes */
 	for(i=0; i<chromo->numNodes; i++){
@@ -979,7 +980,7 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 	/* set the active nodes in the newly generated chromosome */
 	setChromosomeActiveNodes(chromoNew);
 
-	chromoNew->nodeInputsHold = malloc(chromo->arity * sizeof(float));
+	chromoNew->nodeInputsHold = malloc(chromo->arity * sizeof(double));
 
 	return chromoNew;
 }
@@ -1075,7 +1076,7 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights){
 /*
 	Executes the given chromosome
 */
-DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs){
+DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *inputs){
 
 	int i,j;
 	int nodeInputLocation;
@@ -1120,7 +1121,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs
 		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
 
 
-		/* prevent float form going to inf and -inf */
+		/* prevent double form going to inf and -inf */
 		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
 
 			if(chromo->nodes[currentActiveNode]->output > 0){
@@ -1153,7 +1154,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const float *inputs
 	used to access the chromosome outputs after executeChromosome
 	has been called
 */
-DLL_EXPORT float getChromosomeOutput(struct chromosome *chromo, int output){
+DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output){
 	return chromo->outputValues[output];
 }
 
@@ -1644,7 +1645,7 @@ DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo){
 */
 DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
-	float fitness;
+	double fitness;
 
 	setChromosomeActiveNodes(chromo);
 
@@ -1775,7 +1776,7 @@ DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index){
 /*
 	Gets the chromosome fitness
 */
-DLL_EXPORT float getChromosomeFitness(struct chromosome *chromo){
+DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo){
 	return chromo->fitness;
 }
 
@@ -1895,7 +1896,7 @@ static int cmpChromosome(const void *a, const void *b){
 	inputs[numSamples][numInputs]
 	outputs[numSamples][numOutputs]
 */
-DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, float *inputs, float *outputs){
+DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, double *inputs, double *outputs){
 
 	int i,j;
 	struct dataSet *data;
@@ -1907,13 +1908,13 @@ DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOut
 	data->numOutputs = numOutputs;
 	data->numSamples = numSamples;
 
-	data->inputData = malloc(data->numSamples * sizeof(float**));
-	data->outputData = malloc(data->numSamples * sizeof(float**));
+	data->inputData = malloc(data->numSamples * sizeof(double**));
+	data->outputData = malloc(data->numSamples * sizeof(double**));
 
 	for(i=0; i<data->numSamples; i++){
 
-		data->inputData[i] = malloc(data->numInputs * sizeof(float));
-		data->outputData[i] = malloc(data->numOutputs * sizeof(float));
+		data->inputData[i] = malloc(data->numInputs * sizeof(double));
+		data->outputData[i] = malloc(data->numOutputs * sizeof(double));
 
 		for(j=0; j<data->numInputs; j++){
 			data->inputData[i][j] = inputs[(i*data->numInputs) + j];
@@ -1961,12 +1962,12 @@ DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char *file){
 
 			sscanf(line, "%d,%d,%d", &(data->numInputs), &(data->numOutputs), &(data->numSamples));
 
-			data->inputData = malloc(data->numSamples * sizeof(float*));
-			data->outputData = malloc(data->numSamples * sizeof(float*));
+			data->inputData = malloc(data->numSamples * sizeof(double*));
+			data->outputData = malloc(data->numSamples * sizeof(double*));
 
 			for(i=0; i<data->numSamples; i++){
-				data->inputData[i] = malloc(data->numInputs * sizeof(float));
-				data->outputData[i] = malloc(data->numOutputs * sizeof(float));
+				data->inputData[i] = malloc(data->numInputs * sizeof(double));
+				data->outputData[i] = malloc(data->numOutputs * sizeof(double));
 			}
 		}
 		/* the other lines contain input output pairs */
@@ -2125,7 +2126,7 @@ DLL_EXPORT int getNumDataSetSamples(struct dataSet *data){
 /*
 
 */
-DLL_EXPORT float *getDataSetSampleInputs(struct dataSet *data, int sample){
+DLL_EXPORT double *getDataSetSampleInputs(struct dataSet *data, int sample){
 	return data->inputData[sample];
 }
 
@@ -2133,7 +2134,7 @@ DLL_EXPORT float *getDataSetSampleInputs(struct dataSet *data, int sample){
 /*
 
 */
-DLL_EXPORT float getDataSetSampleInput(struct dataSet *data, int sample, int input){
+DLL_EXPORT double getDataSetSampleInput(struct dataSet *data, int sample, int input){
 	return data->inputData[sample][input];
 }
 
@@ -2141,7 +2142,7 @@ DLL_EXPORT float getDataSetSampleInput(struct dataSet *data, int sample, int inp
 /*
 
 */
-DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample){
+DLL_EXPORT double *getDataSetSampleOutputs(struct dataSet *data, int sample){
 	return data->outputData[sample];
 }
 
@@ -2149,7 +2150,7 @@ DLL_EXPORT float *getDataSetSampleOutputs(struct dataSet *data, int sample){
 /*
 
 */
-DLL_EXPORT float getDataSetSampleOutput(struct dataSet *data, int sample, int output){
+DLL_EXPORT double getDataSetSampleOutput(struct dataSet *data, int sample, int output){
 	return data->outputData[sample][output];
 }
 
@@ -2252,10 +2253,10 @@ DLL_EXPORT int getNumChromosomes(struct results *rels){
 	returns the average number of chromosome active nodes from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getAverageActiveNodes(struct results *rels){
+DLL_EXPORT double getAverageActiveNodes(struct results *rels){
 
 	int i;
-	float avgActiveNodes = 0;
+	double avgActiveNodes = 0;
 	struct chromosome *chromoTemp;
 
 
@@ -2276,10 +2277,10 @@ DLL_EXPORT float getAverageActiveNodes(struct results *rels){
 	returns the median number of chromosome active nodes from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getMedianActiveNodes(struct results *rels){
+DLL_EXPORT double getMedianActiveNodes(struct results *rels){
 
 	int i;
-	float medActiveNodes = 0;
+	double medActiveNodes = 0;
 	
 	int *array = malloc(getNumChromosomes(rels) * sizeof(int));
 
@@ -2296,11 +2297,11 @@ DLL_EXPORT float getMedianActiveNodes(struct results *rels){
 }
 
 
-static float medianInt(const int *anArray, const int length){
+static double medianInt(const int *anArray, const int length){
 	
 	int i;
 	int *copyArray = malloc(length * sizeof(int));
-	float median;
+	double median;
 	
 	/* make a copy of the array */
 	for(i=0; i< length; i++){
@@ -2325,11 +2326,11 @@ static float medianInt(const int *anArray, const int length){
 	return median;
 }
 
-static float medianFloat(const float *anArray, const int length){
+static double medianFloat(const double *anArray, const int length){
 	
 	int i;
-	float *copyArray = malloc(length * sizeof(float));
-	float median;
+	double *copyArray = malloc(length * sizeof(double));
+	double median;
 	
 	/* make a copy of the array */
 	for(i=0; i< length; i++){
@@ -2360,10 +2361,10 @@ static float medianFloat(const float *anArray, const int length){
 	returns the average chromosome fitness from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getAverageFitness(struct results *rels){
+DLL_EXPORT double getAverageFitness(struct results *rels){
 
 	int i;
-	float avgFit = 0;
+	double avgFit = 0;
 	struct chromosome *chromoTemp;
 
 
@@ -2384,12 +2385,12 @@ DLL_EXPORT float getAverageFitness(struct results *rels){
 	returns the median chromosome fitness from repeated
 	run results specified in rels.
 */
-DLL_EXPORT float getMedianFitness(struct results *rels){
+DLL_EXPORT double getMedianFitness(struct results *rels){
 
 	int i;
-	float med = 0;
+	double med = 0;
 	
-	float *array = malloc(getNumChromosomes(rels) * sizeof(float));
+	double *array = malloc(getNumChromosomes(rels) * sizeof(double));
 
 
 	for(i=0; i<getNumChromosomes(rels); i++){
@@ -2408,10 +2409,10 @@ DLL_EXPORT float getMedianFitness(struct results *rels){
 /*
 	returns the average number of generations used by each run  specified in rels.
 */
-DLL_EXPORT float getAverageGenerations(struct results *rels){
+DLL_EXPORT double getAverageGenerations(struct results *rels){
 
 	int i;
-	float avgGens = 0;
+	double avgGens = 0;
 	struct chromosome *chromoTemp;
 
 
@@ -2431,10 +2432,10 @@ DLL_EXPORT float getAverageGenerations(struct results *rels){
 /*
 	returns the median number of generations used by each run  specified in rels.
 */
-DLL_EXPORT float getMedianGenerations(struct results *rels){
+DLL_EXPORT double getMedianGenerations(struct results *rels){
 
 	int i;
-	float med = 0;
+	double med = 0;
 	
 	int *array = malloc(getNumChromosomes(rels) * sizeof(int));
 
@@ -2873,7 +2874,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 		/* display progress to the user at the update frequency specified */
 		if(params->updateFrequency != 0 && (gen % params->updateFrequency == 0 || gen >= numGens-1) ){
-			printf("%d\t%f\n", gen, bestChromo->fitness);
+			printf("%d\t%.20f\n", gen, bestChromo->fitness);
 		}
 		
 		/*
@@ -3083,7 +3084,7 @@ static void selectFittest(struct parameters *params, struct chromosome **parents
 	returns a pointer to an initialised node. Initialised means that necessary
 	memory has been allocated and values set.
 */
-static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, float connectionWeightRange, float recurrentConnectionProbability, int nodePosition){
+static struct node *initialiseNode(int numInputs, int numNodes, int arity, int numFunctions, double connectionWeightRange, double recurrentConnectionProbability, int nodePosition){
 
 	struct node *n;
 	int i;
@@ -3093,7 +3094,7 @@ static struct node *initialiseNode(int numInputs, int numNodes, int arity, int n
 
 	/* allocate memory for the node's inputs and connection weights */
 	n->inputs = malloc(arity * sizeof(int));
-	n->weights = malloc(arity * sizeof(float));
+	n->weights = malloc(arity * sizeof(double));
 
 	/* set the node's function */
 	n->function = getRandomFunction(numFunctions);
@@ -3135,7 +3136,7 @@ static void freeNode(struct node *n){
 /*
 	returns a random connection weight value
 */
-static float getRandomConnectionWeight(float weightRange){
+static double getRandomConnectionWeight(double weightRange){
 	return (randFloat() * 2 * weightRange) - weightRange;
 }
 
@@ -3156,7 +3157,7 @@ static int getRandomFunction(int numFunctions){
 /*
  returns a random input for the given node
 */
-static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, float recurrentConnectionProbability){
+static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, double recurrentConnectionProbability){
 
 	int input;
 
@@ -3187,10 +3188,10 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 /*
 	Node function add. Returns the sum of the inputs.
 */
-static float add(const int numInputs, const float *inputs, const float *connectionWeights){
+static double add(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float sum = 0;
+	double sum = 0;
 
 	for(i=0; i<numInputs; i++){
 		sum += inputs[i];
@@ -3202,10 +3203,10 @@ static float add(const int numInputs, const float *inputs, const float *connecti
 /*
 	Node function sub. Returns the first input minus all remaining inputs.
 */
-static float sub(const int numInputs, const float *inputs, const float *connectionWeights){
+static double sub(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float sum = inputs[0];
+	double sum = inputs[0];
 
 	for(i=1; i<numInputs; i++){
 		sum -= inputs[i];
@@ -3218,10 +3219,10 @@ static float sub(const int numInputs, const float *inputs, const float *connecti
 /*
 	Node function mul. Returns the multiplication of all the inputs.
 */
-static float mul(const int numInputs, const float *inputs, const float *connectionWeights){
+static double mul(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float multiplication = 1;
+	double multiplication = 1;
 
 	for(i=0; i<numInputs; i++){
 		multiplication *= inputs[i];
@@ -3234,10 +3235,10 @@ static float mul(const int numInputs, const float *inputs, const float *connecti
 /*
 	Node function div. Returns the first input divided by the second input divided by the third input etc
 */
-static float divide(const int numInputs, const float *inputs, const float *connectionWeights){
+static double divide(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float divide = inputs[0];
+	double divide = inputs[0];
 
 	for(i=1; i<numInputs; i++){
 
@@ -3250,7 +3251,7 @@ static float divide(const int numInputs, const float *inputs, const float *conne
 /*
 	Node function abs. Returns the absolute of the first input
 */
-static float absolute(const int numInputs, const float *inputs, const float *connectionWeights){
+static double absolute(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return fabs(inputs[0]);
 }
@@ -3258,7 +3259,7 @@ static float absolute(const int numInputs, const float *inputs, const float *con
 /*
 	Node function sqrt.  Returns the square root of the first input
 */
-static float squareRoot(const int numInputs, const float *inputs, const float *connectionWeights){
+static double squareRoot(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return sqrtf(inputs[0]);
 }
@@ -3266,7 +3267,7 @@ static float squareRoot(const int numInputs, const float *inputs, const float *c
 /*
 	Node function squ.  Returns the square of the first input
 */
-static float square(const int numInputs, const float *inputs, const float *connectionWeights){
+static double square(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return powf(inputs[0],2);
 }
@@ -3274,15 +3275,17 @@ static float square(const int numInputs, const float *inputs, const float *conne
 /*
 	Node function cub.  Returns the cube of the first input
 */
-static float cube(const int numInputs, const float *inputs, const float *connectionWeights){
+static double cube(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return powf(inputs[0],3);
 }
 
+
+
 /*
 	Node function power.  Returns the first output to the power of the second
 */
-static float power(const int numInputs, const float *inputs, const float *connectionWeights){
+static double power(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return powf(inputs[0],inputs[2]);
 }
@@ -3290,7 +3293,7 @@ static float power(const int numInputs, const float *inputs, const float *connec
 /*
 	Node function exp.  Returns the exponential of the first input
 */
-static float exponential(const int numInputs, const float *inputs, const float *connectionWeights){
+static double exponential(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return expf(inputs[0]);
 }
@@ -3299,7 +3302,7 @@ static float exponential(const int numInputs, const float *inputs, const float *
 /*
 	Node function sin.  Returns the sine of the first input
 */
-static float sine(const int numInputs, const float *inputs, const float *connectionWeights){
+static double sine(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return sinf(inputs[0]);
 }
@@ -3307,7 +3310,7 @@ static float sine(const int numInputs, const float *inputs, const float *connect
 /*
 	Node function cos.  Returns the cosine of the first input
 */
-static float cosine(const int numInputs, const float *inputs, const float *connectionWeights){
+static double cosine(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return sinf(inputs[0]);
 }
@@ -3315,7 +3318,7 @@ static float cosine(const int numInputs, const float *inputs, const float *conne
 /*
 	Node function tan.  Returns the tangent of the first input
 */
-static float tangent(const int numInputs, const float *inputs, const float *connectionWeights){
+static double tangent(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	return tanf(inputs[0]);
 }
@@ -3325,7 +3328,7 @@ static float tangent(const int numInputs, const float *inputs, const float *conn
 	Node function and. logical AND, returns '1' if all inputs are '1'
 	else, '0'
 */
-static float and(const int numInputs, const float *inputs, const float *connectionWeights){
+static double and(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	
@@ -3344,7 +3347,7 @@ static float and(const int numInputs, const float *inputs, const float *connecti
 	Node function and. logical NAND, returns '0' if all inputs are '1'
 	else, '1'
 */
-static float nand(const int numInputs, const float *inputs, const float *connectionWeights){
+static double nand(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	
@@ -3363,7 +3366,7 @@ static float nand(const int numInputs, const float *inputs, const float *connect
 	Node function or. logical OR, returns '0' if all inputs are '0'
 	else, '1'
 */
-static float or(const int numInputs, const float *inputs, const float *connectionWeights){
+static double or(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	
@@ -3382,7 +3385,7 @@ static float or(const int numInputs, const float *inputs, const float *connectio
 	Node function nor. logical NOR, returns '1' if all inputs are '0'
 	else, '0'
 */
-static float nor(const int numInputs, const float *inputs, const float *connectionWeights){
+static double nor(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	
@@ -3401,7 +3404,7 @@ static float nor(const int numInputs, const float *inputs, const float *connecti
 	Node function xor. logical XOR, returns '1' iff one of the inputs is '1'
 	else, '0'. AKA 'one hot'.
 */
-static float xor(const int numInputs, const float *inputs, const float *connectionWeights){
+static double xor(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	int numOnes = 0;
@@ -3432,7 +3435,7 @@ static float xor(const int numInputs, const float *inputs, const float *connecti
 	Node function xnor. logical XNOR, returns '0' iff one of the inputs is '1'
 	else, '1'.
 */
-static float xnor(const int numInputs, const float *inputs, const float *connectionWeights){
+static double xnor(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
 	int numOnes = 0;
@@ -3462,9 +3465,9 @@ static float xnor(const int numInputs, const float *inputs, const float *connect
 /*
 	Node function not. logical NOT, returns '1' if first input is '0', else '1'
 */
-static float not(const int numInputs, const float *inputs, const float *connectionWeights){
+static double not(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float out;
+	double out;
 
 	if(inputs[0] == 0){
 		out = 1;
@@ -3482,10 +3485,10 @@ static float not(const int numInputs, const float *inputs, const float *connecti
 	The specific sigmoid function used in the logistic function.
 	range: [0,1]
 */
-static float sigmoid(const int numInputs, const float *inputs, const float *connectionWeights){
+static double sigmoid(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float weightedInputSum;
-	float out;
+	double weightedInputSum;
+	double out;
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
@@ -3498,10 +3501,10 @@ static float sigmoid(const int numInputs, const float *inputs, const float *conn
 	Node function Gaussian. returns the Gaussian of the sum of weighted inputs.
 	range: [0,1]
 */
-static float gaussian(const int numInputs, const float *inputs, const float *connectionWeights){
+static double gaussian(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float weightedInputSum;
-	float out;
+	double weightedInputSum;
+	double out;
 
 	int centre = 0;
 	int width = 1;
@@ -3518,10 +3521,10 @@ static float gaussian(const int numInputs, const float *inputs, const float *con
 	Node function step. returns the step function of the sum of weighted inputs.
 	range: [0,1]
 */
-static float step(const int numInputs, const float *inputs, const float *connectionWeights){
+static double step(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float weightedInputSum;
-	float out;
+	double weightedInputSum;
+	double out;
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
@@ -3540,10 +3543,10 @@ static float step(const int numInputs, const float *inputs, const float *connect
 	Node function step. returns the step function of the sum of weighted inputs.
 	range: [-1,1]
 */
-static float softsign(const int numInputs, const float *inputs, const float *connectionWeights){
+static double softsign(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float weightedInputSum;
-	float out;
+	double weightedInputSum;
+	double out;
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
@@ -3557,10 +3560,10 @@ static float softsign(const int numInputs, const float *inputs, const float *con
 	Node function tanh. returns the tanh function of the sum of weighted inputs.
 	range: [-1,1]
 */
-static float hyperbolicTangent(const int numInputs, const float *inputs, const float *connectionWeights){
+static double hyperbolicTangent(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	float weightedInputSum;
-	float out;
+	double weightedInputSum;
+	double out;
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
@@ -3573,10 +3576,10 @@ static float hyperbolicTangent(const int numInputs, const float *inputs, const f
 /*
 	Returns the sum of the weighted inputs.
 */
-static float sumWeigtedInputs(const int numInputs, const float *inputs, const float *connectionWeights){
+static double sumWeigtedInputs(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float weightedSum = 0;
+	double weightedSum = 0;
 
 	for(i=0; i<numInputs; i++){
 		weightedSum += (inputs[i] * connectionWeights[i]);
@@ -3593,10 +3596,10 @@ static float sumWeigtedInputs(const int numInputs, const float *inputs, const fl
 	The default fitness function used by CGP-Library.
 	Simply assigns an error of the sum of the absolute differences between the target and actual outputs for all outputs over all samples
 */
-static float supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+static double supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	int i,j;
-	float error = 0;
+	double error = 0;
 
 	/* error checking */
 	if(getNumChromosomeInputs(chromo) != getNumDataSetInputs(data)){
@@ -3629,10 +3632,10 @@ static float supervisedLearning(struct parameters *params, struct chromosome *ch
 
 
 /*
-	returns a random float between [0,1]
+	returns a random double between [0,1]
 */
-static float randFloat(void){
-	return (float)rand()/(float)RAND_MAX;
+static double randFloat(void){
+	return (double)rand()/(double)RAND_MAX;
 }
 
 /*
@@ -3652,11 +3655,11 @@ static int cmpInt(const void * a, const void * b){
 
 
 /*
-	sort float array using qsort
+	sort double array using qsort
 */
-static void sortFloatArray(float *array, const int length){
+static void sortFloatArray(double *array, const int length){
 
-	qsort(array, length, sizeof(float), cmpFloat);
+	qsort(array, length, sizeof(double), cmpFloat);
 }
 
 /*
@@ -3664,10 +3667,10 @@ static void sortFloatArray(float *array, const int length){
 */
 static int cmpFloat(const void * a, const void * b){
    
-	if( *(float*)a < *(float*)b){
+	if( *(double*)a < *(double*)b){
 		return -1;
 	}
-	if( *(float*)a == *(float*)b ){
+	if( *(double*)a == *(double*)b ){
 		return 0;
 	}
 	else{
