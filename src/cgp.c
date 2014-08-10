@@ -120,7 +120,7 @@ static void setChromosomeActiveNodes(struct chromosome *chromo);
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
 static int cmpChromosome(const void *a, const void *b);
-static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo);
+static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo);
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
 /* node functions */
@@ -2768,11 +2768,8 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 	int i;
 	int gen;
-
-	/* chromo is the chromosome to be returned */
-	/*struct chromosome *chromo;*/
 	
-	/* bestChromo points to the fittest chromosome throughout runCGP */
+	/* bestChromo found using runCGP */
 	struct chromosome *bestChromo;
 	
 	/* arrays of the parents and children */
@@ -2814,9 +2811,6 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	for(i=0; i<params->lambda; i++){
 		childrenChromos[i] = initialiseChromosome(params);
 	}
-
-	/* initialise the chromosome to be returned */
-	/*chromo = initialiseChromosome(params);*/
 
 	/* intilise best chromosome */
 	bestChromo = initialiseChromosome(params);
@@ -2919,9 +2913,6 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
         printf("\n");
     }
 
-	/* get the fittest chromosome form the evolutionary run */
-	/*getBestChromosome(parentChromos, childrenChromos, params->mu, params->lambda, bestChromo);*/
-
 	/* copy the best best chromosome */
 	bestChromo->generation = gen;
 	/*copyChromosome(chromo, bestChromo);*/
@@ -2950,7 +2941,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 /*
 	returns a pointer to the fittest chromosome in the two arrays of chromosomes
 */
-static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo){
+static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo){
 	
 	int i;
 	struct chromosome *chromoTmp;
@@ -2972,8 +2963,6 @@ static struct chromosome* getBestChromosome(struct chromosome **chromoArrayA, st
 	}
 	
 	copyChromosome(bestChromo, chromoTmp);
-	
-	return bestChromo;
 }
 
 

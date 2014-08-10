@@ -266,6 +266,7 @@
 			- sqrt		- 	the square root of the first input
 			- sq		-	the square of the first input
 			- cube		- 	the cube of the first input
+			- pow		-	the first input raised to the power of the second input
 			- exp 		- 	the exponential of the first input
 			- sin		- 	the sine of the first input
 			- cos 		-	the cosine of the first input

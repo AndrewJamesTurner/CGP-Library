@@ -2,9 +2,19 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
-Version 1.0:
+Version 1.1: 
+	Comments:
+			* *Fixed Significant bug* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
+			* added power function to function set
+			* .dot graphviz contain more detail 
+
+	Date: 10/08/2014
 	
-	Comment: Initial release.
+	Download: <http://cgplibrary.co.uk/CGP-Library-V1.1.zip>
+	
+Version 1.0:
+	Comment: 
+			* Initial release.
 	
 	Date: 18/06/2014
 	
