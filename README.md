@@ -10,5 +10,5 @@ License: Lesser General Public License (LGPL)
 
 ##Status
 
-Initial Release V1.0
+Release V1.1
 
