@@ -17,7 +17,7 @@
 */
 
 #include <stdio.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 int main(void){
 
@@ -31,10 +31,10 @@ int main(void){
 	int nodeArity = 2;
 
 	int numGens = 100000;
-	float targetFitness = 0.1;
+	double targetFitness = 0.1;
 	int updateFrequency = 500;
 	
-	float recurrentConnectionProbability = 0.10;
+	double recurrentConnectionProbability = 0.10;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 

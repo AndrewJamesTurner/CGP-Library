@@ -19,12 +19,12 @@ The program below is provided in the CGP-Library download within /examples/custo
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
-float meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	int i,j;
-	float squareError = 0;
+	double squareError = 0;
 
 	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
 		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
@@ -44,7 +44,7 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 
 		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
 
-			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+			squareError += pow(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
 		}
 	}
 
@@ -79,7 +79,7 @@ Title: Stepping Through the Code
 All custom defined fitness functions must have a prototype of the following form. Where the first parameter is a pointer to a <parameters> structure, the second is a pointer to a <chromosome> structure and the third is a pointer to a <dataSet> structure. The use of the <dataSet> structure within the function is optional depending upon the fitness function. The function returns the fitness to be assigned to the given chromosome.
 
 (begin code)
-float fitnessFunctionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+double fitnessFunctionName(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 (end) 
 
 
@@ -115,7 +115,7 @@ for(i=0; i<getNumDataSetSamples(data); i++){
 
 	for(j=0; j<getNumChromosomeOutputs(chromo); j++){
 
-		squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+		squareError += pow(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
 	}
 }
 

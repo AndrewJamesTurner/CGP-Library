@@ -19,7 +19,7 @@ The program below is provided in the CGP-Library download within /examples/manip
 (begin code)
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 
 #define POPULATIONSIZE 5
 #define NUMINPUTS 1
@@ -35,7 +35,7 @@ int main(void){
 	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
 		
-	float testInputs[NUMINPUTS];
+	double testInputs[NUMINPUTS];
 		
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
@@ -90,7 +90,7 @@ First standard headers are included along with cgp.h itself.
 (begin code)
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 (end)
 
 A series of macros are uses to reduce the number of variables and to allow the use of arrays rather than pointers and malloc.
@@ -113,11 +113,10 @@ struct chromosome *chromoC = NULL;
 struct dataSet *trainingData = NULL;
 (end)
 
-Two arrays are used to pass information into and out of chromosomes.
+Array to pass information into the chromosomes.
 
 (begin code)
-float testInputs[NUMINPUTS];
-float testOutputs[NUMOUTPUTS];
+double testInputs[NUMINPUTS];
 (end)
 
 In order to initialise the chromosomes an initialised parameters structure with a populated function set is required.

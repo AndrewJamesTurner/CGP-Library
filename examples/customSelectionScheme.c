@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
 
@@ -52,7 +52,7 @@ int main(void){
 	int numOutputs = 1;
 	int arity = 2;
 	
-	float targetFitness = 0.1;
+	double targetFitness = 0.1;
 	int updateFrequency = 1000;
 	int numGens = 10000;
 	

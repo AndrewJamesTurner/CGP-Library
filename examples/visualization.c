@@ -17,7 +17,7 @@
 */
 
 #include <stdio.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 int main(void){
 

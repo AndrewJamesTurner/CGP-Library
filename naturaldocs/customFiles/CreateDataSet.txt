@@ -13,7 +13,7 @@ The program below is provided in the CGP-Library download within /examples/creat
 (begin code)
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"   
+#include "../src/cgp.h"   
 
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
@@ -23,8 +23,8 @@ The program below is provided in the CGP-Library download within /examples/creat
 /*
 	Returns x^6 - 2x^4 + x^2
 */
-float symbolicEq1(float x){
-	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+double symbolicEq1(double x){
+	return pow(x,6) - 2*pow(x,4) + pow(x,2);
 }
 
 int main(void){
@@ -33,11 +33,11 @@ int main(void){
 	
 	struct dataSet *data = NULL;
 	
-	float inputs[NUMSAMPLES][NUMINPUTS];
-	float outputs[NUMSAMPLES][NUMOUTPUTS];
+	double inputs[NUMSAMPLES][NUMINPUTS];
+	double outputs[NUMSAMPLES][NUMOUTPUTS];
 	
-	float inputTemp;
-	float outputTemp;
+	double inputTemp;
+	double outputTemp;
 			
 	for(i=0; i<NUMSAMPLES; i++){
 		
@@ -65,7 +65,7 @@ First standard header files are used along with cgp.h.
 (begin code)
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 (end)
 
 A number of #defines are used to keep the main function neat (no 
@@ -87,8 +87,8 @@ in this tutorial they shall be generated using the following function.
 The function returns x^6 - 2x^4 + x^2 for a given input x.
 
 (begin code)
-float symbolicEq1(float x){
-	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+double symbolicEq1(double x){
+	return pow(x,6) - 2*pow(x,4) + pow(x,2);
 }
 (end)
 
@@ -99,11 +99,11 @@ The inputs and outputs arrays are used to store the input output pairs to be sto
 (begin code)
 struct dataSet *data = NULL;
 
-float inputs[NUMSAMPLES][NUMINPUTS];
-float outputs[NUMSAMPLES][NUMOUTPUTS];
+double inputs[NUMSAMPLES][NUMINPUTS];
+double outputs[NUMSAMPLES][NUMOUTPUTS];
 
-float inputTemp;
-float outputTemp;
+double inputTemp;
+double outputTemp;
 (end)
 
 The following loop calculates 101 input values over the range +/- 5. The corresponding output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the inputs and outputs array. Note is is important that the first array dimension indexes the sample and the second the respective input or output.

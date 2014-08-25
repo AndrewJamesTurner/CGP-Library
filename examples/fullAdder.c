@@ -2,10 +2,10 @@
 float fullAdder(struct parameters *params, struct chromosome *chromo, struct data *dat){
 	
 	int i;
-	float error = 0;
-	float chromoOutputs[8];	
-	float inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
-	float outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
+	double error = 0;
+	double chromoOutputs[8];	
+	double inputs[8][3] = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
+	double outputs[8][2] = {{0,0},{1,0},{1,0},{0,1},{1,0},{0,1},{0,1},{1,1}};
 		
 					
 	if(getNumInputs(params) != 3){

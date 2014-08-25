@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 #define NUMINPUTS 1
 #define NUMOUTPUTS 1
@@ -28,8 +28,8 @@
 /*
 	Returns x^6 - 2x^4 + x^2
 */
-float symbolicEq1(float x){
-	return powf(x,6) - 2*powf(x,4) + powf(x,2);
+double symbolicEq1(double x){
+	return pow(x,6) - 2*pow(x,4) + pow(x,2);
 }
 
 int main(void){
@@ -38,11 +38,11 @@ int main(void){
 
 	struct dataSet *data = NULL;
 
-	float inputs[NUMSAMPLES][NUMINPUTS];
-	float outputs[NUMSAMPLES][NUMOUTPUTS];
+	double inputs[NUMSAMPLES][NUMINPUTS];
+	double outputs[NUMSAMPLES][NUMOUTPUTS];
 
-	float inputTemp;
-	float outputTemp;
+	double inputTemp;
+	double outputTemp;
 
 	for(i=0; i<NUMSAMPLES; i++){
 

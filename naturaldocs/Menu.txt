@@ -51,7 +51,7 @@ File: About  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/About.txt)
 File: Cartesian Genetic Programming  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CartesianGeneticProgramming.txt)
 File: Download  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/Download.txt)
 File: Licenses  (/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/license.txt)
-File: API  (/home/andy/Desktop/CGP-Library/include/cgp.h)
+File: API  (/home/andy/Desktop/CGP-Library/src/cgp.h)
 
 Group: Tutorials  {
 
@@ -78,5 +78,5 @@ Group: Index  {
 
 
 ##### Do not change or remove these lines. #####
-Data: 1(D3333RuEG3p\fQ3BG6AtuI30Wgz18YHpHQ38\9oNfG)
+Data: 1(D3333RuEG3p\fQ3BG6AtuI30Wgz18YHpHQ36H9)
 Data: 1(h3333RuEG3p\fQ3BG6AtuI30Wgz18YHpHQ3\ptNHpofu9639N6tuEm8oG6)

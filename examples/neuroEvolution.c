@@ -18,17 +18,17 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
-float sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
-	float i;
+	double i;
 
-	float error = 0;
-	float range = 6;
-	float stepSize = 0.5;
+	double error = 0;
+	double range = 6;
+	double stepSize = 0.5;
 
-	float inputs[1];
+	double inputs[1];
 
 	for(i=0; i<range; i += stepSize){
 
@@ -54,10 +54,10 @@ int main(void){
 	int nodeArity = 5;
 
 	int numGens = 25000;
-	float targetFitness = 0.5;
+	double targetFitness = 0.5;
 	int updateFrequency = 500;
 
-	float weightRange = 5;
+	double weightRange = 5;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 

@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 void mutateEveryParent(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren){
 	
@@ -52,7 +52,7 @@ int main(void){
 	int mu = 4;
 	int lambda = 8;
 	
-	float targetFitness = 0.1;
+	double targetFitness = 0.1;
 	int updateFrequency = 1000;
 	int numGens = 10000;
 	

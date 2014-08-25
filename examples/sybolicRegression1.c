@@ -1,14 +1,14 @@
-float symbolicEq1(float x){
-	return powf(x,6.0) - 2*powf(x,4.0) + powf(x,2.0);
+double symbolicEq1(double x){
+	return pow(x,6.0) - 2*powf(x,4.0) + powf(x,2.0);
 }
 
 
-float symbolicRegression1(struct parameters *params, struct chromosome *chromo, struct data *dat){
+double symbolicRegression1(struct parameters *params, struct chromosome *chromo, struct data *dat){
 	
-	float i;
-	float error = 0;
-	float chromoInputs[1];	
-	float chromoOutputs[1];	
+	double i;
+	double error = 0;
+	double chromoInputs[1];	
+	double chromoOutputs[1];	
 						
 	if(getNumInputs(params) != 1){
 		printf("Error: The 'symbolicRegression1' fitness function requires one chromosome input; not %d\n", getNumInputs(params));

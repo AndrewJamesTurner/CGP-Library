@@ -18,19 +18,19 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
-float hypotenuse(const int numInputs, const float *inputs, const float *connectionWeights){
+double hypotenuse(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	float sumOfSqrs = 0;
-	float hypt;
+	double sumOfSqrs = 0;
+	double hypt;
 
 	for(i=0; i<numInputs; i++){
-		sumOfSqrs += powf(inputs[i], 2);
+		sumOfSqrs += pow(inputs[i], 2);
 	}
 
-	hypt = sqrtf(sumOfSqrs);
+	hypt = sqrt(sumOfSqrs);
 
 	return hypt;
 }

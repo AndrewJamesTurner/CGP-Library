@@ -17,7 +17,7 @@
 */
 
 #include <stdio.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 int main(void){
 
@@ -31,7 +31,7 @@ int main(void){
 	int nodeArity = 2;
 
 	int numGens = 10000;
-	float targetFitness = 0.1;
+	double targetFitness = 0.1;
 	int updateFrequency = 500;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);

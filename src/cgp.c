@@ -23,7 +23,7 @@
 #include <math.h>
 #include <float.h>
 
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 /*
 	Hard limits on the size of the function set 
@@ -187,15 +187,15 @@ static double hyperbolicTangent(const int numInputs, const double *inputs, const
 
 
 /* other */
-static double randFloat(void);
+static double randDouble(void);
 static int randInt(int n);
 static double sumWeigtedInputs(const int numInputs, const double *inputs, const double *connectionWeights);
 static void sortIntArray(int *array, const int length);
-static void sortFloatArray(double *array, const int length);
+static void sortDoubleArray(double *array, const int length);
 static int cmpInt(const void * a, const void * b);
-static int cmpFloat(const void * a, const void * b);
+static int cmpDouble(const void * a, const void * b);
 static double medianInt(const int *anArray, const int length);
-static double medianFloat(const double *anArray, const int length);
+static double medianDouble(const double *anArray, const int length);
 
 
 /*
@@ -488,7 +488,7 @@ DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs){
 DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes){
 
 	/* error checking */
-	if(numNodes <= 0){
+	if(numNodes < 0){
 		printf("Warning: number of chromosome nodes cannot be negative; %d is invalid.\nTerminating CGP-Library.\n", numNodes);
 		exit(0);
 	}
@@ -671,6 +671,7 @@ DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproduc
 	Sets the target fitness
 */
 DLL_EXPORT void setTargetFitness(struct parameters *params, double targetFitness){
+
 	params->targetFitness = targetFitness;
 }
 
@@ -1125,14 +1126,14 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
 
 			if(chromo->nodes[currentActiveNode]->output > 0){
-				chromo->nodes[currentActiveNode]->output = FLT_MAX;
+				chromo->nodes[currentActiveNode]->output = DBL_MAX;
 			}
 			else{
-				chromo->nodes[currentActiveNode]->output = FLT_MIN;
+				chromo->nodes[currentActiveNode]->output = DBL_MIN;
 			}
 		}
 
-		/* deal with floats becoming NAN */
+		/* deal with doubles becoming NAN */
 		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
 			chromo->nodes[currentActiveNode]->output = 0;
 		}
@@ -2326,7 +2327,7 @@ static double medianInt(const int *anArray, const int length){
 	return median;
 }
 
-static double medianFloat(const double *anArray, const int length){
+static double medianDouble(const double *anArray, const int length){
 	
 	int i;
 	double *copyArray = malloc(length * sizeof(double));
@@ -2338,7 +2339,7 @@ static double medianFloat(const double *anArray, const int length){
 	} 
 	
 	/* sort the copy array */
-	sortFloatArray(copyArray, length);
+	sortDoubleArray(copyArray, length);
 	
 	/* if even */
 	if(length % 2 == 0){
@@ -2397,7 +2398,7 @@ DLL_EXPORT double getMedianFitness(struct results *rels){
 		array[i] = getChromosomeFitness(rels->bestChromosomes[i]);
 	}
 
-	med = medianFloat(array, getNumChromosomes(rels));
+	med = medianDouble(array, getNumChromosomes(rels));
 	
 	free(array);
 
@@ -2641,7 +2642,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 	for(i=0; i<params->numNodes; i++){
 
 		/* mutate the function gene */
-		if(randFloat() <= params->mutationRate){
+		if(randDouble() <= params->mutationRate){
 			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 
@@ -2649,12 +2650,12 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 		for(j=0; j<params->arity; j++){
 
 			/* mutate the node input */
-			if(randFloat() <= params->mutationRate){
+			if(randDouble() <= params->mutationRate){
 				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
-			if(randFloat() <= params->mutationRate){
+			if(randDouble() <= params->mutationRate){
 				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
@@ -2664,7 +2665,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 	for(i=0; i<params->numOutputs; i++){
 
 		/* mutate the chromosome output */
-		if(randFloat() <= params->mutationRate){
+		if(randDouble() <= params->mutationRate){
 			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
 		}
 	}
@@ -2688,7 +2689,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 		}
 
 		/* mutate the function gene */
-		if(randFloat() <= params->mutationRate){
+		if(randDouble() <= params->mutationRate){
 			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 
@@ -2696,12 +2697,12 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 		for(j=0; j<params->arity; j++){
 
 			/* mutate the node input */
-			if(randFloat() <= params->mutationRate){
+			if(randDouble() <= params->mutationRate){
 				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
-			if(randFloat() <= params->mutationRate){
+			if(randDouble() <= params->mutationRate){
 				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
@@ -2711,7 +2712,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 	for(i=0; i<params->numOutputs; i++){
 
 		/* mutate the chromosome output */
-		if(randFloat() <= params->mutationRate){
+		if(randDouble() <= params->mutationRate){
 			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
 		}
 	}
@@ -3005,10 +3006,6 @@ DLL_EXPORT int getNumOutputs(struct parameters *params){
 }
 
 
-
-
-
-
 /*
 	copys the contence for the src node into dest node.
 */
@@ -3126,7 +3123,7 @@ static void freeNode(struct node *n){
 	returns a random connection weight value
 */
 static double getRandomConnectionWeight(double weightRange){
-	return (randFloat() * 2 * weightRange) - weightRange;
+	return (randDouble() * 2 * weightRange) - weightRange;
 }
 
 /*
@@ -3150,7 +3147,7 @@ static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePositio
 
 	int input;
 
-	if(randFloat() < recurrentConnectionProbability){
+	if(randDouble() < recurrentConnectionProbability){
 		input = randInt(numNodes - nodePosition) + nodePosition + 1;
 	}
 	else{
@@ -3250,7 +3247,7 @@ static double absolute(const int numInputs, const double *inputs, const double *
 */
 static double squareRoot(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return sqrtf(inputs[0]);
+	return sqrt(inputs[0]);
 }
 
 /*
@@ -3258,7 +3255,7 @@ static double squareRoot(const int numInputs, const double *inputs, const double
 */
 static double square(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return powf(inputs[0],2);
+	return pow(inputs[0],2);
 }
 
 /*
@@ -3266,7 +3263,7 @@ static double square(const int numInputs, const double *inputs, const double *co
 */
 static double cube(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return powf(inputs[0],3);
+	return pow(inputs[0],3);
 }
 
 
@@ -3276,7 +3273,7 @@ static double cube(const int numInputs, const double *inputs, const double *conn
 */
 static double power(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return powf(inputs[0],inputs[2]);
+	return pow(inputs[0],inputs[2]);
 }
 
 /*
@@ -3284,7 +3281,7 @@ static double power(const int numInputs, const double *inputs, const double *con
 */
 static double exponential(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return expf(inputs[0]);
+	return exp(inputs[0]);
 }
 
 
@@ -3293,7 +3290,7 @@ static double exponential(const int numInputs, const double *inputs, const doubl
 */
 static double sine(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return sinf(inputs[0]);
+	return sin(inputs[0]);
 }
 
 /*
@@ -3301,7 +3298,7 @@ static double sine(const int numInputs, const double *inputs, const double *conn
 */
 static double cosine(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return sinf(inputs[0]);
+	return cos(inputs[0]);
 }
 
 /*
@@ -3309,7 +3306,7 @@ static double cosine(const int numInputs, const double *inputs, const double *co
 */
 static double tangent(const int numInputs, const double *inputs, const double *connectionWeights){
 
-	return tanf(inputs[0]);
+	return tan(inputs[0]);
 }
 
 
@@ -3481,7 +3478,7 @@ static double sigmoid(const int numInputs, const double *inputs, const double *c
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
-	out = 1 / (1 + expf(-weightedInputSum));
+	out = 1 / (1 + exp(-weightedInputSum));
 
 	return out;
 }
@@ -3500,7 +3497,7 @@ static double gaussian(const int numInputs, const double *inputs, const double *
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
-	out = expf(-(powf(weightedInputSum - centre,2))/(2*powf(width,2)));
+	out = exp(-(pow(weightedInputSum - centre,2))/(2*pow(width,2)));
 
 	return out;
 }
@@ -3556,7 +3553,7 @@ static double hyperbolicTangent(const int numInputs, const double *inputs, const
 
 	weightedInputSum = sumWeigtedInputs(numInputs, inputs, connectionWeights);
 
-	out = tanhf(weightedInputSum);
+	out = tanh(weightedInputSum);
 
 	return out;
 }
@@ -3623,7 +3620,7 @@ static double supervisedLearning(struct parameters *params, struct chromosome *c
 /*
 	returns a random double between [0,1]
 */
-static double randFloat(void){
+static double randDouble(void){
 	return (double)rand()/(double)RAND_MAX;
 }
 
@@ -3646,15 +3643,15 @@ static int cmpInt(const void * a, const void * b){
 /*
 	sort double array using qsort
 */
-static void sortFloatArray(double *array, const int length){
+static void sortDoubleArray(double *array, const int length){
 
-	qsort(array, length, sizeof(double), cmpFloat);
+	qsort(array, length, sizeof(double), cmpDouble);
 }
 
 /*
-	used by qsort in sortFloatArray 
+	used by qsort in sortDoubleArray 
 */
-static int cmpFloat(const void * a, const void * b){
+static int cmpDouble(const void * a, const void * b){
    
 	if( *(double*)a < *(double*)b){
 		return -1;

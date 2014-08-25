@@ -13,7 +13,7 @@ The program below is provided in the CGP-Library download within /examples/custo
 (begin code)
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 void tournament(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos){
 
@@ -47,7 +47,7 @@ int main(void){
 	int numOutputs = 1;
 	int arity = 2;
 	
-	float targetFitness = 0.1;
+	double targetFitness = 0.1;
 	int updateFrequency = 1000;
 	int numGens = 10000;
 	
@@ -82,7 +82,7 @@ First standard headers and cgp.h are included.
 (begin code)
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 (end)
 
 Next we defined our custom selection scheme to be used. 

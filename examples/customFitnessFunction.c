@@ -19,13 +19,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 
-float meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	int i,j;
-	float squareError = 0;
+	double squareError = 0;
 
 	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
 		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
@@ -45,7 +45,7 @@ float meanSquareError(struct parameters *params, struct chromosome *chromo, stru
 
 		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
 
-			squareError += powf(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+			squareError += pow(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
 		}
 	}
 

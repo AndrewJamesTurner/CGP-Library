@@ -68,16 +68,17 @@
 
 			Default parameter values.
 
-			> mu:						1
-			> lambda:					4
-			> evolutionary strategy:	+
-			> mutation rate:			0.05
-			> connection weight range:	1
-			> update frequency:			1
-			> mutation type:			probabilistic
-			> fitness function: 		supervisedLearning
-			> selection scheme:			selectFittest
-			> reproduction scheme:		mutateRandomParent
+			> mu:								1
+			> lambda:							4
+			> evolutionary strategy:			+
+			> mutation rate:					0.05
+			> Recurrent Connection Probability	0.00
+			> connection weight range:			1
+			> update frequency:					1
+			> mutation type:					probabilistic
+			> fitness function: 				supervisedLearning
+			> selection scheme:					selectFittest
+			> reproduction scheme:				mutateRandomParent
 
 			- Mu, lambda and evolutionary strategy control the type and
 			parameter values of the evolutionary strategy used. See
@@ -86,6 +87,11 @@
 			- The mutation rate controls the percentage of the
 			chromosomes genes which are set to new random value when the
 			chromosome is mutated. See <setMutationRate>.
+
+			- The recurrent connection probability gives the probability
+			of a recurrent connection being created when a connection
+			gene is mutated. For regular acyclic feed-forward programs
+			leave as zero. For recrrent programs see <setRecurrentConnectionProbability>.
 
 			- The connection weight range controls the range of values
 			which the connection weights can take. Connection weights

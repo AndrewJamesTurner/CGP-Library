@@ -12,7 +12,7 @@ The program below is provided in the CGP-Library download within /examples/visua
 
 (start code)
 #include <stdio.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 int main(void){
 
@@ -47,10 +47,10 @@ Title: Stepping Through the Code
 A close look at each line of the example code.
 
 First cgp.h must be included to use the CGP-Library. The cgp.h is
-located in the /include directory.
+located in the /src directory.
 
 (begin code)
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 (end)
 
 A <parameters> and <chromosome> structure will be used.

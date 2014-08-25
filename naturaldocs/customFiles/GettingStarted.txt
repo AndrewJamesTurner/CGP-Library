@@ -13,7 +13,7 @@ The program below is provided in the CGP-Library download within /examples/getti
 
 (start code)
 #include <stdio.h>
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 
 int main(void){
 
@@ -28,7 +28,7 @@ int main(void){
 	
 	int numGens = 10000;
 	int updateFrequency = 500;  
-	float targetFitness = 0.1;	
+	double targetFitness = 0.1;	
 		
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 			
@@ -60,10 +60,10 @@ Title: Stepping Through the Code
 A close look at each line of the example code.
 
 First cgp.h must be included to use the CGP-Library. The cgp.h is
-located in the /include directory.
+located in the /src directory.
 
 (begin code)
-#include "../include/cgp.h"  
+#include "../src/cgp.h"  
 (end)
 
 The CGP-Library provides a number of structures which describe, among
@@ -122,7 +122,7 @@ target fitness and the frequency at which the user is updated on
 progress.
 
 (begin code)
-float targetFitness = 0.1;	
+double targetFitness = 0.1;	
 int updateFrequency = 500; 
 (end)
 
@@ -184,24 +184,25 @@ function set contains the the node functions specified.
 
 For details of the parameters stored in <parameters> see <parameters>.
 
-> ---------------------------------------------------
+> ----------------------------------------------------
 >                   Parameters                      
-> ---------------------------------------------------
-> Evolutionary Strategy:		(1+4)-ES
-> Inputs:						1
-> Nodes:						15
-> Outputs:						1
-> Node Arity:					2
-> Connection weights range:		+/- 1.000000
-> Mutation Type:				probabilistic
-> Mutation rate:				0.050000
-> Fitness Function:				supervisedLearning
-> Target Fitness:				0.100000
-> Selection scheme:				selectFittest
-> Reproduction scheme:			mutateRandomParent
-> Update frequency:				500
+> ----------------------------------------------------
+> Evolutionary Strategy:			(1+4)-ES
+> Inputs:							1
+> Nodes:							15
+> Outputs:							1
+> Node Arity:						2
+> Connection weights range:			+/- 1.000000
+> Mutation Type:					probabilistic
+> Mutation rate:					0.050000
+> Recurrent Connection Probability:	0.000000
+> Fitness Function:					supervisedLearning
+> Target Fitness:					0.100000
+> Selection scheme:					selectFittest
+> Reproduction scheme:				mutateRandomParent
+> Update frequency:					500
 > Function Set: add sub mul div sin (5)
-> ---------------------------------------------------
+> ----------------------------------------------------
 
 Now the parameters associated with the CGP-Library are initialised we next 
 need to define the task to be solved. By default a supervised learning 

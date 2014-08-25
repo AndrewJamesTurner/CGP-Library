@@ -1,8 +1,8 @@
 
-float add(const int numInputs, const float *inputs, const float *weights){
+float add(const int numInputs, const double *inputs, const double *weights){
 	
 	int i;
-	float sum = 0;
+	double sum = 0;
 	
 	for(i=0; i<numInputs; i++){
 		sum += inputs[i];

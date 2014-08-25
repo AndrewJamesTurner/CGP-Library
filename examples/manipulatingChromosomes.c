@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "../include/cgp.h"
+#include "../src/cgp.h"
 
 #define POPULATIONSIZE 5
 #define NUMINPUTS 1
@@ -34,7 +34,7 @@ int main(void){
 	struct chromosome *chromoC = NULL;
 	struct dataSet *trainingData = NULL;
 
-	float testInputs[NUMINPUTS];
+	double testInputs[NUMINPUTS];
 
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
