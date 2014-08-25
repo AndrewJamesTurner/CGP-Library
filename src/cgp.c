@@ -299,20 +299,20 @@ DLL_EXPORT void printParameters(struct parameters *params){
 
 
 /*
-	Sets the given function set to contain the pre-set functions
-	given in the char array. The function names must be comma separated
-	and contain no spaces i.e. "and,or".
+	Adds the give pre-defined functions to the given function set. The 
+	functions must be given in the char array. The function names must 
+	be comma separated and contain no spaces i.e. "and,or".
 */
 DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 
 	char *pch;
-	char funcNames[FUNCTIONNAMELENGTH * FUNCTIONSETSIZE];
+	char functionNamesAsArray[FUNCTIONNAMELENGTH * FUNCTIONSETSIZE];
 
 	/* make a local copy of the function names*/
-	strncpy(funcNames, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
+	strncpy(functionNamesAsArray, functionNames, FUNCTIONNAMELENGTH * FUNCTIONSETSIZE);
 
 	/* get the first function name */
-	pch = strtok(funcNames, ", ");
+	pch = strtok(functionNamesAsArray, ", ");
 
 	/* while the function names char array contains function names */
 	while (pch != NULL){
@@ -341,18 +341,17 @@ DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*functi
 		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
 		return;
 	}
+	
+	/* set the function name as the given function name */
+	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions], functionName, FUNCTIONNAMELENGTH);
 
-	/* */
+	/* set the number of function inputs as the given number of function inputs */
+	params->funcSet->maxNumInputs[params->funcSet->numFunctions] = maxNumInputs;
+
+	/* add the given function to the function set */
+	params->funcSet->functions[params->funcSet->numFunctions] = function;
+	
 	params->funcSet->numFunctions++;
-
-	/* */
-	strncpy(params->funcSet->functionNames[params->funcSet->numFunctions-1], functionName, FUNCTIONNAMELENGTH);
-
-	/* */
-	params->funcSet->maxNumInputs[params->funcSet->numFunctions-1] = maxNumInputs;
-
-	/* */
-	params->funcSet->functions[params->funcSet->numFunctions-1] = function;
 }
 
 
@@ -362,7 +361,7 @@ DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*functi
 */
 static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName){
 
-	int output = 1;
+	int successfullyAdded = 1;
 
 	/* Symbolic functions */
 	
@@ -447,15 +446,13 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, hyperbolicTangent, "tanh", -1);
 	}
-	
-	/* Warning */
-	
+		
 	else{
 		printf("Warning: function '%s' is not known and was not added.\n", functionName);
-		output = 0;
+		successfullyAdded = 0;
 	}
 
-	return output;
+	return successfullyAdded;
 }
 
 
@@ -1083,6 +1080,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 	int nodeInputLocation;
 	int currentActiveNode;
 	int currentActiveNodeFuction;
+	int nodeArity;
 
 	const int numInputs = chromo->numInputs;
 	const int numActiveNodes = chromo->numActiveNodes;
@@ -1100,11 +1098,14 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 
 		/* get the index of the current active node */
 		currentActiveNode = chromo->activeNodes[i];
+	
+		/* get the arity of the current node */
+		nodeArity = getChromosomeNodeArity(chromo,currentActiveNode);
 
 		/* for each of the active nodes inputs */
-		for(j=0; j<arity; j++){
+		for(j=0; j<nodeArity; j++){
 
-			/* gather the nodes inputs */
+			/* gather the nodes input locations */
 			nodeInputLocation = chromo->nodes[currentActiveNode]->inputs[j];
 
 			if(nodeInputLocation < numInputs){
@@ -1115,12 +1116,11 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 			}
 		}
 
-		/* get the index of the active node under evaluation */
+		/* get the functionality of the active node under evaluation */
 		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
 
 		/* calculate the output of the active node under evaluation */
 		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
-
 
 		/* prevent double form going to inf and -inf */
 		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
@@ -2967,7 +2967,9 @@ static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosom
 }
 
 
-/* copies the contents of funcSetSrc to funcSetDest */
+/* 
+	copies the contents of funcSetSrc to funcSetDest 
+*/
 static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc){
 
 	int i;
@@ -3007,7 +3009,7 @@ DLL_EXPORT int getNumOutputs(struct parameters *params){
 
 
 /*
-	copys the contence for the src node into dest node.
+	copys the contents for the src node into dest node.
 */
 static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 
@@ -3172,7 +3174,7 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 
 
 /*
-	Node function add. Returns the sum of the inputs.
+	Node function add. Returns the sum of all the inputs.
 */
 static double add(const int numInputs, const double *inputs, const double *connectionWeights){
 

@@ -32,7 +32,7 @@ int main(void){
 	double targetFitness = 0.1;
 	int updateFrequency = 500;
 
-	int averageFitness;
+	double averageFitness;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
@@ -48,7 +48,7 @@ int main(void){
 	
 	averageFitness = getAverageFitness(rels);
 
-	printf("The average chromosome fitness is: %d\n", averageFitness);
+	printf("The average chromosome fitness is: %f\n", averageFitness);
 
 	chromo = getChromosome(rels, 4);
 	
@@ -78,7 +78,7 @@ When CGP is repeatedly applied to a given task using <repeatCGP> the results are
 (begin code)
 struct results *rels = NULL;
 ...
-int averageFitness;
+double averageFitness;
 (end)
 
 When assessing the average behaviour of CGP towards a given task CGP must be applied to that task a number of times. Each instance of applying CGP towards the task is called a run. Here the numRuns variable stores the number of runs CGP will be applied towards the given task.
@@ -102,7 +102,7 @@ In the example code <getAverageFitness> is used to get the average fitness of al
 (begin code)
 averageFitness = getAverageFitness(rels);
 
-printf("The average chromosome fitness is: %d\n", averageFitness);
+printf("The average chromosome fitness is: %f\n", averageFitness);
 (end)
 
 As well as getting average statistics the best chromosome found on any given run can be accessed using <getChromosome>.

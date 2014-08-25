@@ -37,7 +37,7 @@ int main(void){
 	double targetFitness = 0.1;
 	int updateFrequency = 500;
 
-	int averageFitness;
+	double averageFitness;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
@@ -53,7 +53,7 @@ int main(void){
 
 	averageFitness = getAverageFitness(rels);
 
-	printf("The average chromosome fitness is: %d\n", averageFitness);
+	printf("The average chromosome fitness is: %f\n", averageFitness);
 
 	chromo = getChromosome(rels, 4);
 	
