@@ -7,7 +7,7 @@ CC=gcc
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
 	
-CFLAGS= -pedantic -Wall 
+CFLAGS= -pedantic -Wall -O3
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
