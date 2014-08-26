@@ -736,7 +736,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 	struct chromosome *chromo;
 	int i;
 
-	/* check that funcSet contains functions*/
+	/* check that funcSet contains functions */
 	if(params->funcSet->numFunctions < 1){
 		printf("Error: chromosome not initialised due to empty functionSet.\nTerminating CGP-Library.\n");
 		exit(0);
@@ -767,11 +767,6 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes);
 	}
 
-	/* Add all nodes to the active node matrix */
-	for(i=0; i<params->numNodes; i++){
-		chromo->activeNodes[i] = i;
-	}
-
 	/* set the number of inputs, nodes and outputs */
 	chromo->numInputs = params->numInputs;
 	chromo->numNodes = params->numNodes;
@@ -781,19 +776,17 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 	/* set the number of active node to the number of nodes (all active) */
 	chromo->numActiveNodes = params->numNodes;
 
-	/* */
+	/* set the fitness to initial value */
 	chromo->fitness = -1;
 
-	/*  */
+	/* copy the function set from the parameters to the chromosome */
 	chromo->funcSet = malloc(sizeof(struct functionSet));
-
-	/* */
 	copyFuctionSet(chromo->funcSet, params->funcSet);
 
 	/* set the active nodes in the newly generated chromosome */
 	setChromosomeActiveNodes(chromo);
 
-
+	/* used interally when exicuting chromosome */
 	chromo->nodeInputsHold = malloc(params->arity * sizeof(double));
 
 	return chromo;
@@ -963,21 +956,20 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 	chromoNew->arity = chromo->arity;
 
 	
-	/* */
+	/* copy over the chromsosme fitness */
 	chromoNew->fitness = chromo->fitness;
 
-	/* */
+	/* copy over the number of gnerations to find a solution */
 	chromoNew->generation = chromo->generation;
 
-	/*  */
+	/* copy over the functionset */
 	chromoNew->funcSet = malloc(sizeof(struct functionSet));
-
-	/* */
 	copyFuctionSet(chromoNew->funcSet, chromo->funcSet);
 
 	/* set the active nodes in the newly generated chromosome */
 	setChromosomeActiveNodes(chromoNew);
 
+	/* used internally by exicute chromosome */
 	chromoNew->nodeInputsHold = malloc(chromo->arity * sizeof(double));
 
 	return chromoNew;
@@ -2101,7 +2093,7 @@ DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName){
 
 
 /*
-
+	returns the number of inputs for each sample in the given dataSet
 */
 DLL_EXPORT int getNumDataSetInputs(struct dataSet *data){
 	return data->numInputs;
@@ -2109,7 +2101,7 @@ DLL_EXPORT int getNumDataSetInputs(struct dataSet *data){
 
 
 /*
-
+	returns the number of outputs for each sample in the given dataSet
 */
 DLL_EXPORT int getNumDataSetOutputs(struct dataSet *data){
 	return data->numOutputs;
@@ -2117,7 +2109,7 @@ DLL_EXPORT int getNumDataSetOutputs(struct dataSet *data){
 
 
 /*
-
+	returns the number of samples in the given dataSet
 */
 DLL_EXPORT int getNumDataSetSamples(struct dataSet *data){
 	return data->numSamples;
@@ -2125,7 +2117,7 @@ DLL_EXPORT int getNumDataSetSamples(struct dataSet *data){
 
 
 /*
-
+	returns the inputs of the given sample of the given dataSet
 */
 DLL_EXPORT double *getDataSetSampleInputs(struct dataSet *data, int sample){
 	return data->inputData[sample];
@@ -2133,7 +2125,7 @@ DLL_EXPORT double *getDataSetSampleInputs(struct dataSet *data, int sample){
 
 
 /*
-
+	returns the given input of the given sample of the given dataSet 
 */
 DLL_EXPORT double getDataSetSampleInput(struct dataSet *data, int sample, int input){
 	return data->inputData[sample][input];
@@ -2141,7 +2133,7 @@ DLL_EXPORT double getDataSetSampleInput(struct dataSet *data, int sample, int in
 
 
 /*
-
+	returns the outputs of the given sample of the given dataSet 
 */
 DLL_EXPORT double *getDataSetSampleOutputs(struct dataSet *data, int sample){
 	return data->outputData[sample];
@@ -2149,7 +2141,7 @@ DLL_EXPORT double *getDataSetSampleOutputs(struct dataSet *data, int sample){
 
 
 /*
-
+	returns the given output of the given sample of the given dataSet 
 */
 DLL_EXPORT double getDataSetSampleOutput(struct dataSet *data, int sample, int output){
 	return data->outputData[sample][output];
@@ -2260,7 +2252,6 @@ DLL_EXPORT double getAverageActiveNodes(struct results *rels){
 	double avgActiveNodes = 0;
 	struct chromosome *chromoTemp;
 
-
 	for(i=0; i<getNumChromosomes(rels); i++){
 
 		chromoTemp = rels->bestChromosomes[i];
@@ -2284,7 +2275,6 @@ DLL_EXPORT double getMedianActiveNodes(struct results *rels){
 	double medActiveNodes = 0;
 	
 	int *array = malloc(getNumChromosomes(rels) * sizeof(int));
-
 
 	for(i=0; i<getNumChromosomes(rels); i++){
 		array[i] = getNumChromosomeActiveNodes(rels->bestChromosomes[i]);
@@ -2393,7 +2383,6 @@ DLL_EXPORT double getMedianFitness(struct results *rels){
 	
 	double *array = malloc(getNumChromosomes(rels) * sizeof(double));
 
-
 	for(i=0; i<getNumChromosomes(rels); i++){
 		array[i] = getChromosomeFitness(rels->bestChromosomes[i]);
 	}
@@ -2415,7 +2404,6 @@ DLL_EXPORT double getAverageGenerations(struct results *rels){
 	int i;
 	double avgGens = 0;
 	struct chromosome *chromoTemp;
-
 
 	for(i=0; i<getNumChromosomes(rels); i++){
 
@@ -2945,25 +2933,25 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo){
 	
 	int i;
-	struct chromosome *chromoTmp;
+	struct chromosome *bestChromoSoFar;
 	
-	chromoTmp = chromoArrayA[0];
+	bestChromoSoFar = chromoArrayA[0];
 
 	for(i=1; i<numChromosA; i++){
 
-		if(chromoArrayA[i]->fitness <= chromoTmp->fitness){
-			chromoTmp = chromoArrayA[i];
+		if(chromoArrayA[i]->fitness <= bestChromoSoFar->fitness){
+			bestChromoSoFar = chromoArrayA[i];
 		}	
 	}
 
 	for(i=0; i<numChromosB; i++){
 
-		if(chromoArrayB[i]->fitness <= chromoTmp->fitness){
-			chromoTmp = chromoArrayB[i];
+		if(chromoArrayB[i]->fitness <= bestChromoSoFar->fitness){
+			bestChromoSoFar = chromoArrayB[i];
 		}	
 	}
 	
-	copyChromosome(bestChromo, chromoTmp);
+	copyChromosome(bestChromo, bestChromoSoFar);
 }
 
 
@@ -3133,7 +3121,7 @@ static double getRandomConnectionWeight(double weightRange){
 */
 static int getRandomFunction(int numFunctions){
 
-	/* check that funcSet contains functions*/
+	/* check that funcSet contains functions */
 	if(numFunctions <1){
 		printf("Error: cannot assign the function gene a value as the Fuction Set is empty.\nTerminating CGP-Library.\n");
 		exit(0);
@@ -3143,15 +3131,17 @@ static int getRandomFunction(int numFunctions){
 }
 
 /*
- returns a random input for the given node
+	returns a random input for the given node
 */
 static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, double recurrentConnectionProbability){
 
 	int input;
 
+	/* pick any ahdead nodes or the node itself */
 	if(randDouble() < recurrentConnectionProbability){
 		input = randInt(numNodes - nodePosition) + nodePosition + 1;
 	}
+	/* pick any previous node including inputs */
 	else{
 		input = randInt(numChromoInputs + nodePosition);
 	}
