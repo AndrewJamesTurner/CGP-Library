@@ -33,7 +33,7 @@ int main(void){
 
 	int numGens = 10000;
 	int numRuns = 10;
-	
+
 	double targetFitness = 0.1;
 	int updateFrequency = 500;
 
@@ -56,9 +56,9 @@ int main(void){
 	printf("The average chromosome fitness is: %f\n", averageFitness);
 
 	chromo = getChromosome(rels, 4);
-	
+
 	printf("The best chromosome found on run 4:\n");
-	
+
 	printChromosome(chromo, 0);
 
 	saveResults(rels, "results.csv");

@@ -83,7 +83,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -171,10 +170,10 @@
 			<Option compilerVar="CC" />
 			<Option target="visualization" />
 		</Unit>
-		<Unit filename="include/cgp.h" />
 		<Unit filename="src/cgp.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/cgp.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
