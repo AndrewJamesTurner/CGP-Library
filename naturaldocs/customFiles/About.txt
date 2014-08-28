@@ -30,6 +30,13 @@ Homepage: <http://andrewjamesturner.co.uk/>
 
 Email: andrew.turner@york.ac.uk
 
+Citations:
+
+If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal article. Emails informing of any publications which make reference to the CGP-Library would also be warmly received. 
+
+
+A. J. Turner and J. F. Miller. Introducing A Cross Platform Open Source Cartesian Genetic Programming Library. The Journal of Genetic Programming and Evolvable Machines, to appear.
+
 Contact:
 
 Bugs, clarification and feature requests can be sent to author, see above.

@@ -179,6 +179,7 @@ static double nor(const int numInputs, const double *inputs, const double *conne
 static double xor(const int numInputs, const double *inputs, const double *connectionWeights);
 static double xnor(const int numInputs, const double *inputs, const double *connectionWeights);
 static double not(const int numInputs, const double *inputs, const double *connectionWeights);
+static double wire(const int numInputs, const double *inputs, const double *connectionWeights);
 static double sigmoid(const int numInputs, const double *inputs, const double *connectionWeights);
 static double gaussian(const int numInputs, const double *inputs, const double *connectionWeights);
 static double step(const int numInputs, const double *inputs, const double *connectionWeights);
@@ -428,7 +429,7 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	else if(strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, not, "not", -1);
 	}
-
+		
 	/* Neuron functions */
 
 	else if(strncmp(functionName, "sig", FUNCTIONNAMELENGTH) == 0){
@@ -446,6 +447,14 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
 		addNodeFunctionCustom(params, hyperbolicTangent, "tanh", -1);
 	}
+		
+	/* other */
+	
+	else if(strncmp(functionName, "wire", FUNCTIONNAMELENGTH) == 0){
+		addNodeFunctionCustom(params, wire, "wire", 1);
+	}	
+		
+		
 		
 	else{
 		printf("Warning: function '%s' is not known and was not added.\n", functionName);
@@ -3453,6 +3462,18 @@ static double not(const int numInputs, const double *inputs, const double *conne
 	else{
 		out = 0;
 	}
+
+	return out;
+}
+
+/*
+	Node function wire. simply acts as a wire returning the first input
+*/
+static double wire(const int numInputs, const double *inputs, const double *connectionWeights){
+
+	double out;
+
+	out = inputs[0];
 
 	return out;
 }

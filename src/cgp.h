@@ -288,6 +288,7 @@
 			- xnor		-	returns '0' if only one of the inputs is '1', else, '1'
 			- not		-	returns '1' if first input is '0', else '1'
 
+			
 			neuron transfer/activation functions
 
 			- sig		- 	the logistic sigmoid of the weighted sum of inputs. Output range [0,1]
@@ -295,6 +296,11 @@
 			- step		-	the heaviside step function of the weighted sum of inputs. Output range [0,1]
 			- softsign	-	the softsign of the weighted sum of inputs. Output range [-1,1]
 			- tanh		-	the hyperbolic tangent of the weighted sum of inputs. Output range [-1,1]
+
+			Other
+			
+			- wire		-	acts as a simple wire mapping the input to the output
+
 
 		Example:
 
@@ -920,7 +926,7 @@
 
 		Parameters:
 			chromo - pointer to an initialised chromosome structure.
-			inputs - array of floats used as inputs to the chromosome
+			inputs - array of doubles used as inputs to the chromosome
 
 		Example:
 
