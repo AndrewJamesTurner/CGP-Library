@@ -798,6 +798,8 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 */
 DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 
+	int i,j;
+
 	FILE *fp;
 	struct chromosome *chromo;
 	struct parameters *params;
@@ -806,16 +808,14 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 	char funcName[FUNCTIONNAMELENGTH];
 	char buffer[1024];
 
-	int i,j;
 	int numInputs, numNodes, numOutputs, arity;
 
-
-	/* create the chromosome file */
+	/* open the chromosome file */
 	fp = fopen(file, "r");
 
-	/* ensure that the file was created correctly */
+	/* ensure that the file was opened correctly */
 	if(fp == NULL){
-		printf("Warning: cannot load chromosome: '%s'. Chromosome was not loaded.\n", file);
+		printf("Warning: cannot open chromosome: '%s'. Chromosome was not open.\n", file);
 		return NULL;
 	}
 
@@ -872,9 +872,8 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 		record = strtok(NULL,",\n");
 	}
 
-	/* initialise chromosome */
+	/* initialise a chromosome beased on the parameters accociated with given chromosome */
 	chromo = initialiseChromosome(params);
-
 
 	/* set the node parameters */
 	for(i=0; i<numNodes; i++){
@@ -903,6 +902,7 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file){
 	fclose(fp);
 	freeParameters(params);
 	
+	/* set the active nodes in the copied chromosome */
 	setChromosomeActiveNodes(chromo);
 
 	return chromo;
@@ -1884,7 +1884,7 @@ static int cmpChromosome(const void *a, const void *b){
 
 
 /*
-	Initialises data structure and assigns values of given arrays
+	Initialises data structure and assigns values for given arrays
 	arrays must take the form
 	inputs[numSamples][numInputs]
 	outputs[numSamples][numOutputs]
