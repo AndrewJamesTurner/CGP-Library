@@ -146,8 +146,8 @@ struct results* initialiseResults(struct parameters *params, int numRuns);
 static void probabilisticMutation(struct parameters *params, struct chromosome *chromo);
 static void pointMutation(struct parameters *params, struct chromosome *chromo);
 static void pointMutationANN(struct parameters *params, struct chromosome *chromo);
-static void probabilisticMutationOnlyActive(struct parameters *params, 
-struct chromosome *chromo);
+static void probabilisticMutationOnlyActive(struct parameters *params, struct chromosome *chromo);
+static void singleMutation(struct parameters *params, struct chromosome *chromo);
 
 /* selection scheme functions */
 static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
@@ -711,6 +711,12 @@ DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType){
 		strncpy(params->mutationTypeName, "onlyActive", MUTATIONTYPENAMELENGTH);
 	}
 	
+	else if(strncmp(mutationType, "single", MUTATIONTYPENAMELENGTH) == 0){
+
+		params->mutationType = singleMutation;
+		strncpy(params->mutationTypeName, "single", MUTATIONTYPENAMELENGTH);
+	}
+		
 	else{
 		printf("\nWarning: mutation type '%s' is invalid. The mutation type must be 'probabilistic' or 'point'. The mutation type has been left unchanged as '%s'.\n", mutationType, params->mutationTypeName);
 	}
@@ -2624,6 +2630,89 @@ static void pointMutationANN(struct parameters *params, struct chromosome *chrom
 	}
 }
 
+
+
+/*
+	Conductions a single active mutation on the give chromosome. 
+		
+	DO NOT USE WITH ANN
+*/
+static void singleMutation(struct parameters *params, struct chromosome *chromo){
+
+	int numFunctionGenes, numInputGenes, numOutputGenes;
+	int numGenes;
+	int geneToMutate;
+	int nodeIndex;
+	int nodeInputIndex;
+	
+	int mutatedActive = 0;
+	int previousGeneValue;
+	int newGeneValue;
+
+	/* get the number of each type of gene */
+	numFunctionGenes = params->numNodes;
+	numInputGenes = params->numNodes * params->arity;
+	numOutputGenes = params->numOutputs;
+
+	/* set the total number of chromosome genes */
+	numGenes = numFunctionGenes + numInputGenes + numOutputGenes;
+
+	/* while active gene not mutated */
+	while(mutatedActive == 0){
+
+		/* select a random gene */
+		geneToMutate = randInt(numGenes);
+
+		/* mutate function gene */
+		if(geneToMutate < numFunctionGenes){
+
+			nodeIndex = geneToMutate;
+
+			previousGeneValue = chromo->nodes[nodeIndex]->function;
+
+			chromo->nodes[nodeIndex]->function = getRandomFunction(chromo->funcSet->numFunctions);
+			
+			newGeneValue = chromo->nodes[nodeIndex]->function; 
+			
+			if((previousGeneValue != newGeneValue) && (chromo->nodes[nodeIndex]->active == 1)){
+				mutatedActive = 1; 
+			}
+			
+		}
+
+		/* mutate node input gene */
+		else if(geneToMutate < numFunctionGenes + numInputGenes){
+
+			nodeIndex = (int) ((geneToMutate - numFunctionGenes) / chromo->arity);
+			nodeInputIndex = (geneToMutate - numFunctionGenes) % chromo->arity;
+
+			previousGeneValue = chromo->nodes[nodeIndex]->inputs[nodeInputIndex];
+
+			chromo->nodes[nodeIndex]->inputs[nodeInputIndex] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, nodeIndex, params->recurrentConnectionProbability);
+		
+			newGeneValue = chromo->nodes[nodeIndex]->inputs[nodeInputIndex];
+			
+			if((previousGeneValue != newGeneValue) && (chromo->nodes[nodeIndex]->active == 1)){
+				mutatedActive = 1; 
+			}
+		}
+
+		/* mutate output gene */
+		else{
+			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes;
+			
+			previousGeneValue = chromo->outputNodes[nodeIndex];
+			
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			
+			newGeneValue = chromo->outputNodes[nodeIndex];
+			
+			if(previousGeneValue != newGeneValue){
+				mutatedActive = 1; 
+			}
+		}
+	}	
+}
 
 
 /*

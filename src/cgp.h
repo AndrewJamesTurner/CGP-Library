@@ -759,8 +759,9 @@
 				
 				- "probabilistic". The *default* mutation method. Mutates each chromosome gene with a given probability; set with <setMutationRate>.
 				- "point". Always mutates the same number of randomly selected genes. The number of mutated genes is the total number of genes times the mutation rate. Note: does not mutation weight genes, see pointANN.
-				- "pointANN". Point mutation for when evolving neural networks; includes mutations to weight genes. 
+				- "pointANN". Point mutation for when evolving artificial neural networks; includes mutations to weight genes. 
 				- "onlyActive". Conducts probabilistic mutation on active nodes only. Genes belonging to inactive nodes are not mutated.
+				- "single". Keeps mutating randomly selected genes until an active gene is mutated to a new allele. Note:  this is independent of the mutation rate set. Note: this does not mutate weight genes. 
 
 		Parameters:
 			params - pointer to parameters structure.
