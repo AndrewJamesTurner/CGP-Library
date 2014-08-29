@@ -52,21 +52,21 @@ References:
 Much of the CGP-Library is based on published peer reviewed academic research. Follows are the relevant references for various aspects of the library.
 
 Cartesian Genetic Programming: 
-	Miller, J.F., Thomson, P.: Cartesian genetic programming. In: EuroGP'00. vol.1820, pp. 121-132 (2000)
+	Miller, J.F., Thomson, P.: Cartesian genetic programming. In: EuroGP'00. vol.1820, pp.121-132 (2000)
 
 
 	Miller, J.F.: Cartesian Genetic Programming. Springer (2011)
 	
 
 Cartesian Genetic Programming of Artificial Neural Networks:
-Khan, M.M., Ahmad, M.A., Khan, M.G., Miller, J.F.: Fast learning neural networks using Cartesian Genetic Programming. Neurocomputing 121, 274-289 (2013)
+Khan, M.M., Ahmad, M.A., Khan, M.G., Miller, J.F.: Fast learning neural networks using Cartesian Genetic Programming. Neurocomputing 121, pp.274-289 (2013)
 
 
 Turner, A.J., Miller, J.F.: Cartesian Genetic Programming encoded Artificial Neural Net-
-works: A Comparison using Three Benchmarks. In: Proceedings of the Conference on Genetic and Evolutionary Computation (GECCO'13), pp. 1005-1012 (2013)
+works: A Comparison using Three Benchmarks. In: Proceedings of the Conference on Genetic and Evolutionary Computation (GECCO'13), pp.1005-1012 (2013)
 
 Recurrent Cartesian Genetic Programming:
-Turner, A.J., Miller, J.F.: Recurrent Cartesian Genetic Programming. In:PPSN'14. pp. 476-486 (2014)
+Turner, A.J., Miller, J.F.: Recurrent Cartesian Genetic Programming. In:PPSN'14. pp.476-486 (2014)
 
 Single Active Mutation:
-Goldman, B.W., Punch, W.F.: Reducing Wasted Evaluations in Cartesian Genetic Programming. In: Proceedings of the 16th European Conference on Genetic Programming (EuroGP'13). vol. 7831, pp. 61-72. Springer Verlag (2013)
+Goldman, B.W., Punch, W.F.: Reducing Wasted Evaluations in Cartesian Genetic Programming. In: Proceedings of the 16th European Conference on Genetic Programming (EuroGP'13). vol.7831, pp.61-72. Springer Verlag (2013)
