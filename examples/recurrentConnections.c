@@ -25,11 +25,11 @@ int main(void){
 	struct dataSet *trainingData = NULL;
 	struct chromosome *chromo = NULL;
 
-	int numInputs = 5;
-	int numNodes = 50;
+	int numInputs = 1;
+	int numNodes = 15;
 	int numOutputs = 1;
 	int nodeArity = 2;
-
+	
 	int numGens = 100000;
 	double targetFitness = 0.1;
 	int updateFrequency = 500;
@@ -38,7 +38,7 @@ int main(void){
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "and,or,not");
+	addNodeFunction(params, "add,sub,mul,div");
 
 	setTargetFitness(params, targetFitness);
 
@@ -48,13 +48,14 @@ int main(void){
 
 	printParameters(params);
 
-	trainingData = initialiseDataSetFromFile("./examples/parity5bit.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/fibonacci.data");
 
 	chromo = runCGP(params, trainingData, numGens);
 
 	printChromosome(chromo, 0);
 
-
+	removeInactiveNodes(chromo);
+	
 	saveChromosomeDot(chromo, 0, "temp.dot");
 
 	freeDataSet(trainingData);

@@ -40,7 +40,7 @@ int main(void){
 				
 	printParameters(params);
 	
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 	
 	chromo = runCGP(params, trainingData, numGens);	
 			
@@ -224,10 +224,10 @@ the file specified.
 
 Here we load a data set containing 101 evenly sampled points from y 
 = x^6 - 2x^4 + x^2 within the range x = [-5,5]. The data set is given in
-the /examples/symbolic.data directory.
+the /dataSets/symbolic.data directory.
 
 (begin code)
-trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 (end)
 
 In order for <initialiseDataSetFromFile> to parse the given file it must 

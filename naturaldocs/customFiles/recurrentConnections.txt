@@ -1,16 +1,17 @@
 Title: Average Behaviour  
 
-This tutorial introduces the use of <repeatCGP> to assess the average behaviour of CGP towards a given application rather than a one-off instance.
+This tutorial introduces using the CGP-Library to create recurrent programs.
+
+Recurrent programs are those which can contain feedback allowing CGP chromosomes to describe cyclic as well as acyclic graphs. The ability to describe cyclic programs allows CGP to be applied to partially observable tasks through the ablity to hold internal state information. Recurrent Cartesian Genetic Programming (RCGP) and can create recurrent equations, boolean logic state machines and recurrent artificial neural networks.
 
 This tutorial closely follows the <Getting Started> tutorial and it is recommended that you read that tutorial first.
 
 Title: The Program
 
-A simple symbolic regression solving program used to illustrate the use of <repeatCGP>.
+A simple program illustrating using CGP-Library to create recurrent equations.
 
-The program below is provided in the CGP-Library download within /examples/averageBehaviour.c and is included in the code:blocks project. 
+The program below is provided in the CGP-Library download within /examples/recurrentConnections.c and is included in the code:blocks project. 
 
-(begin code)
 #include <stdio.h>
 #include "../src/cgp.h"
 
@@ -18,49 +19,43 @@ int main(void){
 
 	struct parameters *params = NULL;
 	struct dataSet *trainingData = NULL;
-	struct results *rels = NULL;
 	struct chromosome *chromo = NULL;
 
 	int numInputs = 1;
 	int numNodes = 15;
 	int numOutputs = 1;
 	int nodeArity = 2;
-
-	int numGens = 10000;
-	int numRuns = 10;
 	
+	int numGens = 100000;
 	double targetFitness = 0.1;
 	int updateFrequency = 500;
-
-	double averageFitness;
+	
+	double recurrentConnectionProbability = 0.10;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
-	addNodeFunction(params, "add,sub,mul,div,sin");
+	addNodeFunction(params, "add,sub,mul,div");
 
 	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
 
-	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
+	setRecurrentConnectionProbability(params, recurrentConnectionProbability);
 
-	rels = repeatCGP(params, trainingData, numGens, numRuns);
-	
-	averageFitness = getAverageFitness(rels);
+	printParameters(params);
 
-	printf("The average chromosome fitness is: %f\n", averageFitness);
+	trainingData = initialiseDataSetFromFile("./dataSets/fibonacci.data");
 
-	chromo = getChromosome(rels, 4);
-	
-	printf("The best chromosome found on run 4:\n");
-	
+	chromo = runCGP(params, trainingData, numGens);
+
 	printChromosome(chromo, 0);
 
-	saveResults(rels, "results.csv");
+	removeInactiveNodes(chromo);
+	
+	saveChromosomeDot(chromo, 0, "temp.dot");
 
 	freeDataSet(trainingData);
 	freeChromosome(chromo);
-	freeResults(rels);
 	freeParameters(params);
 
 	return 0;
@@ -71,7 +66,20 @@ Title: Stepping Through the Code
 
 A close look at the code.
 
-The above code is very similar to gettingStarted.c seen in the <Getting Started> tutorial and shall not be explained again. Here the specifics relating to assessing the average behaviour of CGP towards a given task shall be highlighted. 
+The above code is very similar to gettingStarted.c seen in the <Getting Started> tutorial and shall not be explained again. Here the specifics relating to recurrent connections shall be highlighted. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 When CGP is repeatedly applied to a given task using <repeatCGP> the results are stored in a returned <results> structure. Therefore we need to define a <results> structure variable to store the returned <results>. An averageFitness variable is also defined which will later store the average fitness achieved when repeatedly applying CGP to the given task multiple times.
 

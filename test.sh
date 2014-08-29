@@ -9,7 +9,6 @@ make customSelectionScheme
 make customReproductionScheme
 make averageBehaviour
 make neuroEvolution
-make printChromoEqu
 make customES
 make visualization
 
@@ -107,18 +106,6 @@ if [ $? -eq 1 ]; then
 else
 	echo neuroEvolution: PASS
 fi
-
-echo "\n\n ** printChromoEqu ** \n\n"
-valgrind --leak-check=yes --error-exitcode=1 ./printChromoEqu > /dev/null
-
-if [ $? -eq 1 ]; then
-	echo printChromoEqu: memory leak...
-	exit
-else
-	echo printChromoEqu: PASS
-fi
-
-rm tmp.tex
 
 echo "\n\n ** customES ** \n\n"
 valgrind --leak-check=yes --error-exitcode=1 ./customES > /dev/null

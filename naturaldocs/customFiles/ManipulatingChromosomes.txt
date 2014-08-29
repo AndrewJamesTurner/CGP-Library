@@ -40,7 +40,7 @@ int main(void){
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 		
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 		
 	chromoA = initialiseChromosome(params);
 	chromoB = initialiseChromosome(params);
@@ -129,7 +129,7 @@ addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 Here the fitnesses assigned to the chromosomes will use the symbolic.data seen previously in <Getting Started> and <Creating Data Sets>.
 
 (begin code)
-trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 (end)
 
 Next we initialise two of the three chromosomes using <initialiseChromosome>. The <initialiseChromosome> function returns a pointer to an initialised chromosome using the parameters specified in params.   

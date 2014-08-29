@@ -5,7 +5,7 @@ The current and previous versions of CGP-Library will be available here for down
 Version 2.0:
 	Comments:
 			* *API CHANGE* all float variables have been replaced by double for the extra position.
-			* *NEW FEATURE* CGP-Library is now capable of creating programs/circuits/equations/neural networks which contain recurrent connections or feedback. 
+			* *NEW FEATURE* Recurrent Cartesian Genetic Programming (RCGP). CGP-Library is now capable of creating programs/circuits/equations/neural networks which contain recurrent connections or feedback. 
 			* Fixed bug in sin function (it was calling cos... my bad)
 			* Added wire function to function set.
 			

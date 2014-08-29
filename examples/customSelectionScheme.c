@@ -66,7 +66,7 @@ int main(void){
 	
 	setSelectionScheme(params, tournament, "tournament");
 	
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 	
 	chromo = runCGP(params, trainingData, numGens);
 	

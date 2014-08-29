@@ -39,7 +39,7 @@ int main(void){
 	params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 	addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 
 	chromoA = initialiseChromosome(params);
 	chromoB = initialiseChromosome(params);

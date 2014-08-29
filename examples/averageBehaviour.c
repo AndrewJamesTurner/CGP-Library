@@ -47,7 +47,7 @@ int main(void){
 
 	setUpdateFrequency(params, updateFrequency);
 
-	trainingData = initialiseDataSetFromFile("./examples/symbolic.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 
 	rels = repeatCGP(params, trainingData, numGens, numRuns);
 
