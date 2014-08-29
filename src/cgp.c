@@ -188,7 +188,7 @@ static double hyperbolicTangent(const int numInputs, const double *inputs, const
 
 
 /* other */
-static double randDouble(void);
+static double randDecimal(void);
 static int randInt(int n);
 static double sumWeigtedInputs(const int numInputs, const double *inputs, const double *connectionWeights);
 static void sortIntArray(int *array, const int length);
@@ -2728,7 +2728,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 	for(i=0; i<params->numNodes; i++){
 
 		/* mutate the function gene */
-		if(randDouble() <= params->mutationRate){
+		if(randDecimal() <= params->mutationRate){
 			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 
@@ -2736,12 +2736,12 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 		for(j=0; j<params->arity; j++){
 
 			/* mutate the node input */
-			if(randDouble() <= params->mutationRate){
+			if(randDecimal() <= params->mutationRate){
 				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
-			if(randDouble() <= params->mutationRate){
+			if(randDecimal() <= params->mutationRate){
 				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
@@ -2751,7 +2751,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 	for(i=0; i<params->numOutputs; i++){
 
 		/* mutate the chromosome output */
-		if(randDouble() <= params->mutationRate){
+		if(randDecimal() <= params->mutationRate){
 			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
 		}
 	}
@@ -2775,7 +2775,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 		}
 
 		/* mutate the function gene */
-		if(randDouble() <= params->mutationRate){
+		if(randDecimal() <= params->mutationRate){
 			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 
@@ -2783,12 +2783,12 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 		for(j=0; j<params->arity; j++){
 
 			/* mutate the node input */
-			if(randDouble() <= params->mutationRate){
+			if(randDecimal() <= params->mutationRate){
 				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
-			if(randDouble() <= params->mutationRate){
+			if(randDecimal() <= params->mutationRate){
 				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
@@ -2798,7 +2798,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 	for(i=0; i<params->numOutputs; i++){
 
 		/* mutate the chromosome output */
-		if(randDouble() <= params->mutationRate){
+		if(randDecimal() <= params->mutationRate){
 			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
 		}
 	}
@@ -3211,7 +3211,7 @@ static void freeNode(struct node *n){
 	returns a random connection weight value
 */
 static double getRandomConnectionWeight(double weightRange){
-	return (randDouble() * 2 * weightRange) - weightRange;
+	return (randDecimal() * 2 * weightRange) - weightRange;
 }
 
 /*
@@ -3236,7 +3236,7 @@ static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePositio
 	int input;
 
 	/* pick any ahdead nodes or the node itself */
-	if(randDouble() < recurrentConnectionProbability){
+	if(randDecimal() < recurrentConnectionProbability){
 		input = randInt(numNodes - nodePosition) + nodePosition + 1;
 	}
 	/* pick any previous node including inputs */
@@ -3324,6 +3324,7 @@ static double divide(const int numInputs, const double *inputs, const double *co
 	return divide;
 }
 
+
 /*
 	Node function abs. Returns the absolute of the first input
 */
@@ -3331,6 +3332,7 @@ static double absolute(const int numInputs, const double *inputs, const double *
 
 	return fabs(inputs[0]);
 }
+
 
 /*
 	Node function sqrt.  Returns the square root of the first input
@@ -3340,6 +3342,7 @@ static double squareRoot(const int numInputs, const double *inputs, const double
 	return sqrt(inputs[0]);
 }
 
+
 /*
 	Node function squ.  Returns the square of the first input
 */
@@ -3348,6 +3351,7 @@ static double square(const int numInputs, const double *inputs, const double *co
 	return pow(inputs[0],2);
 }
 
+
 /*
 	Node function cub.  Returns the cube of the first input
 */
@@ -3355,7 +3359,6 @@ static double cube(const int numInputs, const double *inputs, const double *conn
 
 	return pow(inputs[0],3);
 }
-
 
 
 /*
@@ -3720,9 +3723,9 @@ static double supervisedLearning(struct parameters *params, struct chromosome *c
 
 
 /*
-	returns a random double between [0,1]
+	returns a random decimal between [0,1]
 */
-static double randDouble(void){
+static double randDecimal(void){
 	return (double)rand()/(double)RAND_MAX;
 }
 
@@ -3799,7 +3802,6 @@ static int randInt(int n){
 	if(n==0){
 		return 0;
 	}
-	
 	
 	randExcess = (RAND_MAX % n) + 1;
 	randLimit = RAND_MAX - randExcess;
