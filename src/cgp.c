@@ -260,6 +260,7 @@ DLL_EXPORT void freeParameters(struct parameters *params){
 
 	/* attempt to prevent user double freeing */
 	if(params == NULL){
+		printf("Warning: double freeing of parameters prevented.\n");
 		return;
 	}
 
@@ -1000,6 +1001,7 @@ DLL_EXPORT void freeChromosome(struct chromosome *chromo){
 
 	/* attempt to prevent user double freeing */
 	if(chromo == NULL){
+		printf("Warning: double freeing of chromosome prevented.\n");
 		return;
 	}
 
@@ -2026,6 +2028,7 @@ DLL_EXPORT void freeDataSet(struct dataSet *data){
 
 	/* attempt to prevent user double freeing */
 	if(data == NULL){
+		printf("Warning: double freeing of dataSet prevented.\n");
 		return;
 	}
 
@@ -2200,6 +2203,7 @@ DLL_EXPORT void freeResults(struct results *rels){
 
 	/* attempt to prevent user double freeing */
 	if(rels == NULL){
+		printf("Warning: double freeing of results prevented.\n");
 		return;
 	}
 
@@ -3199,6 +3203,7 @@ static void freeNode(struct node *n){
 
 	/* attempt to prevent user double freeing */
 	if(n == NULL){
+		printf("Warning: double freeing of node prevented.\n");
 		return;
 	}
 
