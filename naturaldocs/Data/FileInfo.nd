@@ -1,19 +1,20 @@
 1.51
 C/C++
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt	1408999649	1	Manipulating Chromosomes
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CreateDataSet.txt	1408999649	1	Creating Data Sets
-/home/andy/Desktop/CGP-Library/src/cgp.h	1409247800	1	API
 /home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomNodeFunctions.txt	1408999649	1	Custom Node Functions
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/GettingStarted.txt	1408999649	1	Getting Started
 /home/andy/Desktop/CGP-Library/naturaldocs/customFiles/license.txt	1407700403	1	Licenses
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CartesianGeneticProgramming.txt	1407700403	1	Cartesian Genetic Programming
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/Download.txt	1409247763	1	Download
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomFitnessFunction.txt	1408999649	1	Custom Fitness Function
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomSelectionScheme.txt	1408999649	1	Custom Selection Scheme
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/AverageBehaviour.txt	1409001649	1	Average Behaviour
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/About.txt	1409246833	1	About
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt	1408999649	1	NeuroEvolution
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/visualization.txt	1408999649	1	Visualization
 /home/andy/Desktop/CGP-Library/naturaldocs/customFiles/Installation.txt	1407700403	1	Installation
-/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/customReproductionScheme.txt	1408999649	1	Custom Reproduction Scheme
-/home/andy/Desktop/CGP-Library/src/cgp.c	1409243866	0	/home/andy/Desktop/CGP-Library/src/cgp.c
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/visualization.txt	1409306639	1	Visualisation
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomSelectionScheme.txt	1409250002	1	Custom Selection Scheme
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/customReproductionScheme.txt	1409249922	1	Custom Reproduction Scheme
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CreateDataSet.txt	1408999649	1	Creating Data Sets
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CustomFitnessFunction.txt	1408999649	1	Custom Fitness Function
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/recurrentConnections.txt	1409306660	1	Average Behaviour
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/About.txt	1409298431	1	About
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/Download.txt	1409298373	1	Download
+/home/andy/Desktop/CGP-Library/src/cgp.h	1409306996	1	API
+/home/andy/Desktop/CGP-Library/src/cgp.c	1409248086	0	/home/andy/Desktop/CGP-Library/src/cgp.c
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/GettingStarted.txt	1409250077	1	Getting Started
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/CartesianGeneticProgramming.txt	1407700403	1	Cartesian Genetic Programming
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/AverageBehaviour.txt	1409249747	1	Average Behaviour
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt	1409250143	1	Manipulating Chromosomes
+/home/andy/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt	1408999649	1	NeuroEvolution

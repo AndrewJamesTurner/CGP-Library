@@ -1,4 +1,4 @@
-Title: Visualization
+Title: Visualisation
 
 This tutorial introduces the many ways in which CGP chromosomes can be visualised using the CGP library.
 

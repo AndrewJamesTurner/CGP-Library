@@ -29,18 +29,15 @@ int main(void){
 	int numNodes = 15;
 	int numOutputs = 1;
 	int nodeArity = 2;
-	
+
 	int numGens = 100000;
-	double targetFitness = 0.1;
 	int updateFrequency = 500;
-	
+
 	double recurrentConnectionProbability = 0.10;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
 	addNodeFunction(params, "add,sub,mul,div");
-
-	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
 
@@ -53,10 +50,6 @@ int main(void){
 	chromo = runCGP(params, trainingData, numGens);
 
 	printChromosome(chromo, 0);
-
-	removeInactiveNodes(chromo);
-	
-	saveChromosomeDot(chromo, 0, "temp.dot");
 
 	freeDataSet(trainingData);
 	freeChromosome(chromo);

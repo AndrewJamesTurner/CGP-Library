@@ -2,7 +2,7 @@ Title: Average Behaviour
 
 This tutorial introduces using the CGP-Library to create recurrent programs.
 
-Recurrent programs are those which can contain feedback allowing CGP chromosomes to describe cyclic as well as acyclic graphs. The ability to describe cyclic programs allows CGP to be applied to partially observable tasks through the ablity to hold internal state information. Recurrent Cartesian Genetic Programming (RCGP) and can create recurrent equations, boolean logic state machines and recurrent artificial neural networks.
+Recurrent programs are those which can contain feedback connections allowing CGP chromosomes to describe cyclic as well as acyclic graphs. The ability to describe cyclic programs allows CGP to be applied to partially observable tasks through the ablity to hold internal state information. Recurrent Cartesian Genetic Programming (RCGP) can create recurrent equations, boolean logic state machines and recurrent artificial neural networks.
 
 This tutorial closely follows the <Getting Started> tutorial and it is recommended that you read that tutorial first.
 
@@ -12,6 +12,7 @@ A simple program illustrating using CGP-Library to create recurrent equations.
 
 The program below is provided in the CGP-Library download within /examples/recurrentConnections.c and is included in the code:blocks project. 
 
+(begin code)
 #include <stdio.h>
 #include "../src/cgp.h"
 
@@ -27,7 +28,6 @@ int main(void){
 	int nodeArity = 2;
 	
 	int numGens = 100000;
-	double targetFitness = 0.1;
 	int updateFrequency = 500;
 	
 	double recurrentConnectionProbability = 0.10;
@@ -35,8 +35,6 @@ int main(void){
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
 
 	addNodeFunction(params, "add,sub,mul,div");
-
-	setTargetFitness(params, targetFitness);
 
 	setUpdateFrequency(params, updateFrequency);
 
@@ -50,17 +48,13 @@ int main(void){
 
 	printChromosome(chromo, 0);
 
-	removeInactiveNodes(chromo);
-	
-	saveChromosomeDot(chromo, 0, "temp.dot");
-
 	freeDataSet(trainingData);
 	freeChromosome(chromo);
 	freeParameters(params);
 
 	return 0;
 }
-(end)
+(end code)
 
 Title: Stepping Through the Code
 
@@ -68,87 +62,51 @@ A close look at the code.
 
 The above code is very similar to gettingStarted.c seen in the <Getting Started> tutorial and shall not be explained again. Here the specifics relating to recurrent connections shall be highlighted. 
 
+By default <initialiseParameters> returns a pointer to an initialised <parameters> structure with the recurrent connection probability set to zero. The recurrent connection probability stores the likelihood that when a connection gene is mutated it will create a recurrent connection. Where a recurrent connections connects a node of index i to a node of index j where j>=i. For instance a recurrent connection of 0.5 would cause mutations to create as many recurrent connections as feed forward. A recurrent connection probability of 0.1 would cause mutations to create recurrent connections 10% of the time and feed forward connections 90% of the time. Therefore the default recurrent connection probability of 0.0 results in no recurrent connections; standard acyclic CGP.
 
-
-
-
-
-
-
-
-
-
-
-
-
-When CGP is repeatedly applied to a given task using <repeatCGP> the results are stored in a returned <results> structure. Therefore we need to define a <results> structure variable to store the returned <results>. An averageFitness variable is also defined which will later store the average fitness achieved when repeatedly applying CGP to the given task multiple times.
+In order to use CGP to create cyclic/recurrent programs the recurrent connection probability value stored in the <parameters> must be altered. This is achieved using <setRecurrentConnectionProbability>.
 
 (begin code)
-struct results *rels = NULL;
+double recurrentConnectionProbability = 0.10;
 ...
-double averageFitness;
+setRecurrentConnectionProbability(params, recurrentConnectionProbability);
 (end)
 
-When assessing the average behaviour of CGP towards a given task CGP must be applied to that task a number of times. Each instance of applying CGP towards the task is called a run. Here the numRuns variable stores the number of runs CGP will be applied towards the given task.
+Once the recurrent connection probability is set to a value >0 (and <=1) CGP-Library can now create recurrent/cyclic programs.
+
+
+In this example Recurrent Cartesian Genetic Programming (RCGP) is used to create a recurrent equations which generates the Fibonacci sequence. Although the Fibonacci sequence does have a closed/explicit form it is much more easily defined recursively; making it a good application of RCGP.
+
+
+For this example the function set will contain: addition, subtraction, multiplication and division.
 
 (begin code)
-int numRuns = 10;
-(end)
+addNodeFunction(params, "add,sub,mul,div");
+(end code)
 
-In the <Getting Started> tutorial we applied CGP to the given task once using <runCGP>. Here we are repeatedly applying CGP to a give task using <repeatCGP>. The parameters of <repeatCGP> are the same as for <runCGP> except we must also specify the number of runs.
-
-When <repeatCGP> is called it prints high level information relating to each run to the terminal and returns an initialised <results> structure.  
+The Fibonacci dataset, given in /dataSets/fibonacci.data, is also loaded into a <dataSet> structure.
 
 (begin code)
-rels = repeatCGP(params, trainingData, numGens, numRuns);
-(end)
+trainingData = initialiseDataSetFromFile("./dataSets/fibonacci.data");
+(end code)
 
-In order to access the result of applying CGP to a given task multiple times the returned <results> structure must be queried for information. For instance, <getAverageFitness>, <getAverageActiveNodes> and <getAverageGenerations> can be used to get the average fitness, average number of active nodes and average number of generations respectively. 
-
-In the example code <getAverageFitness> is used to get the average fitness of all the runs which is then printed to the terminal.
+Since the recurrent connection probability has been set to a value greater than zero, recurrent programs can now be created using <runCGP> or <repeatCGP>; similarly to standard acyclic CGP. In this example <runCGP> is used.
 
 (begin code)
-averageFitness = getAverageFitness(rels);
+chromo = runCGP(params, trainingData, numGens);
+(end code)
 
-printf("The average chromosome fitness is: %f\n", averageFitness);
-(end)
+After <runCGP> has finished the returned chromosome may describe a solution which contains recurrent connections. It only "may" use recurrent connections as even when the recurrent connection probability is set to a non-zero value, CGP can still produce standard feed forward programs. This is because the the recurrent connection probability only places a bias on mutations creating recurrent connections, it does not force the evolutionary process to make use of recurrent connections. This is true except in the case where the recurrent connection probability is set to 1.00 (100%) in which case the CGP chromosomes contain nothing but recurrent connections; although this would likely never be useful.   
 
-As well as getting average statistics the best chromosome found on any given run can be accessed using <getChromosome>.
-
-In the example code <getChromosome> is used to get the best chromosome found on run four which is then printed to the terminal using <printChromosome>.
+The solution produced by <runCGP> is now printed to the terminal / command prompt.
 
 (begin code)
-chromo = getChromosome(rels, 4);
-
-printf("The best chromosome found on run 4:\n");
-
 printChromosome(chromo, 0);
-(end)
+(end code)
 
-In cases where the results need to be saved to be inspected later the <saveResults> function can be used. <saveResults> saves the given <results> structure to the given file. The format of the results is comma separated in the same form as is displayed to the terminal during <repeatCGP>; except the averages are not included.
-
-(begin code)
-saveResults(rels, "results.csv");
-(end)
-
-Finally all of the inilised strutures should be free'd including the <results> using <freeResults> and the <chromosome> returned from <getChromosome> using <freeChromosome>.
-
-(begin code)
-freeDataSet(trainingData);
-freeChromosome(chromo);
-freeResults(rels);
-freeParameters(params);
-(end)
-
-And that's it, running CGP multiple times to assess its average performance is not that much more complicated that running it once.
+As can be seen from the displayed <chromosome>, it can sometimes be difficult to follow the logic of recurrent solutions. To help understand the operation of the produced solution some of the visualisation tools available within the CGP-Library can be used. For further information on how to use these tools see the <Visualisation> tutorial.
 
 
 
-
-
-
-
-
-
-
+And that's it, by simply setting the recurrent connection probability parameter so a value greater than zero CGP-Library can be used to create recurrent programs.
 

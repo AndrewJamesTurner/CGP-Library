@@ -530,7 +530,7 @@
 
 		Sets the recurrent connection probability in the given parameters.
 
-		The given recurrent connection probability is also parsed to ensure a valid recurrent connection probability.
+		The recurrent connection probability specifies the probability that a mutation to a connection gene will create a recurrent connection; otherwise a standard feed forward connection is made. The given recurrent connection probability is also parsed to ensure a valid recurrent connection probability.
 		Recurrent connection probability <0 or >1 are invalid. If an invalid recurrent connection probability is give a
 		warning is displayed and the recurrent connection probability is left unchanged.
 

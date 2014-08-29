@@ -64,7 +64,7 @@ int main(void){
     setMu(params, mu);
     setLambda(params, lambda);
 
-    trainingData = initialiseDataSetFromFile(&quot;./examples/symbolic.data&quot;);
+    trainingData = initialiseDataSetFromFile(&quot;./dataSets/symbolic.data&quot;);
 
     chromo = runCGP(params, trainingData, numGens);
 
