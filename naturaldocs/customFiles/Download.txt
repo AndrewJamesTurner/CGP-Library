@@ -16,9 +16,9 @@ Version 2.0:
 
 Version 1.1: 
 	Comments:
-			* *Fixed Significant bug* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
-			* Added power function to function set.
-			* Made the.dot graphviz contain more detail; including node number and connection number.
+		* *Fixed Significant bug* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
+		* Added power function to function set.
+		* Made the.dot graphviz contain more detail; including node number and connection number.
 
 	Date: 10/08/2014
 	
@@ -26,7 +26,7 @@ Version 1.1:
 	
 Version 1.0:
 	Comment: 
-			* Initial release.
+		* Initial release.
 	
 	Date: 18/06/2014
 	
@@ -34,8 +34,8 @@ Version 1.0:
 
 
 Version 0.0 (beta):
-	
-	Comment: Initial beta release of CGP-Library.
+	Comment: 
+		* Initial beta release of CGP-Library.
 	
 	Date: 29/04/2014
 	

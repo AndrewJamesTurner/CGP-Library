@@ -1,6 +1,6 @@
 Title: About  
 
-CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C (with binding to python and Java possibly coming soon) and is compatible with Linux, Windows and Mac OS. 
+CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C and is compatible with Linux, Windows and Mac OS. 
 
 Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. This documentation also includes a short introduction to CGP in <Cartesian Genetic Programming>.
 
@@ -18,9 +18,11 @@ As a result the basic use of CGP-Library is very simple (see <Getting Started>) 
 
 Tutorials:
 
-A number of tutorials are provided to introduce new users to the CGP-Library. For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (under Ubuntu you may also need to also install xterm for code::blocks to run the programs in its default terminal). 
+A number of tutorials are provided to introduce users to the CGP-Library and many of features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials. 
 
-Although the tutorials cover basic and advance usage they do not cover every function specified in the <API> so be sure to give it a read.
+For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (under Ubuntu you may also need to also install xterm for code::blocks to run the programs in its default terminal). 
+
+
 
 Author:
 
@@ -35,7 +37,7 @@ Citations:
 If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal letter. Emails informing of any publications which make reference to the CGP-Library would also be warmly received. 
 
 
-A. J. Turner and J. F. Miller. Introducing A Cross Platform Open Source Cartesian Genetic Programming Library. The Journal of Genetic Programming and Evolvable Machines, to appear.
+* A. J. Turner and J. F. Miller. Introducing A Cross Platform Open Source Cartesian Genetic Programming Library. The Journal of Genetic Programming and Evolvable Machines, to appear.
 
 Contact:
 
