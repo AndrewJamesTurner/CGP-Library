@@ -8,7 +8,3 @@ Webpage: http://www.cgplibrary.co.uk/
 Email: andrew.turner@york.ac.uk    
 License: Lesser General Public License (LGPL)    
 
-##Status
-
-Release V1.1
-
