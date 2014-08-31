@@ -10,7 +10,7 @@ Version 2.0:
 			* Added mutation type "single".
 			* Added wire function to function set.
 			
-	Date: XX/08/14
+	Date: 31/08/14
 	
 	Download: <http://cgplibrary.co.uk/CGP-Library-V2.0.zip>
 
