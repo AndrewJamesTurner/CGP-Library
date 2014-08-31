@@ -18,7 +18,7 @@ As a result the basic use of CGP-Library is very simple (see <Getting Started>) 
 
 Tutorials:
 
-A number of tutorials are provided to introduce users to the CGP-Library and many of features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials. 
+A number of tutorials are provided to introduce users to the CGP-Library and many of its features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials. 
 
 For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (under Ubuntu you may also need to also install xterm for code::blocks to run the programs in its default terminal). 
 
