@@ -6,7 +6,7 @@ Simplest:
 
 The simplest method of using the CGP-Library is to include cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time.
 
-For instance #include "cgp.h" and then compile your program similar too
+For instance #include "cgp.h" and then compile your program similar to
 
     >$ gcc yourFiles.c cgp.c cgp.h -D NO_DLL
 
@@ -31,7 +31,7 @@ Give libcgp.so the necessary permissions by running
 
 Now copy cgp.h to /usr/include by running
 
-    >$ sudo cp include/cgp.h /usr/include/
+    >$ sudo cp src/cgp.h /usr/include/
 
 Now update the system so it knows about libcgp.so
 
