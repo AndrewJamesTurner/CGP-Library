@@ -1132,8 +1132,14 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 		/* calculate the output of the active node under evaluation */
 		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](arity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
 
+
+		/* deal with doubles becoming NAN */
+		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
+			chromo->nodes[currentActiveNode]->output = 0;
+		}
+
 		/* prevent double form going to inf and -inf */
-		if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
+		else if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
 
 			if(chromo->nodes[currentActiveNode]->output > 0){
 				chromo->nodes[currentActiveNode]->output = DBL_MAX;
@@ -1143,10 +1149,8 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 			}
 		}
 
-		/* deal with doubles becoming NAN */
-		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
-			chromo->nodes[currentActiveNode]->output = 0;
-		}
+		
+		
 	}
 
 	/* Set the chromosome outputs */ 
@@ -3280,9 +3284,9 @@ static int getRandomChromosomeOutput(int numInputs, int numNodes){
 static double add(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	double sum = 0;
+	double sum = inputs[0];
 
-	for(i=0; i<numInputs; i++){
+	for(i=1; i<numInputs; i++){
 		sum += inputs[i];
 	}
 
@@ -3311,9 +3315,9 @@ static double sub(const int numInputs, const double *inputs, const double *conne
 static double mul(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
-	double multiplication = 1;
+	double multiplication = inputs[0];
 
-	for(i=0; i<numInputs; i++){
+	for(i=1; i<numInputs; i++){
 		multiplication *= inputs[i];
 	}
 
