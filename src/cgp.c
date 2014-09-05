@@ -1148,9 +1148,6 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 				chromo->nodes[currentActiveNode]->output = DBL_MIN;
 			}
 		}
-
-		
-		
 	}
 
 	/* Set the chromosome outputs */ 
@@ -3334,7 +3331,6 @@ static double divide(const int numInputs, const double *inputs, const double *co
 	double divide = inputs[0];
 
 	for(i=1; i<numInputs; i++){
-
 		divide /= inputs[i];
 	}
 
