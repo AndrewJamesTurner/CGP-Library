@@ -1,0 +1,14 @@
+Performance
+	Separate mu and lambda strategies
+		
+
+Deal with testing sets
+	Add new condition to evolutionary loop
+	Specify testing set
+	Specify testing method
+	
+New functions
+	flip-flop
+	gradient
+	
+
