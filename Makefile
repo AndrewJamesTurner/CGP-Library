@@ -8,7 +8,7 @@ CC=gcc
 	# -g			turns on debugging information	
 	# -pg			turns on profiling information (for gprof)
 	
-CFLAGS= -pedantic -Wall -pg
+CFLAGS= -pedantic -Wall -O3
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm
@@ -56,5 +56,10 @@ so: src/cgp.c
 docs: ./src/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./src -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
 
+profile: examples/averageBehaviour.c src/cgp.c src/cgp.h
+	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -pg -lm
+	./averageBehaviour
+	gprof averageBehaviour | ./gprof2dot.py | dot -Tsvg -o profile.svg
+
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/* tmp.aux tmp.log tmp.pdf
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/* tmp.aux tmp.log tmp.pdf *.out
