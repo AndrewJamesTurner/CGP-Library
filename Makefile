@@ -6,47 +6,48 @@ CC=gcc
 	# -Wall			Turns on all optional warnings which are desirable for normal code.
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
+	# -pg			turns on profiling information (for gprof)
 	
-CFLAGS= -pedantic -Wall -O3
+CFLAGS= -pedantic -Wall -pg
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
-	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 createDataSet: examples/createDataSet.c src/cgp.c src/cgp.h
-	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/cgp.h $(CFLAGS)  -lm
 
 manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c src/cgp.h
-	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 customNodeFunction: examples/customNodeFunction.c src/cgp.c src/cgp.h
-	@$(CC) -o customNodeFunction examples/customNodeFunction.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o customNodeFunction examples/customNodeFunction.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 customFitnessFunction: examples/customFitnessFunction.c src/cgp.c src/cgp.h
-	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 customSelectionScheme: examples/customSelectionScheme.c src/cgp.c src/cgp.h
-	@$(CC) -o customSelectionScheme examples/customSelectionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o customSelectionScheme examples/customSelectionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 customReproductionScheme:  examples/customReproductionScheme.c src/cgp.c src/cgp.h
-	@$(CC) -o customReproductionScheme examples/customReproductionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o customReproductionScheme examples/customReproductionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 averageBehaviour: examples/averageBehaviour.c src/cgp.c src/cgp.h
-	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 neuroEvolution: examples/neuroEvolution.c src/cgp.c src/cgp.h
-	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 	
 recurrentConnections: examples/recurrentConnections.c src/cgp.c src/cgp.h
-	@$(CC) -o recurrentConnections examples/recurrentConnections.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm	
+	@$(CC) -o recurrentConnections examples/recurrentConnections.c src/cgp.c src/cgp.h $(CFLAGS) -lm	
 
 customES: examples/customES.c src/cgp.c src/cgp.h
-	@$(CC) -o customES examples/customES.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o customES examples/customES.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 visualization: examples/visualization.c src/cgp.c src/cgp.h
-	@$(CC) -o visualization examples/visualization.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o visualization examples/visualization.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 	
 printChromoEqu: examples/printChromoEqu.c src/cgp.c src/cgp.h
-	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c src/cgp.h $(CFLAGS) -g -lm
+	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3

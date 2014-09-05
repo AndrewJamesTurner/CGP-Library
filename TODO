@@ -11,4 +11,9 @@ New functions
 	flip-flop
 	gradient
 	
+nodes with no inputs?
+		rand
+		const 1
+		const 0
+		const PI
 

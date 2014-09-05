@@ -87,7 +87,8 @@ struct node{
 	double *weights;
 	int active;
 	double output;
-	int arity;
+	int maxArity;
+	int actArity;
 };
 
 struct functionSet{
@@ -1109,7 +1110,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 		currentActiveNode = chromo->activeNodes[i];
 	
 		/* get the arity of the current node */
-		nodeArity = getChromosomeNodeArity(chromo,currentActiveNode);
+		nodeArity = chromo->nodes[currentActiveNode]->actArity;
 
 		/* for each of the active nodes inputs */
 		for(j=0; j<nodeArity; j++){
@@ -1772,14 +1773,17 @@ DLL_EXPORT int getNumChromosomeOutputs(struct chromosome *chromo){
 */
 DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index){
 	
-	if(chromo->funcSet->maxNumInputs[chromo->nodes[index]->function] == -1){
-		return chromo->arity;
+	int chromoArity = chromo->arity; 
+	int maxArity = chromo->funcSet->maxNumInputs[chromo->nodes[index]->function];
+			
+	if(maxArity == -1){
+		return chromoArity;
 	}
-	else if(chromo->funcSet->maxNumInputs[chromo->nodes[index]->function] < chromo->arity){
-		return chromo->funcSet->maxNumInputs[chromo->nodes[index]->function];
+	else if(maxArity < chromoArity){
+		return maxArity;
 	}
 	else{
-		return chromo->arity; 
+		return chromoArity; 
 	}
 }
 
@@ -1858,8 +1862,11 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 	chromo->activeNodes[chromo->numActiveNodes] = nodeIndex - chromo->numInputs;
 	chromo->numActiveNodes++;
 
+	/* set the nodes actual arity*/
+	chromo->nodes[nodeIndex - chromo->numInputs]->actArity = getChromosomeNodeArity(chromo, nodeIndex-chromo->numInputs);
+
 	/* recursively log all the nodes to which the current nodes connect as active */
-	for(i=0; i < getChromosomeNodeArity(chromo, nodeIndex-chromo->numInputs); i++){
+	for(i=0; i < chromo->nodes[nodeIndex - chromo->numInputs]->actArity; i++){
 		recursivelySetActiveNodes(chromo, chromo->nodes[nodeIndex - chromo->numInputs]->inputs[i]);
 	}
 }
@@ -3112,10 +3119,11 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc){
 	nodeDest->active = nodeSrc->active;
 
 	/* copy the node arity */
-	nodeDest->arity = nodeSrc->arity;
+	nodeDest->maxArity = nodeSrc->maxArity;
+	nodeDest->actArity = nodeSrc->actArity;
 
 	/* copy the nodes inputs and connection weights */
-	for(i=0; i<nodeSrc->arity; i++){
+	for(i=0; i<nodeSrc->maxArity; i++){
 		nodeDest->inputs[i] = nodeSrc->inputs[i];
 		nodeDest->weights[i] = nodeSrc->weights[i];
 	}
@@ -3190,7 +3198,7 @@ static struct node *initialiseNode(int numInputs, int numNodes, int arity, int n
 	n->output = 0;
 
 	/* set the arity of the node */
-	n->arity = arity;
+	n->maxArity = arity;
 
 	return n;
 }
