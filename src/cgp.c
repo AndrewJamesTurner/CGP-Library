@@ -1713,9 +1713,10 @@ DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome 
 		exit(0);
 	}
 
-	/* copy nodes */
+	/* copy nodes and which are active */
 	for(i=0; i<chromoSrc->numNodes; i++){
 		copyNode(chromoDest->nodes[i],  chromoSrc->nodes[i]);
+		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
 	}
 
 	/* copy fuctionset */
@@ -1728,11 +1729,6 @@ DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome 
 
 	/* copy the number of active node */
 	chromoDest->numActiveNodes = chromoSrc->numActiveNodes;
-
-	/* copy the active node matrix */
-	for(i=0; i<chromoSrc->numActiveNodes; i++){
-		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
-	}
 
 	/* copy the fitness */
 	chromoDest->fitness = chromoSrc->fitness;
@@ -2777,17 +2773,16 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 static void probabilisticMutationOnlyActive(struct parameters *params, struct chromosome *chromo){
 
 	int i,j;
+	int activeNode;
 
-	/* for every nodes in the chromosome */
-	for(i=0; i<params->numNodes; i++){
+	/* for every active node in the chromosome */
+	for(i=0; i<chromo->numActiveNodes; i++){
 
-		if(chromo->nodes[i]->active == 0){
-			continue;
-		}
+		activeNode = chromo->activeNodes[i];
 
 		/* mutate the function gene */
 		if(randDecimal() <= params->mutationRate){
-			chromo->nodes[i]->function = getRandomFunction(chromo->funcSet->numFunctions);
+			chromo->nodes[activeNode]->function = getRandomFunction(chromo->funcSet->numFunctions);
 		}
 
 		/* for every input to each chromosome */
@@ -2795,12 +2790,12 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 
 			/* mutate the node input */
 			if(randDecimal() <= params->mutationRate){
-				chromo->nodes[i]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, i, params->recurrentConnectionProbability);
+				chromo->nodes[activeNode]->inputs[j] = getRandomNodeInput(chromo->numInputs, chromo->numNodes, activeNode, params->recurrentConnectionProbability);
 			}
 
 			/* mutate the node connection weight */
 			if(randDecimal() <= params->mutationRate){
-				chromo->nodes[i]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
+				chromo->nodes[activeNode]->weights[j] = getRandomConnectionWeight(params->connectionWeightRange);
 			}
 		}
 	}
