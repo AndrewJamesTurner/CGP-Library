@@ -1137,7 +1137,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 		if(isnan(chromo->nodes[currentActiveNode]->output) != 0){
 			chromo->nodes[currentActiveNode]->output = 0;
 		}
-
+		
 		/* prevent double form going to inf and -inf */
 		else if(isinf(chromo->nodes[currentActiveNode]->output) != 0 ){
 
@@ -1726,13 +1726,13 @@ DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome 
 		chromoDest->outputNodes[i] = chromoSrc->outputNodes[i];
 	}
 
-	/* copy the active node matrix */
-	for(i=0; i<chromoSrc->numNodes; i++){
-		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
-	}
-
 	/* copy the number of active node */
 	chromoDest->numActiveNodes = chromoSrc->numActiveNodes;
+
+	/* copy the active node matrix */
+	for(i=0; i<chromoSrc->numActiveNodes; i++){
+		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
+	}
 
 	/* copy the fitness */
 	chromoDest->fitness = chromoSrc->fitness;
@@ -2728,7 +2728,7 @@ static void singleMutation(struct parameters *params, struct chromosome *chromo)
 
 
 /*
-	Conductions probabilistic mutation on the give chromosome. Each chromosome
+	Conductions probabilistic mutation on the given chromosome. Each chromosome
 	gene is changed to a random valid allele with a probability specified in
 	parameters.
 */
@@ -2770,7 +2770,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 }
 
 /*
-	Conductions probabilistic mutation on the active nodes in the give 
+	Conductions probabilistic mutation on the active nodes in the given 
 	chromosome. Each chromosome gene is changed to a random valid allele 
 	with a probability specified in parameters.
 */
@@ -2781,7 +2781,6 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 	/* for every nodes in the chromosome */
 	for(i=0; i<params->numNodes; i++){
 
-		/* skip inactive nodes */
 		if(chromo->nodes[i]->active == 0){
 			continue;
 		}
