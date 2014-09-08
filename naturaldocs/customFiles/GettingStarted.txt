@@ -108,7 +108,7 @@ int numOutputs = 1;
 int nodeArity = 2;
 (end)
 
-Later when CGP is applied towards the symbolic task the number of allowed generations before terminating the search will be needed to be specified. 
+Later when CGP is applied towards the symbolic regression task the number of allowed generations before terminating the search will be needed to be specified. 
 
 (begin code)
 int numGens = 10000; 
@@ -145,7 +145,7 @@ to the function set using <addNodeFunction>. For a complete list of
 possible node functions see <addNodeFunction>. To clear the functions
 currently stored in the function set use <clearFunctionSet>.
 
-The functions added in this tutorial are: addition, subtraction, multiplication, 
+The node functions used in this tutorial are: addition, subtraction, multiplication, 
 division and sine.
 
 (begin code)
@@ -156,7 +156,7 @@ The default target fitness used by the CGP-Library is '0'. This
 default target fitness can be altered using <setTargetFitness>.
 
 (begin code)
-setTargetFitness(params, 0.1);
+setTargetFitness(params,targetFitness);
 (end)
 
 The update frequency defined in <parameters> specifies the
@@ -223,7 +223,7 @@ returns an initialised <dataSet> structure containing the data in
 the file specified.
 
 Here we load a data set containing 101 evenly sampled points from y 
-= x^6 - 2x^4 + x^2 within the range x = [-5,5]. The data set is given in
+= x^6 - 2x^4 + x^2 within the range x = [-5,5]. The data set is given insymbolic
 the /dataSets/symbolic.data directory.
 
 (begin code)
