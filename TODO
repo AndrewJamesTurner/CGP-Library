@@ -6,6 +6,10 @@ Deal with testing sets
 	Add new condition to evolutionary loop
 	Specify testing set
 	Specify testing method
+
+Deal with early stopping
+	If progress < x
+	Overtraining criteria
 	
 New functions
 	flip-flop
