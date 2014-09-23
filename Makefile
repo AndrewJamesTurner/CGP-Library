@@ -66,6 +66,6 @@ python: src/cgp.c src/cgp.h
 	@$(CC) -c src/cgp.c bindings/cgp_wrap.c -I/usr/include/python2.7
 	@ld -shared cgp.o cgp_wrap.o -o bindings/_cgp.so
 	@rm cgp.o cgp_wrap.o 
-	@rm bindings/cgp_wrap.c
+	#@rm bindings/cgp_wrap.c
 clean:
 	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/* tmp.aux tmp.log tmp.pdf *.out
