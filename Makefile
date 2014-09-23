@@ -61,5 +61,11 @@ profile: examples/averageBehaviour.c src/cgp.c src/cgp.h
 	./averageBehaviour
 	gprof averageBehaviour | ./gprof2dot.py | dot -Tsvg -o profile.svg
 
+python: src/cgp.c src/cgp.h
+	@swig -python bindings/cgp.i
+	@$(CC) -c src/cgp.c bindings/cgp_wrap.c -I/usr/include/python2.7
+	@ld -shared cgp.o cgp_wrap.o -o bindings/_cgp.so
+	@rm cgp.o cgp_wrap.o 
+	
 clean:
 	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv /obj/* tmp.aux tmp.log tmp.pdf *.out
