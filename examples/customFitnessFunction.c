@@ -64,7 +64,7 @@ int main(void){
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 
-	setFitnessFunction(params, meanSquareError, "MSE");
+	setCustomFitnessFunction(params, meanSquareError, "MSE");
 
 	printParameters(params);
 

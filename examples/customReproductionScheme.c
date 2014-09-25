@@ -64,7 +64,7 @@ int main(void){
 
     setUpdateFrequency(params, updateFrequency); 
 	
-	setReproductionScheme(params, mutateEveryParent, "mutateEveryParent");
+	setCustomReproductionScheme(params, mutateEveryParent, "mutateEveryParent");
 	
 	setMu(params, mu);
 	setLambda(params, lambda);

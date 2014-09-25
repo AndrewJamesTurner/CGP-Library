@@ -67,7 +67,7 @@ int main(void){
 
 	setConnectionWeightRange(params, weightRange);
 
-	setFitnessFunction(params, sinWave, "sinWave");
+	setCustomFitnessFunction(params, sinWave, "sinWave");
 
 	addNodeFunction(params, "tanh,softsign");
 

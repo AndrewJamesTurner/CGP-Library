@@ -63,7 +63,7 @@ int main(void){
 	
 	setConnectionWeightRange(params, weightRange);
 
-	setFitnessFunction(params, sinWave, "sinWave");
+	setCustomFitnessFunction(params, sinWave, "sinWave");
 
 	addNodeFunction(params, "tanh,softsign");
 
@@ -120,7 +120,7 @@ setConnectionWeightRange(params, weightRange);
 Next we change the default fitness function to be our custom sinWave fitness function.
 
 (begin code)
-setFitnessFunction(params, sinWave, "sinWave");
+setCustomFitnessFunction(params, sinWave, "sinWave");
 (end)
 
 In previous tutorials the node functions used have been standard genetic programming functions, here however we shall be using neuron transfer functions. The neuron transfer functions selected are hyperbolic tangent and soft sign. Both hyperbolic tangent and soft sign functions produce outputs in the range [-1,1] which is suited to our sinWave fitness function.

@@ -626,7 +626,7 @@ DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weigh
 	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL
 	then the default supervisedLearning fitness function is used.
 */
-DLL_EXPORT void setFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
+DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName){
 
 	if(fitnessFunction == NULL){
 		params->fitnessFunction = supervisedLearning;
@@ -644,7 +644,7 @@ DLL_EXPORT void setFitnessFunction(struct parameters *params, double (*fitnessFu
 	sets the selection scheme used to select the parents from the candidate chromosomes. If the selectionScheme is NULL
 	then the default selectFittest selection scheme is used.
 */
-DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName){
+DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName){
 
 	if(selectionScheme == NULL){
 		params->selectionScheme = selectFittest;
@@ -662,7 +662,7 @@ DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionSc
 	then the default mutateRandomParent selection scheme is used.
 */
 
-DLL_EXPORT void setReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName){
+DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName){
 
 	if(reproductionScheme == NULL){
 		params->reproductionScheme = mutateRandomParent;
@@ -1324,14 +1324,7 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 	int output;
 	int i;
 	FILE *fp;
-	
-	
-	/* later need to deal with printing recursive programs */
-	
-	
-	
-	/* need to deal with multiple outputs... use separate equation for each... */
-	
+			
 	fp = fopen(fileName, "w");
 	
 	if(fp == NULL){
@@ -1341,8 +1334,7 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 	/* document header */
 	fprintf(fp, "\\documentclass{article}\n");
 	fprintf(fp, "\\begin{document}\n");
-	
-	
+		
 	for(output=0; output<chromo->numOutputs; output++){
 	
 		fprintf(fp, "\\begin{equation}\n");
@@ -1394,7 +1386,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
-		for(i=1; i<chromo->arity; i++){
+		for(i=1; i<getChromosomeNodeArity(chromo, index - chromo->numInputs); i++){
 						
 			fprintf(fp, " + ");
 			
@@ -1412,7 +1404,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
-		for(i=1; i<chromo->arity; i++){
+		for(i=1; i<getChromosomeNodeArity(chromo, index - chromo->numInputs); i++){
 			
 			fprintf(fp, " - ");
 			
@@ -1429,7 +1421,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		
 		saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
 		
-		for(i=1; i<chromo->arity; i++){
+		for(i=1; i<getChromosomeNodeArity(chromo, index - chromo->numInputs); i++){
 			
 			fprintf(fp, " \\times ");
 			
@@ -1447,14 +1439,14 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		}
 		else{
 			
-			for(i=0; i<chromo->arity; i++){
+			for(i=0; i<getChromosomeNodeArity(chromo, index - chromo->numInputs); i++){
 				
-				if(i+1 < chromo->arity){
+				if(i+1 < getChromosomeNodeArity(chromo, index - chromo->numInputs)){
 					fprintf(fp, "\\frac{");
 					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 					fprintf(fp, "}{");
 				}
-				else if(i+1 == chromo->arity && chromo->arity>2){
+				else if(i+1 == getChromosomeNodeArity(chromo, index - chromo->numInputs) && getChromosomeNodeArity(chromo, index - chromo->numInputs)>2){
 					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 					fprintf(fp, "}}");
 				}
@@ -1466,7 +1458,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		}
 	}
 	
-	/* abs*/
+	/* abs */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "abs", FUNCTIONNAMELENGTH) == 0 ){
 		
 		fprintf(fp, " \\left|");
@@ -1477,7 +1469,7 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		
 	}
 	
-	/* sqrt*/
+	/* sqrt */
 	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "sqrt", FUNCTIONNAMELENGTH) == 0 ){
 		
 		fprintf(fp, " \\sqrt{");
@@ -1559,12 +1551,12 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 	else{
 	
 		fprintf(fp, "%s(", chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function]);
-	
-		for(i=0; i<chromo->arity; i++){
+		
+		for(i=0; i<getChromosomeNodeArity(chromo, index - chromo->numInputs); i++){
 		
 			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 		
-			if(i < chromo->arity-1)
+			if(i < getChromosomeNodeArity(chromo, index - chromo->numInputs)-1)
 				fprintf(fp, ", ");
 		}
 	

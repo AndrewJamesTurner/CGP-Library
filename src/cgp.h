@@ -47,6 +47,15 @@
 
 
 /*
+	Function Aliases
+		old versions are depreciated
+*/
+#define setFitnessFunction setCustomFitnessFunction
+#define setSelectionScheme setCustomSelectionScheme
+#define setReproductionScheme setCustomReproductionScheme
+
+
+/*
 	Title: Structures
 
 	Description of all the structures used by CGP-Library.
@@ -107,15 +116,15 @@
 
 			- The fitness function stores the fitness function used when
 			assigning a fitness to the chromosomes. See
-			<setFitnessFunction>.
+			<setCustomFitnessFunction>.
 
 			- The selection scheme stores the selection scheme used when
 			selecting the parents from the candidate chromosomes. See
-			<setSelectionScheme>.
+			<setCustomSelectionScheme>.
 
 			- The reproduction scheme stores how the children
 			chromosomes are created from the parents. see
-			<setReproductionScheme>.
+			<setCustomReproductionScheme>.
 
 		See Also:
 			<initialiseParameters>, <freeParameters>, <printParameters>
@@ -552,11 +561,11 @@
 	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange);
 
 	/*
-		Function: setFitnessFunction
+		Function: setCustomFitnessFunction
 
 		Set custom fitness function.
 		
-		By default the CGP-Library used a generic supervised learning fitness function where the fitness assigned to each chromosome is the sum of the absolute differences between the actual and target outputs defined in the given <dataSet>. <setFitnessFunction> is used to redefine the fitness function to be one of the users design.
+		By default the CGP-Library used a generic supervised learning fitness function where the fitness assigned to each chromosome is the sum of the absolute differences between the actual and target outputs defined in the given <dataSet>. <setCustomFitnessFunction> is used to redefine the fitness function to be one of the users design.
 
 		All custom fitness function prototype must take the following form. Where params is a <parameters> structure, chromo is the <chromosome> to be assigned a fitness and data is a <dataSet> which may be used by the custom fitness function.
 
@@ -614,15 +623,15 @@
 		
 
 	*/
-	DLL_EXPORT void setFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
+	DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
 
 
 	/*
-		Function: setSelectionScheme
+		Function: setCustomSelectionScheme
 		
 			Sets custom selection scheme.
 		
-			By default the selection scheme used by CGP-Library is select fittest, where the fittest members of the candidate chromosomes are always selected as the parents. This type of selection scheme is commonly used by CGP. <setSelectionScheme> is used to redefine the selection scheme to be one of the users design.
+			By default the selection scheme used by CGP-Library is select fittest, where the fittest members of the candidate chromosomes are always selected as the parents. This type of selection scheme is commonly used by CGP. <setCustomSelectionScheme> is used to redefine the selection scheme to be one of the users design.
 		
 			The custom selection scheme prototype must take the following form. Where params is a <parameters> structure, parents is an array of <chromosomes> used to store the selected parents, candidateChromos is an array of <chromosomes> containing the pool of <chromosomes> to select the parent from, numParents is the number of parents to be selected and numCandidateChromos is the number of candidate <chromosomes>.
 
@@ -672,24 +681,24 @@
 			Setting the new custom selection scheme as the selection scheme to be used
 			
 			(begin code)
-			setSelectionScheme(params, tournament, "tournament");
+			setCustomSelectionScheme(params, tournament, "tournament");
 			(end)
 			
 		See Also:
-			<setFitnessFunction>	
+			<setCustomFitnessFunction>	
 	*/
-	DLL_EXPORT void setSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
+	DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
 
 
 	/*
-		Function: setReproductionScheme
+		Function: setCustomReproductionScheme
 		
 			Sets custom reproduction scheme.
 			
 			By default the reproduction scheme used by CGP-Library is to create 
 			each child as a mutated version of a randomly selected parent. This 
 			type of reproduction scheme is commonly used by CGP. 
-			<setReproductionScheme> is used to redefine the reproduction scheme 
+			<setCustomReproductionScheme> is used to redefine the reproduction scheme 
 			to be one of the users design.
 			
 			The custom reproduction scheme prototype must take the following 
@@ -719,14 +728,14 @@
 			Setting the new custom reproduction scheme as the reproduction scheme to be used
 			
 			(begin code)
-			setReproductionScheme(params, ..., "...");
+			setCustomReproductionScheme(params, ..., "...");
 			(end)
 			
 		See Also:
-			<setFitnessFunction>, <setSelectionScheme>				
+			<setCustomFitnessFunction>, <setCustomSelectionScheme>				
 		
 	*/
-	DLL_EXPORT void setReproductionScheme(struct parameters *params, void
+	DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void
 	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName);
 
 

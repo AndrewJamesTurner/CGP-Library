@@ -64,7 +64,7 @@ int main(void){
 
     setUpdateFrequency(params, updateFrequency); 
 	
-	setSelectionScheme(params, tournament, "tournament");
+	setCustomSelectionScheme(params, tournament, "tournament");
 	
 	trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
 	
