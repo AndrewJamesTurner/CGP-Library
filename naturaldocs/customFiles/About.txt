@@ -4,9 +4,10 @@ CGP-Library is a cross platform Cartesian Genetic Programming library designed t
 
 Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. This documentation also includes a short introduction to CGP in <Cartesian Genetic Programming>.
 
-Intended Use:
+Title: Intended Use
 
 CGP-Library was designed with three use cases in mind
+
 
 1) Teaching and learning about CGP
 
@@ -16,7 +17,7 @@ CGP-Library was designed with three use cases in mind
 
 As a result the basic use of CGP-Library is very simple (see <Getting Started>) but is also highly customisable and extendible.
 
-Tutorials:
+Title: Tutorials
 
 A number of tutorials are provided to introduce users to the CGP-Library and many of its features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials. 
 
@@ -24,7 +25,7 @@ For those familiar with the open source cross platform IDE Code::Blocks (<http:/
 
 
 
-Author:
+Title: Author
 
 Andrew James Turner, Phd student at The University of York, 2014.
 
@@ -32,24 +33,24 @@ Homepage: <http://andrewjamesturner.co.uk/>
 
 Email: andrew.turner@york.ac.uk
 
-Citations:
+Title: Citations
 
 If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal letter. Emails informing of any publications which make reference to the CGP-Library would also be warmly received. 
 
 
 * A. J. Turner and J. F. Miller. Introducing A Cross Platform Open Source Cartesian Genetic Programming Library. The Journal of Genetic Programming and Evolvable Machines, to appear.
 
-Contact:
+Title: Contact
 
 Bugs, clarification and feature requests can be sent to author, see above.
 
-Open Source:
+Title: Open Source
 
 CGP-Library is an open source project released under the GNU Lesser General Public License. See <Licenses> for more details. The CGP-Library project is hosted with github at <https://github.com/AndrewJamesTurner/CGP-Library> so feel free to fork the project and get the latest (possibly unstable) version of the code.
 
 (see github_sml.jpg)
 
-References:
+Title: References
 
 Much of the CGP-Library is based on published peer reviewed academic research. Follows are the relevant references for various aspects of the library.
 
