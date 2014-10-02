@@ -2,7 +2,9 @@ Title: Language Bindings
 
 This tutorial explains how the CGP-Library can be used by languages other than C and C++. 
 
-The tutorial makes use of SWIG <http://www.swig.org/> utility to create the wrappers for other languages. Using SWIG it is possible to access the CGP-Library from: Javascript, Perl, PHP, Python, Tcl, Ruby, C#, Common Lisp (CLISP, Allegro CL, CFFI, UFFI), D, Go language, Java including Android, Lua, Modula-3, OCAML, Octave and R, Guile, MzScheme/Racket and Chicken.
+The tutorial makes use of SWIG <http://www.swig.org/> utility to create the wrappers for other languages. Using SWIG it is possible to access the CGP-Library from: Python, Java, C#, D, Go, Lisp, Octave, R, Javascript, Perl, PHP, Tcl, Ruby, Lua, Modula-3 and OCAML. 
+
+
 
 
 
