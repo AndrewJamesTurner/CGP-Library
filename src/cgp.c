@@ -1266,7 +1266,7 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 		for(j=0; j<getChromosomeNodeArity(chromo, i); j++){
 			
 			if(weights == 1){
-				snprintf(weight, 20, "%f (%d)", chromo->nodes[i]->weights[j], j);
+				snprintf(weight, 20, "%.2f", chromo->nodes[i]->weights[j]);
 			}
 			else{
 				snprintf(weight, 20, " (%d)", j);
@@ -1302,8 +1302,7 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *
 	}
 	fprintf(fp, " }\n");
 	
-	
-	
+		
 	/* last line of dot file */
 	fprintf(fp, "}");
 	
