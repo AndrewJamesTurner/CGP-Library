@@ -49,7 +49,7 @@ int main(void){
 
 	addNodeFunction(params, "add,sub");
 
-	addNodeFunctionCustom(params, hypotenuse, "hypt", -1);
+	addCustomNodeFunction(params, hypotenuse, "hypt", -1);
 
 	printParameters(params);
 

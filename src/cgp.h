@@ -53,6 +53,7 @@
 #define setFitnessFunction setCustomFitnessFunction
 #define setSelectionScheme setCustomSelectionScheme
 #define setReproductionScheme setCustomReproductionScheme
+#define addNodeFunctionCustom addCustomNodeFunction
 
 
 /*
@@ -319,14 +320,14 @@
 			(end)
 
 		See Also:
-			<clearFunctionSet>, <addNodeFunctionCustom>
+			<clearFunctionSet>, <addCustomNodeFunction>
 	*/
 	DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames);
 
 
 
 	/*
-		Function: addNodeFunctionCustom
+		Function: addCustomNodeFunction
 
 		Adds custom node function to the set of functions stored by a parameters structure. See <addNodeFunction>.
 
@@ -365,7 +366,7 @@
 			Adding the new custom node function to the function set
 
 			(begin code)
-			addNodeFunctionCustom(params, add, "add", -1);
+			addCustomNodeFunction(params, add, "add", -1);
 			(end)
 
 		Note:
@@ -375,7 +376,7 @@
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
 	*/
-	DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs);
+	DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs);
 
 
 	/*
@@ -387,7 +388,7 @@
 			params - pointer to an initialised parameters structure
 
 		See Also:
-			<addNodeFunction>, <addNodeFunctionCustom>
+			<addNodeFunction>, <addCustomNodeFunction>
 	*/
 	DLL_EXPORT void clearFunctionSet(struct parameters *params);
 

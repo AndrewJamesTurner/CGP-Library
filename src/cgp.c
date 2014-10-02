@@ -338,7 +338,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames){
 	Adds given node function to given function set with given name.
 	Disallows exceeding the function set size.
 */
-DLL_EXPORT void addNodeFunctionCustom(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs){
+DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs){
 
 	if(params->funcSet->numFunctions >= FUNCTIONSETSIZE){
 		printf("Warning: functions set has reached maximum capacity (%d). Function '%s' not added.\n", FUNCTIONSETSIZE, functionName);
@@ -369,95 +369,93 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	/* Symbolic functions */
 	
 	if(strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, add, "add", -1);
+		addCustomNodeFunction(params, add, "add", -1);
 	}
 	else if(strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sub, "sub", -1);
+		addCustomNodeFunction(params, sub, "sub", -1);
 	}
 	else if(strncmp(functionName, "mul", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, mul, "mul", -1);
+		addCustomNodeFunction(params, mul, "mul", -1);
 	}
 	else if(strncmp(functionName, "div", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, divide, "div", -1);
+		addCustomNodeFunction(params, divide, "div", -1);
 	}
 	else if(strncmp(functionName, "abs", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, absolute, "abs", 1);
+		addCustomNodeFunction(params, absolute, "abs", 1);
 	}
 	else if(strncmp(functionName, "sqrt", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, squareRoot, "sqrt", 1);
+		addCustomNodeFunction(params, squareRoot, "sqrt", 1);
 	}
 	else if(strncmp(functionName, "sq", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, square, "sq", 1);
+		addCustomNodeFunction(params, square, "sq", 1);
 	}
 	else if(strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, cube, "cube", 1);
+		addCustomNodeFunction(params, cube, "cube", 1);
 	}
 	else if(strncmp(functionName, "pow", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, power, "pow", 2);
+		addCustomNodeFunction(params, power, "pow", 2);
 	}	
 	else if(strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, exponential, "exp", 1);
+		addCustomNodeFunction(params, exponential, "exp", 1);
 	}
 	else if(strncmp(functionName, "sin", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sine, "sin", 1);
+		addCustomNodeFunction(params, sine, "sin", 1);
 	}
 	else if(strncmp(functionName, "cos", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, cosine, "cos", 1);
+		addCustomNodeFunction(params, cosine, "cos", 1);
 	}
 	else if(strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, tangent, "tan", 1);
+		addCustomNodeFunction(params, tangent, "tan", 1);
 	}
 
 	/* Boolean logic gates */
 
 	else if(strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, and, "and", -1);
+		addCustomNodeFunction(params, and, "and", -1);
 	}
 	else if(strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, nand, "nand", -1);
+		addCustomNodeFunction(params, nand, "nand", -1);
 	}
 	else if(strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, or, "or", -1);
+		addCustomNodeFunction(params, or, "or", -1);
 	}
 	else if(strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, nor, "nor", -1);
+		addCustomNodeFunction(params, nor, "nor", -1);
 	}
 	else if(strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, xor, "xor", -1);
+		addCustomNodeFunction(params, xor, "xor", -1);
 	}
 	else if(strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, xnor, "xnor", -1);
+		addCustomNodeFunction(params, xnor, "xnor", -1);
 	}
 	else if(strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, not, "not", -1);
+		addCustomNodeFunction(params, not, "not", -1);
 	}
 		
 	/* Neuron functions */
 
 	else if(strncmp(functionName, "sig", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, sigmoid, "sig", -1);
+		addCustomNodeFunction(params, sigmoid, "sig", -1);
 	}
 	else if(strncmp(functionName, "gauss", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, gaussian, "gauss", -1);
+		addCustomNodeFunction(params, gaussian, "gauss", -1);
 	}
 	else if(strncmp(functionName, "step", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, step, "step", -1);
+		addCustomNodeFunction(params, step, "step", -1);
 	}
 	else if(strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, softsign, "soft", -1);
+		addCustomNodeFunction(params, softsign, "soft", -1);
 	}
 	else if(strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, hyperbolicTangent, "tanh", -1);
+		addCustomNodeFunction(params, hyperbolicTangent, "tanh", -1);
 	}
 		
 	/* other */
 	
 	else if(strncmp(functionName, "wire", FUNCTIONNAMELENGTH) == 0){
-		addNodeFunctionCustom(params, wire, "wire", 1);
+		addCustomNodeFunction(params, wire, "wire", 1);
 	}	
-		
-		
-		
+			
 	else{
 		printf("Warning: function '%s' is not known and was not added.\n", functionName);
 		successfullyAdded = 0;

@@ -44,7 +44,7 @@ int main(void){
 	
 	addNodeFunction(params, "add,sub");
 
-	addNodeFunctionCustom(params, hypotenuse, "hypt", -1);
+	addCustomNodeFunction(params, hypotenuse, "hypt", -1);
 	
 	printParameters(params);
 	
@@ -103,10 +103,10 @@ As usual this parameters structure can contain a function set of pre-defined nod
 addNodeFunction(params, "add,sub");
 (end)
 
-However the newly defined hypotenuse function can also be added using <addNodeFunctionCustom>. Where params stores all of the node functions in the function set, hypotenuse is the node function to be added and "hypt" is a given shorthand name for the hypotenuse node function. The final parameter limits the maximum number of inputs to the function. For instance an absolute function would only take one input and so the number of inputs would be limited to '1'. In cases where a function can take any number of inputs the value of '-1' is used.
+However the newly defined hypotenuse function can also be added using <addCustomNodeFunction>. Where params stores all of the node functions in the function set, hypotenuse is the node function to be added and "hypt" is a given shorthand name for the hypotenuse node function. The final parameter limits the maximum number of inputs to the function. For instance an absolute function would only take one input and so the number of inputs would be limited to '1'. In cases where a function can take any number of inputs the value of '-1' is used.
 
 (begin code)
-addNodeFunctionCustom(params, hypotenuse, "hypt", -1);
+addCustomNodeFunction(params, hypotenuse, "hypt", -1);
 (end)
 
 In order to see that the hypotenuse node function has been added the entire function set can be displayed using <printParameters>.
