@@ -2,6 +2,20 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
+Version 2.1:
+	Comments:
+		* *PERFORMANCE IMPROVEMENTS* 
+		* Reduced the precession of connection weight values displayed using saveChromosomeDot() to two decimal places. Improves readability. 
+		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
+		* Replaced setSelectionScheme() with setCustomSelectionScheme(). setSelectionScheme() is depreciated.
+		* Replaced setReproductionScheme() with setCustomReproductionScheme(). setReproductionScheme() is depreciated.
+		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
+		
+	
+	Date: XX/XX/XX
+
+	Download: XXX
+
 Version 2.0:
 	Comments:
 			* *API CHANGE* all float variables have been replaced by double for the extra position.
@@ -16,7 +30,7 @@ Version 2.0:
 
 Version 1.1: 
 	Comments:
-		* *Fixed Significant bug* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
+		* *FIXED SIGNIFICANT BUG* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
 		* Added power function to function set.
 		* Made the.dot graphviz contain more detail; including node number and connection number.
 
