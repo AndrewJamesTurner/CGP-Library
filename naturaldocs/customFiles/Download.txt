@@ -9,7 +9,7 @@ Version 2.1:
 		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
 		* Replaced setSelectionScheme() with setCustomSelectionScheme(). setSelectionScheme() is depreciated.
 		* Replaced setReproductionScheme() with setCustomReproductionScheme(). setReproductionScheme() is depreciated.
-		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
+		* Replaced addNodeFunctionCustom() with addCustomNodeFunction(). addNodeFunctionCustom() is depreciated.
 		
 	
 	Date: XX/XX/XX
