@@ -4,8 +4,29 @@ This tutorial explains how the CGP-Library can be used by languages other than C
 
 The tutorial makes use of SWIG <http://www.swig.org/> utility to create the wrappers for other languages. Using SWIG it is possible to access the CGP-Library from: Python, Java, C#, D, Go, Lisp, Octave, R, Javascript, Perl, PHP, Tcl, Ruby, Lua, Modula-3 and OCAML. 
 
+For simplicity of the tutorial here SWIG shall be used to make language bindings for Python2.7.
 
+Title: Software Packages
 
+The tutorial requires a number of software packages: SWIG, Python2.7 and the Code::Blocks IDE. 
+
+SWIG can be installed under Ubuntu by running "sudo apt-get install swig" in the terminal. Under windows go to <http://www.swig.org/>, click Downloads -> Download area and download the latest stable version for windows. Extract the zip folder to "C:\". Now we need to add the SWIG.exe to system PATH. Right click on my computer and select properties. Press advanced system settings. Select the advanced tab and press environment variables. In the lower section find the PATH variables and press edit. add "c:\swigwin-3.0.2;" to the end of the PATH variables. Note ";" used to delimit variables. Also note that "3.0.2" might need to be altered to the version downloaded. press "OK".
+
+Python2.7 should already be installed under Ubuntu but here the development version is needed for the Python header files. These are installed by running "sudo apt-get install python-dev" in the terminal. Under Windows go to <https://www.python.org/>, click downloads, click Python2.7.X and download the Windows x86 MSI Installer. Install to the default location of "C:\".
+
+Code::Blocks can be installed under Ubuntu by running "sudo apt-get install codeblocks" in the terminal. Under Windows go to <http://www.codeblocks.org/>, click downloads, click Download the binary release, click Windows 2000/XP/Vista/7//8 and download codeblocks-XX.XXmingw-setup.exe. Install to default location. 
+
+As a side note. I have not used windows for a few years now. I had forgotten how much easier things can be under a Linux/GNU system :)
+
+Title: Creating Python Bindings
+
+Here the SWIG utility shall be used to create the Python bindings for CGP-Library.
+
+First navigate the terminal / command prompt to CGP-Library/bindings. Then run "swig -python cgp.i". This will create "cgp.py" and "cgp_wrap.c". The "cgp.py" is the python module to be imported and "cgp_wrap.c" will be used to create the compiled CGP-Library for the python binding.
+
+Second cgp.c and cgp_wrap.c must be compiled into a dynamic library. This process has been simplified by using Code::Blocks. Open the CGP-Library.cbp project file and select the pythonBindings build target. Compile the pythonBindings build target. This will create _cgp.so / _cgp.dll.
+
+Title: Using the Python Bindings
 
 
 And that's it...
