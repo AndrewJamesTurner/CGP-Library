@@ -136,10 +136,25 @@
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
+			<Target title="pythonBindings">
+				<Option output="bindings/_cgp" prefix_auto="0" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add directory="/usr/include/python2.7" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="bindings/cgp_wrap.c">
+			<Option compilerVar="CC" />
+			<Option target="pythonBindings" />
+		</Unit>
 		<Unit filename="examples/averageBehaviour.c">
 			<Option compilerVar="CC" />
 			<Option target="averageBehaviour" />
