@@ -1,9 +1,6 @@
 Performance
 	Separate mu and lambda strategies
 
-SWIG on windows
-		
-
 Deal with testing sets
 	Add new condition to evolutionary loop
 	Specify testing set
