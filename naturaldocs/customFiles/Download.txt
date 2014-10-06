@@ -4,6 +4,7 @@ The current and previous versions of CGP-Library will be available here for down
 
 Version 2.1:
 	Comments:
+		* *Additional Language Bindings* including Python.
 		* *PERFORMANCE IMPROVEMENTS* 
 		* Reduced the precession of connection weight values displayed using saveChromosomeDot() to two decimal places. Improves readability. 
 		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
