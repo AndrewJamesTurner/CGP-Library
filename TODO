@@ -1,3 +1,9 @@
+Separate mutation rate for:
+	connection genes
+	function genes
+	output genes
+	connection weight genes
+
 Deal with testing sets
 	Add new condition to evolutionary loop
 	Specify testing set
