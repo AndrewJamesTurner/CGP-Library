@@ -174,6 +174,10 @@ static double exponential(const int numInputs, const double *inputs, const doubl
 static double sine(const int numInputs, const double *inputs, const double *connectionWeights);
 static double cosine(const int numInputs, const double *inputs, const double *connectionWeights);
 static double tangent(const int numInputs, const double *inputs, const double *connectionWeights);
+static double randFloat(const int numInputs, const double *inputs, const double *connectionWeights);
+static double constOne(const int numInputs, const double *inputs, const double *connectionWeights);
+static double constZero(const int numInputs, const double *inputs, const double *connectionWeights);
+static double constPI(const int numInputs, const double *inputs, const double *connectionWeights);
 static double nand(const int numInputs, const double *inputs, const double *connectionWeights);
 static double or(const int numInputs, const double *inputs, const double *connectionWeights);
 static double nor(const int numInputs, const double *inputs, const double *connectionWeights);
@@ -407,7 +411,20 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	else if(strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, tangent, "tan", 1);
 	}
-
+	else if(strncmp(functionName, "rand", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, randFloat, "rand", 0);
+	}
+	else if(strncmp(functionName, "1", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, constOne, "1", 0);
+	}
+	else if(strncmp(functionName, "0", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, constZero, "0", 0);
+	}
+	else if(strncmp(functionName, "pi", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, constPI, "pi", 0);
+	}
+	
+	
 	/* Boolean logic gates */
 
 	else if(strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0){
@@ -1542,6 +1559,30 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 		
 		fprintf(fp, " )");
 		
+	}
+	
+	/* rand */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "rand", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " rand()");		
+	}
+	
+	/* pi */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "pi", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, "\\pi");		
+	}
+	
+	/* 0 */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "0", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " 0");		
+	}
+	
+	/* 1 */
+	else if(strncmp(chromo->funcSet->functionNames[chromo->nodes[index - chromo->numInputs]->function], "1", FUNCTIONNAMELENGTH) == 0 ){
+		
+		fprintf(fp, " 1");		
 	}
 	
 	/* other */
@@ -3398,6 +3439,42 @@ static double tangent(const int numInputs, const double *inputs, const double *c
 	return tan(inputs[0]);
 }
 
+
+/*
+	Node function one.  Always returns 1
+*/
+static double constOne(const int numInputs, const double *inputs, const double *connectionWeights){
+	return 1;
+}
+
+/*
+	Node function one.  Always returns 0
+*/
+static double constZero(const int numInputs, const double *inputs, const double *connectionWeights){
+	return 0;
+}
+
+/*
+	Node function one.  Always returns PI
+*/
+static double constPI(const int numInputs, const double *inputs, const double *connectionWeights){
+	return M_PI;
+}
+
+
+/*
+	Node function rand.  Returns a random number between minus one and positive one
+*/
+static double randFloat(const int numInputs, const double *inputs, const double *connectionWeights){
+	
+	double random;
+	
+	random = (double)rand() / (double)RAND_MAX;
+	
+	random = (random*2) - 1;
+	
+	return random;
+}
 
 /*
 	Node function and. logical AND, returns '1' if all inputs are '1'

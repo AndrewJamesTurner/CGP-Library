@@ -307,8 +307,12 @@
 			- softsign	-	the softsign of the weighted sum of inputs. Output range [-1,1]
 			- tanh		-	the hyperbolic tangent of the weighted sum of inputs. Output range [-1,1]
 
+
 			Other
-			
+			- rand		- 	produces a different random number in the range [-1,1] each time it is called
+			- pi		-	produces the constant pi
+			- 1			- 	produces the constant one
+			- 0			- 	produces the constant zero
 			- wire		-	acts as a simple wire mapping the input to the output
 
 
