@@ -6,7 +6,7 @@ Version 2.1:
 	Comments:
 		* *Additional Language Bindings* including Python.
 		* *PERFORMANCE IMPROVEMENTS* 
-		* Added rand() node function
+		* Added rand node function
 		* Added pi node function
 		* Added 1 node function
 		* Added 0 node function
