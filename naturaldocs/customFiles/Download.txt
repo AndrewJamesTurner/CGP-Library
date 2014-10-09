@@ -15,9 +15,9 @@ Version 2.1:
 		* Replaced addNodeFunctionCustom() with addCustomNodeFunction(). addNodeFunctionCustom() is depreciated.
 		
 	
-	Date: XX/XX/XX
+	Date: 09/10/14
 
-	Download: XXX
+	Download: <http://cgplibrary.co.uk/CGP-Library-V2.1.zip>
 
 Version 2.0:
 	Comments:
