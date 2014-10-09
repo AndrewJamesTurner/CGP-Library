@@ -2,11 +2,11 @@ Title: Creating Data Sets
 
 This tutorial demonstrates how to create the files used by <initialiseDataSetFromFile> to initialise <dataSet> structures.
 
-The <dataSet> structures are used to pass training data into the CGP-Library when using the default supervised learning fitness function. The <dataSet> structures can also be used by custom fitness functions as demonstrated in <Custom Fitness Function>.
+The <dataSet> structures are used to pass training data into the CGP-Library when using the default supervised learning fitness function. The <dataSet> structures can also be used by custom fitness functions as demonstrated in the <Custom Fitness Function> tutorial.
 
 Title: The Program 
 
-A simple program which demonstarates how to create custom dataSet files by producing the symbolic regression dataSet file used in the <Getting Started> tutorial.
+A simple program which demonstrates how to create custom dataSet files by producing the symbolic regression dataSet file used in the <Getting Started> tutorial.
 
 The program below is provided in the CGP-Library download within /examples/createDataSet.c and is included in the code:blocks project.
 
@@ -71,8 +71,8 @@ First standard header files are used along with cgp.h.
 A number of #defines are used to keep the main function neat (no 
 memory management). The NUMINPUTS and NUMOUTPUTS describe how many 
 inputs and outputs each sample in the <dataSet> will have. The 
-NUMSAMPLES give the number of samples to be in the created <dataSet>. 
-The INPUTRANGE specifies the range of values the input values will take 
+NUMSAMPLES give the total number of samples in the created <dataSet>. 
+The INPUTRANGE specifies the range of the values the inputs will take 
 centred around zero (+/- 5).
 
 (begin code)
@@ -92,9 +92,9 @@ double symbolicEq1(double x){
 }
 (end)
 
-Within the main function a few variables are used including a <dataSet> structure. This <dataSet> structure will be populated with values before being save to a file.
+Within the main function a few variables are used including a <dataSet> structure. This <dataSet> structure will be populated with input-output pairs (samples) before being save to a file.
 
-The inputs and outputs arrays are used to store the input output pairs to be stored in the <dataSet> structure with inputTemp and outputTemp used to store intermediate values.
+The arrays "inputs" and "outputs" are used to store the input output pairs to be stored in the <dataSet> structure with inputTemp and outputTemp used to store intermediate values.
 
 (begin code)
 struct dataSet *data = NULL;
@@ -106,7 +106,7 @@ double inputTemp;
 double outputTemp;
 (end)
 
-The following loop calculates 101 input values over the range +/- 5. The corresponding output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the inputs and outputs array. Note it is important that the first array dimension indexes the sample and the second the respective input or output.
+The following for loop calculates 101 input output pairs evenly sampled over the range +/- 5. The output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the "inputs" and "outputs" arrays. Note it is important that the first dimension of the two arrays indexes the sample and the second dimension the respective input or output.
 
 (begin code)
 for(i=0; i<NUMSAMPLES; i++){
@@ -119,7 +119,7 @@ for(i=0; i<NUMSAMPLES; i++){
 }
 (end)
 
-Using these arrays containing each smaples input(s) and output(s) we can initialise a <dataSet> using <initialiseDataSetFromArrays>. Where <initialiseDataSetFromArrays> takes the number of inputs, outputs and samples along with a pointer to the first element in the inputs and outputs arrays. Note again the structure of the arrays, they must be in this form. Once the <dataSet> has been initialised it can be printed to the terminal for inspection using <printDataSet>.
+Using the arrays which contain containing each samples input(s) and output(s) we can initialise a <dataSet> using <initialiseDataSetFromArrays>. Where <initialiseDataSetFromArrays> takes the number of inputs, outputs and samples along with a pointer to the first element in the "inputs" and "outputs" arrays. Note again the structure of the arrays, they must be in this form. Once the <dataSet> has been initialised it can be printed to the terminal for inspection using <printDataSet>.
 
 (begin code)
 data = initialiseDataSetFromArrays(NUMINPUTS, NUMOUTPUTS, NUMSAMPLES, inputs[0], outputs[0]);
