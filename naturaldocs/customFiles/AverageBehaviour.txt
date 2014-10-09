@@ -123,7 +123,7 @@ In cases where the results need to be saved to be inspected later the <saveResul
 saveResults(rels, "results.csv");
 (end)
 
-Finally all of the inilised strutures should be free'd including the <results> using <freeResults> and the <chromosome> returned from <getChromosome> using <freeChromosome>.
+Finally all of the initialised structures should be free'd including the <results> using <freeResults> and the <chromosome> returned from <getChromosome> using <freeChromosome>.
 
 (begin code)
 freeDataSet(trainingData);
