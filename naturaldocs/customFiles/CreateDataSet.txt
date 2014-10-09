@@ -72,7 +72,7 @@ A number of #defines are used to keep the main function neat (no
 memory management). The NUMINPUTS and NUMOUTPUTS describe how many 
 inputs and outputs each sample in the <dataSet> will have. The 
 NUMSAMPLES give the number of samples to be in the created <dataSet>. 
-The INPUTRANGE specified the range of values the input values will take 
+The INPUTRANGE specifies the range of values the input values will take 
 centred around zero (+/- 5).
 
 (begin code)
@@ -106,7 +106,7 @@ double inputTemp;
 double outputTemp;
 (end)
 
-The following loop calculates 101 input values over the range +/- 5. The corresponding output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the inputs and outputs array. Note is is important that the first array dimension indexes the sample and the second the respective input or output.
+The following loop calculates 101 input values over the range +/- 5. The corresponding output value for each input is calculated using the previously defined function. Each sample's input and output value is then stored in the inputs and outputs array. Note it is important that the first array dimension indexes the sample and the second the respective input or output.
 
 (begin code)
 for(i=0; i<NUMSAMPLES; i++){
