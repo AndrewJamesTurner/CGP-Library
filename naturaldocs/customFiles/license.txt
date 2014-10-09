@@ -1,6 +1,6 @@
 Title: Licenses 
 
-CGP-Library is an open source project intended to be useful for many applications. The GNU Lesser General Public License is used so CGP-Library can be used in commercial, as well as non-commercial applications, provided the library is used unchanged. However the GNU Lesser General Public License stipulates that any commercial application which uses an altered version of the CGP-Library must also be released as open source under the terms of the licence. 
+CGP-Library is an open source project intended to be useful for many applications. The GNU Lesser General Public License is used so as the CGP-Library can be used in commercial, as well as non-commercial applications, provided the library is used unchanged. However the GNU Lesser General Public License stipulates that any commercial application which uses an altered version of the CGP-Library must also be released as open source under the terms of the licence. 
 
 Title: CGP-Library
 
