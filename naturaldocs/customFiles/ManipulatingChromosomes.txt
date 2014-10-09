@@ -1,14 +1,14 @@
 Title: Manipulating Chromosomes
  
-This tutorial introduces some of the operations which can be used to manipulate individual chromosomes. 
+This tutorial introduces some of the operations which can be used to manipulate individual CGP chromosomes. 
 
 These functions are provided for three key reasons.
 
 1) To allow evolved chromosomes to be saved and used later by other programs including their intended application. 
 
-2) To enable users to be able to implement custom selection and reproduction schemes.  
+2) To enable users to implement custom selection and reproduction schemes.  
 
-3) To allow users to create their own programs using the same chromosomes as used by the CGP-Library. 
+3) To enable users to create their own programs using the same chromosomes as used by the CGP-Library. 
  
 Title: The Program
 
@@ -119,14 +119,14 @@ Array to pass information into the chromosomes.
 double testInputs[NUMINPUTS];
 (end)
 
-In order to initialise the chromosomes an initialised parameters structure with a populated function set is required.
+In order to initialise the chromosomes an initialised <parameters> structure with a populated function set is required.
 
 (begin code)
 params = initialiseParameters(NUMINPUTS, NUMNODES, NUMOUTPUTS, ARITY);
 addNodeFunction(params, "add,sub,mul,sq,cube,sin");
 (end)
 
-Here the fitnesses assigned to the chromosomes will use the symbolic.data seen previously in <Getting Started> and <Creating Data Sets>.
+Here the chromosomes will be assigned a fitness based on their performance on the symbolic.data seen previously in <Getting Started> and <Creating Data Sets>.
 
 (begin code)
 trainingData = initialiseDataSetFromFile("./dataSets/symbolic.data");
@@ -145,7 +145,7 @@ Once we have an initialised chromosome we can calculate its fitness using <setCh
 setChromosomeFitness(params, chromoA, trainingData);
 (end)
 
-Chromosomes can be mutated using <mutateChromosome>. The type and amount of mutation caused is specified in the parameters structure.
+Chromosomes can be mutated using <mutateChromosome>. The type and amount of mutation caused is specified in the <parameters> structure.
 
 (begin code)
 mutateChromosome(params,chromoA);
