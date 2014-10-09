@@ -83,13 +83,13 @@ A new chromosome is initialised using the specified <parameters>. This is the <c
 chromo = initialiseChromosome(params);
 (end)
 
-The function <printChromosome> can be used to display the given <chromosome> in the terminal / command prompt. As this function has been explained previously in <getting started> it is not re-explained here. 
+The function <printChromosome> can be used to display the given <chromosome> in the terminal / command prompt. As this function has been explained previously in <Getting Started> it is not re-explained here. 
 
 (begin code)
 printChromosome(chromo, 0);
 (end)
 
-The output of <printChromosome> of print chromosome is given below which can be compared to the other visualisation methods.
+The output of <printChromosome> is given below; which can be compared to the other visualisation methods discussed.
 
 >(0):	input
 >(1):	sin	0 *
@@ -102,7 +102,7 @@ The output of <printChromosome> of print chromosome is given below which can be 
 >(8):	mul	4 1 *
 >outputs: 8 
 
-The next method <saveChromosomeDot> is used to visualise chromosomes in a graph structure. The actual plotting of the graph is done using the free, cross platform, open source graphviz tool (www.graphviz.org). Graphviz must first be installed in order to use it to plot the CGP chromosomes. The function <saveChromosomeDot> produces a .dot graphviz file of the given chromosome. This .dot file can be used by graphviz to create an image of the chromosome.
+The next method <saveChromosomeDot> is used to visualise chromosomes in a graph structure. The actual plotting of the graph is done using the free, cross platform, open source graphviz tool (http://www.graphviz.org). Graphviz must first be installed in order to use it to plot the CGP chromosomes. The function <saveChromosomeDot> produces a .dot graphviz file of the given chromosome. This .dot file can be used by graphviz to create an image of the chromosome. (This method is currently limited to feed-forward/acyclic CGP *not* Recurrent CGP.)
 
 (begin code)
 saveChromosomeDot(chromo, 0, "chromo.dot");
