@@ -43,7 +43,7 @@ The method used to select the members of the population to survive and/or breed 
 
 Reproduction:
 
-There are two main ways in which new child chromosomes can be created from their parents. The first mimics asexual reproduction where the child is simply a mutated copy of the parent chromosome. The second mimics sexual reproduction where the child contains genetic material from both parents with or without mutation. This former method is refereed to as 'recombination' or 'crossover'. How mutation and recombination are implemented again depends on the encoding of the chromosomes and the type of mutation and recombination used.
+There are two main ways in which new child chromosomes can be created from their parents. The first mimics asexual reproduction where the child is simply a mutated copy of the parent chromosome. The second mimics sexual reproduction where the child contains genetic material from both parents with or without mutation. This later method is refereed to as 'recombination' or 'crossover'. How mutation and recombination are implemented again depends on the encoding of the chromosomes and the type of mutation and recombination used.
 
 Title: Cartesian Genetic Programming
 
