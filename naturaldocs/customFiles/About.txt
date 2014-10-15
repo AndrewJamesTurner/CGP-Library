@@ -1,21 +1,17 @@
 Title: About  
  
 CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C and is compatible with Linux, Windows and Mac OS. 
+The CGP-Library is capible of the following:
+	* Cartesian Genetic Programming
+	* Recurrent Cartesian Genetic Programming
+	* Cartesian Genetic Programming of Artificial Neural Networks 
+	* Recurrent Cartesian Genetic Programming of Artificial Neural Networks 
 
 Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. This documentation also includes a short introduction to CGP in <Cartesian Genetic Programming>.
 
-Title: Intended Use
+Title: News
 
-CGP-Library was designed with three use cases in mind
-
-
-1) Teaching and learning about CGP
-
-2) Undertaking academic research into CGP 
-
-3) Using CGP for real world applications
-
-As a result the basic use of CGP-Library is very simple (see <Getting Started>) but is also highly customisable and extendible.
+*CGP-Lirary 2.1 has been released!* Grab this latest version from the <Downloads> page. This update brings performance improvements over 2.0. Version 2.1 also renames and depreciates a number of functions. This is to make way for the next set of developments which will extend the number of selections schemes, reproduction schemes and fitness functions which come bundled with the library as default. Additionally for all you pythonists out there python bindings for CGP-Library will be coming soon. 
 
 Title: Tutorials
 
