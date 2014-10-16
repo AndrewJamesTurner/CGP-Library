@@ -1,0 +1,74 @@
+Title: Language Bindings
+
+This tutorial explains how the CGP-Library can be used by languages other than C and C++. 
+
+The tutorial makes use of SWIG <http://www.swig.org/> utility to create the wrappers for other languages. Using SWIG it is possible to access the CGP-Library from: Python, Java, C#, D, Go, Lisp, Octave, R, Javascript, Perl, PHP, Tcl, Ruby, Lua, Modula-3 and OCAML. 
+
+For simplicity of the tutorial here SWIG shall be used to make language bindings for Python2.7. 
+
+Title: Software Packages
+
+The tutorial requires a number of software packages to be installed: SWIG, Python2.7 and the Code::Blocks IDE. 
+
+SWIG can be installed under Ubuntu by running "sudo apt-get install swig" in the terminal. Under windows go to <http://www.swig.org/>, click "Downloads" followed by "Download area" and download the latest stable version for windows. Extract the zip folder to "C:\". Now we need to add the SWIG.exe to system PATH. Right click on "my computer" and select "properties". Press "advanced system settings". Select the "advanced tab" and press "environment variables". In the lower section select the PATH variables and press "edit". Add "c:\swigwin-3.0.2;" to the end of the PATH variables. Note the use of ";" to delimit variables. Also note that "3.0.2" might need to be altered to the version downloaded. press "OK".
+
+Python2.7 should already be installed under Ubuntu but here the development version is needed for the Python header files. These are installed by running "sudo apt-get install python-dev" in the terminal. Under Windows go to <https://www.python.org/>, click downloads, click Python2.7.X and download the Windows x86 MSI Installer. Install to the default location of "C:\".
+
+Code::Blocks can be installed under Ubuntu by running "sudo apt-get install codeblocks" in the terminal. Under Windows go to <http://www.codeblocks.org/>, click downloads, click Download the binary release, click Windows 2000/XP/Vista/7//8 and download the latest version which comes bundled with the mingw compiler. Install to default location. 
+
+As a side note. I have not used windows for a few years now. I had forgotten how much easier some things can be under a Linux/GNU system :)
+
+Title: Creating Python Bindings
+
+Here the SWIG utility shall be used to create the Python bindings for CGP-Library.
+
+First navigate the terminal / command prompt to "/CGP-Library/bindings". Then run "swig -python cgp.i". This will create "cgp.py" and "cgp_wrap.c". The "cgp.py" is the python module to be imported and "cgp_wrap.c" will be used to create the compiled CGP-Library for the python binding.
+
+Second cgp.c and cgp_wrap.c must be compiled into a dynamic library along with the python headers. This process has been simplified using Code::Blocks. Open the CGP-Library.cbp project file and select the pythonBindings build target. Compile the pythonBindings build target. This will create _cgp.so / _cgp.dll which contains the CGP-Library to be used by the python bindings. This process can be done manually following the instructions at <http://www.swig.org/>.
+
+Title: Using the Python Bindings
+
+Using the newly created CGP-Library python bindings shall now be described. 
+
+Whether running python scripts or using python in an iterative mode the CGP-Library can be imported using "import cgp". This will search the sys.path locations for cgp.py. cgp.py will expect to find _cgp.so / _cgp.dll in the same directory as its self. For simplicity cgp.py and _cgp.so / _cgp.dll can be placed in the directory containing the input script or in the current directory.  
+
+Once "import cgp" has been called the CGP-Library can now be used within Python!  
+
+Below is the getting started tutorial re-written as a python script.
+
+(begin code)
+import cgp
+
+numInputs = 1;
+numNodes = 15;
+numOutputs = 1;
+nodeArity = 2;
+
+numGens = 10000;
+targetFitness = 0.1;
+updateFrequency = 500;
+
+params = cgp.initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+
+cgp.addNodeFunction(params, "add,sub,mul,div,sin");
+
+cgp.setTargetFitness(params, targetFitness);
+
+cgp.setUpdateFrequency(params, updateFrequency);
+
+cgp.printParameters(params);
+
+trainingData = cgp.initialiseDataSetFromFile("../dataSets/symbolic.data");
+
+chromo = cgp.runCGP(params, trainingData, numGens);
+
+cgp.printChromosome(chromo, 0);
+
+cgp.freeDataSet(trainingData);
+cgp.freeChromosome(chromo);
+cgp.freeParameters(params);
+(end code)
+
+
+And that's it, although slightly more involved than the previous tutorials, it is possible to use the CGP-Library form numerous languages. Details of how to compile for languages other than python can be found on the SWIG homepage <http://www.swig.org/>.
+
