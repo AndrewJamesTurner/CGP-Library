@@ -1,4 +1,4 @@
-Title: Average Behaviour  
+Title: Recurrent Connections
 
 This tutorial introduces using the CGP-Library to create recurrent programs.
 
