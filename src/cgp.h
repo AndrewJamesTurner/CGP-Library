@@ -1128,6 +1128,10 @@
 
 	/*
 		Function: resetChromosome
+			Resets all of the chromosome nodes to output zero.
+		
+		Note:
+			This is useful when using recurrent connections where you do not want the output to be a function of the current state of the chromosome.  
 	*/
 	DLL_EXPORT void resetChromosome(struct chromosome *chromo);
 

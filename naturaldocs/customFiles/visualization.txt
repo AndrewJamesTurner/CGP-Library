@@ -102,7 +102,7 @@ The output of <printChromosome> is given below; which can be compared to the oth
 >(8):	mul	4 1 *
 >outputs: 8 
 
-The next method <saveChromosomeDot> is used to visualise chromosomes in a graph structure. The actual plotting of the graph is done using the free, cross platform, open source graphviz tool (http://www.graphviz.org). Graphviz must first be installed in order to use it to plot the CGP chromosomes. The function <saveChromosomeDot> produces a .dot graphviz file of the given chromosome. This .dot file can be used by graphviz to create an image of the chromosome. (This method is currently limited to feed-forward/acyclic CGP *not* Recurrent CGP.)
+The next method <saveChromosomeDot> is used to visualise chromosomes in a graph structure. The actual plotting of the graph is done using the free, cross platform, open source graphviz tool (http://www.graphviz.org). Graphviz must first be installed in order to use it to plot the CGP chromosomes. The function <saveChromosomeDot> produces a .dot graphviz file of the given chromosome. This .dot file can be used by graphviz to create an image of the chromosome. 
 
 (begin code)
 saveChromosomeDot(chromo, 0, "chromo.dot");
@@ -118,7 +118,7 @@ This results in an image such as below
 
 (see dot.png)
 
-The final method for visualising CGP chromosomes produces the mathematical equation which describes the given chromosome. The actual formatting of the equation is done using the free, cross platform, open source typesetting system, LaTeX (http://www.latex-project.org/). LaTeX must first be installed in order to use it to produce the chromosome as an equation. The <saveChromosomeLatex> function produces a .tex LaTeX file of the given chromosome. This .tex file can be used by LaTeX to create an equation of the chromosome. 
+The final method for visualising CGP chromosomes produces the mathematical equation which describes the given chromosome. The actual formatting of the equation is done using the free, cross platform, open source typesetting system, LaTeX (http://www.latex-project.org/). LaTeX must first be installed in order to use it to produce the chromosome as an equation. The <saveChromosomeLatex> function produces a .tex LaTeX file of the given chromosome. This .tex file can be used by LaTeX to create an equation of the chromosome. (This method is currently limited to feed-forward/acyclic CGP *not* Recurrent CGP.)
 
 (begin code)
 saveChromosomeLatex(chromo, 0, "chromo.tex");
