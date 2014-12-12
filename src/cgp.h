@@ -13,7 +13,7 @@
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with CGP-Library. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
@@ -622,7 +622,7 @@
 
 			Setting the new custom fitness function as the fitness function to be used
 			(begin code)
-			setFitnessFuction(params, fullAdder, "fullAdder");
+			setCustomFitnessFunction(params, fullAdder, "fullAdder");
 			(end)
 
 		

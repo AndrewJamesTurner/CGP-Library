@@ -191,7 +191,6 @@ static double step(const int numInputs, const double *inputs, const double *conn
 static double softsign(const int numInputs, const double *inputs, const double *connectionWeights);
 static double hyperbolicTangent(const int numInputs, const double *inputs, const double *connectionWeights);
 
-
 /* other */
 static double randDecimal(void);
 static int randInt(int n);
