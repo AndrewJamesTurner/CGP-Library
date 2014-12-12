@@ -6,8 +6,7 @@ Format: 1.51
 # Config directory instead.
 
 
-# You can prevent certain file extensions from being scanned like this:
-# Ignore Extensions: [extension] [extension] ...
+Ignore Extension: ignore
 
 
 #-------------------------------------------------------------------------------
