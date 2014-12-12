@@ -13,7 +13,7 @@
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with CGP-Library. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdio.h>
@@ -23,7 +23,7 @@
 #include <math.h>
 #include <float.h>
 
-#include "../src/cgp.h"
+#include "cgp.h"
 
 /*
 	Hard limits on the size of the function set 
