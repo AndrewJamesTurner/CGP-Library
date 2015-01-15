@@ -288,7 +288,7 @@ calculating the overall program outputs. The output nodes are given on the last 
 >(13):	add	6 9 *
 >(14):	div	7 0 
 >(15):	sub	4 13 
-outputs: 13 
+>outputs: 13 
 
 
 Finally at the end of the program the memory associated with the structures should be 

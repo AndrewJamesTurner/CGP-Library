@@ -95,7 +95,8 @@ Function Set: add sub mul div sin (5)
 (12):  sin 11
 (13):  add 6 9 *
 (14):  div 7 0
-(15):  sub 4 13</pre></blockquote><p>outputs: 13</p><p>Finally at the end of the program the memory associated with the structures should be free&rsquo;d using <a href="../files/cgp-h.html#freeDataSet" class=LFunction id=link40 onMouseOver="ShowTip(event, 'tt14', 'link40')" onMouseOut="HideTip('tt14')">freeDataSet</a>, <a href="../files/cgp-h.html#freeChromosome" class=LFunction id=link41 onMouseOver="ShowTip(event, 'tt15', 'link41')" onMouseOut="HideTip('tt15')">freeChromosome</a> and <a href="../files/cgp-h.html#freeParameters" class=LFunction id=link42 onMouseOver="ShowTip(event, 'tt16', 'link42')" onMouseOut="HideTip('tt16')">freeParameters</a>.</p><blockquote><pre class="prettyprint">freeDataSet(trainingData);
+(15):  sub 4 13
+outputs: 13</pre></blockquote><p>Finally at the end of the program the memory associated with the structures should be free&rsquo;d using <a href="../files/cgp-h.html#freeDataSet" class=LFunction id=link40 onMouseOver="ShowTip(event, 'tt14', 'link40')" onMouseOut="HideTip('tt14')">freeDataSet</a>, <a href="../files/cgp-h.html#freeChromosome" class=LFunction id=link41 onMouseOver="ShowTip(event, 'tt15', 'link41')" onMouseOut="HideTip('tt15')">freeChromosome</a> and <a href="../files/cgp-h.html#freeParameters" class=LFunction id=link42 onMouseOver="ShowTip(event, 'tt16', 'link42')" onMouseOut="HideTip('tt16')">freeParameters</a>.</p><blockquote><pre class="prettyprint">freeDataSet(trainingData);
 freeChromosome(chromo);
 freeParameters(params);</pre></blockquote><p>And that&rsquo;s it, in just 39 lines of code we have applied CGP to a symbolic regression task (and it could easily be done in less).</p></div></div></div>
 
