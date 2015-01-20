@@ -45,7 +45,7 @@ int main(void){
 	setMutationType(params, "probabilistic");
 	setMutationRate(params, 0.08);
 	
-	trainingData = initialiseDataSetFromFile("./examples/parity3bit.data");
+	trainingData = initialiseDataSetFromFile("./dataSets/parity3bit.data");
 	
 	for(i=0; i<POPULATIONSIZE; i++){
 		population[i] = initialiseChromosome(params);
