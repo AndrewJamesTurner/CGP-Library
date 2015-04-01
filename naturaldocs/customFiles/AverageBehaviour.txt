@@ -8,7 +8,7 @@ Title: The Program
 
 A simple symbolic regression solving program used to illustrate the use of <repeatCGP>.
 
-The program below is provided in the CGP-Library download within /examples/averageBehaviour.c and is included in the code:blocks project. 
+The program below is provided in the CGP-Library download within /examples/averageBehaviour.c and is included in the code::blocks project. 
 
 (begin code)
 #include <stdio.h>

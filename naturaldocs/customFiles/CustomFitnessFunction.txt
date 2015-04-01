@@ -12,7 +12,7 @@ Title: The Program
 
 A simple program showcasing how to use custom fitness functions.
 
-The program below is provided in the CGP-Library download within /examples/customFitnessFunction.c and is included in the code:blocks project.
+The program below is provided in the CGP-Library download within /examples/customFitnessFunction.c and is included in the code::blocks project.
 
 (begin code)
 
@@ -155,6 +155,6 @@ Finally the initialised <parameters> structure should be free'd.
 freeParameters(params);
 (end)
 
-And that's it, provided the custom fitness function used the required prototype form using custom fitness functions is quite simple. In cases where the <dataSet> is not used 'NULL' can be passed to <runCGP> or <repeatCGP> in place of an initialised <dataSet>. 
+And that's it, provided the custom fitness function implements the required prototype, using custom fitness functions is quite simple. Note: in cases where the <dataSet> is not used by the fitness function, 'NULL' can be passed to <runCGP> or <repeatCGP> in place of an initialised <dataSet>. 
 
 

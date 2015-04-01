@@ -9,7 +9,7 @@ Title: The Program
 
 A simple symbolic regression solving program used to illustrate the basic operation of the CGP-Library. 
 
-The program below is provided in the CGP-Library download within /examples/gettingStarted.c and is included in the code:blocks project.
+The program below is provided in the CGP-Library download within /examples/gettingStarted.c and is included in the code::blocks project.
 
 (start code)
 #include <stdio.h>
@@ -67,7 +67,7 @@ located in the /src directory.
 (end)
 
 The CGP-Library provides a number of structures which describe, among
-other things, the CGP parameters and CGP chromosomes. These parameters
+other things, the CGP parameters and CGP chromosomes. These structures
 are initialised and free'd using provided functions. The attributes of
 these structures should not, and in fact cannot, be accessed directly
 and must also be accessed using provided getter and setter functions.

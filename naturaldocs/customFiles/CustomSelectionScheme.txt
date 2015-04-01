@@ -8,7 +8,7 @@ Title: The Program
 
 A simple program showing how to uses a custom tournament selection scheme.
 
-The program below is provided in the CGP-Library download within /examples/customSelectionScheme.c and is included in the code:blocks project.
+The program below is provided in the CGP-Library download within /examples/customSelectionScheme.c and is included in the code::blocks project.
 
 (begin code)
 #include <stdio.h>
