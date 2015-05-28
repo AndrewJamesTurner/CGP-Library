@@ -51,10 +51,10 @@ int main(void){
 
     struct parameters *params = NULL;
 
-    int numInputs = 2;
-    int numNodes = 10;
+    int numInputs = 1;
+    int numNodes = 20;
     int numOutputs = 1;
-    int arity = 3;
+    int arity = 2;
 
     params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 
@@ -89,10 +89,10 @@ if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
 
 return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));</pre></blockquote><p>The fitness function used by the CGP-Library is defined in a <a href="../files/cgp-h.html#parameters" class=LVariable id=link19 onMouseOver="ShowTip(event, 'tt1', 'link19')" onMouseOut="HideTip('tt1')">parameters</a> structure.&nbsp; Therefore in order to set the custom fitness function first a initialised <a href="../files/cgp-h.html#parameters" class=LVariable id=link20 onMouseOver="ShowTip(event, 'tt1', 'link20')" onMouseOut="HideTip('tt1')">parameters</a> structure is required.</p><blockquote><pre class="prettyprint">struct parameters *params = NULL;
 
-int numInputs = 2;
-int numNodes = 10;
+int numInputs = 1;
+int numNodes = 20;
 int numOutputs = 1;
-int arity = 3;
+int arity = 2;
 
 params = initialiseParameters(numInputs, numNodes, numOutputs, arity);</pre></blockquote><p>Now the custom fitness function is set in the <a href="../files/cgp-h.html#parameters" class=LVariable id=link21 onMouseOver="ShowTip(event, 'tt1', 'link21')" onMouseOut="HideTip('tt1')">parameters</a> structure using <a href="../files/cgp-h.html#setCustomFitnessFunction" class=LFunction id=link22 onMouseOver="ShowTip(event, 'tt13', 'link22')" onMouseOut="HideTip('tt13')">setCustomFitnessFunction</a>.&nbsp; The first argument is the <a href="../files/cgp-h.html#parameters" class=LVariable id=link23 onMouseOver="ShowTip(event, 'tt1', 'link23')" onMouseOut="HideTip('tt1')">parameters</a> structure where the fitness function will be set, the second is the custom fitness function to be set and the third is a shorthand name for the custom fitness function.</p><p>Now when <a href="../files/cgp-h.html#runCGP" class=LFunction id=link24 onMouseOver="ShowTip(event, 'tt14', 'link24')" onMouseOut="HideTip('tt14')">runCGP</a> or <a href="../files/cgp-h.html#repeatCGP" class=LFunction id=link25 onMouseOver="ShowTip(event, 'tt15', 'link25')" onMouseOut="HideTip('tt15')">repeatCGP</a> is called the meanSquareError fitness function shall be used in place of the default supervisedLearning fitness function.</p><blockquote><pre class="prettyprint">setCustomFitnessFunction(params, meanSquareError, &quot;MSE&quot;);</pre></blockquote><p>If the <a href="../files/cgp-h.html#parameters" class=LVariable id=link26 onMouseOver="ShowTip(event, 'tt1', 'link26')" onMouseOut="HideTip('tt1')">parameters</a> are now displayed using <a href="../files/cgp-h.html#printParameters" class=LFunction id=link27 onMouseOver="ShowTip(event, 'tt16', 'link27')" onMouseOut="HideTip('tt16')">printParameters</a> the default &ldquo;supervisedLearning&rdquo; fitness function has been changed to &ldquo;MSE&rdquo;.</p><blockquote><pre class="prettyprint">printParameters(params);</pre></blockquote><p>Finally the initialised <a href="../files/cgp-h.html#parameters" class=LVariable id=link28 onMouseOver="ShowTip(event, 'tt1', 'link28')" onMouseOut="HideTip('tt1')">parameters</a> structure should be free&rsquo;d.</p><blockquote><pre class="prettyprint">freeParameters(params);</pre></blockquote><p>And that&rsquo;s it, provided the custom fitness function implements the required prototype, using custom fitness functions is quite simple.&nbsp; Note: in cases where the <a href="../files/cgp-h.html#dataSet" class=LVariable id=link29 onMouseOver="ShowTip(event, 'tt3', 'link29')" onMouseOut="HideTip('tt3')">dataSet</a> is not used by the fitness function, &lsquo;NULL&rsquo; can be passed to <a href="../files/cgp-h.html#runCGP" class=LFunction id=link30 onMouseOver="ShowTip(event, 'tt14', 'link30')" onMouseOut="HideTip('tt14')">runCGP</a> or <a href="../files/cgp-h.html#repeatCGP" class=LFunction id=link31 onMouseOver="ShowTip(event, 'tt15', 'link31')" onMouseOut="HideTip('tt15')">repeatCGP</a> in place of an initialised <a href="../files/cgp-h.html#dataSet" class=LVariable id=link32 onMouseOver="ShowTip(event, 'tt3', 'link32')" onMouseOut="HideTip('tt3')">dataSet</a>.</p></div></div></div>
 

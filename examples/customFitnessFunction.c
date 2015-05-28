@@ -57,10 +57,10 @@ int main(void){
 
 	struct parameters *params = NULL;
 
-	int numInputs = 2;
-	int numNodes = 10;
+	int numInputs = 1;
+	int numNodes = 20;
 	int numOutputs = 1;
-	int arity = 3;
+	int arity = 2;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
 
