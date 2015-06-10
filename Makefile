@@ -67,6 +67,10 @@ python: src/cgp.c src/cgp.h
 	@ld -shared cgp.o cgp_wrap.o -o bindings/_cgp.so
 	@rm cgp.o cgp_wrap.o 
 	#@rm bindings/cgp_wrap.c
+
+eigentest: src/testEigen.cpp
+	@g++ -o testEigen src/testEigen.cpp $(CFLAGS) -lm
+
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log tmp.pdf *.out 
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log tmp.pdf *.out 
 	@rm -rf obj/
