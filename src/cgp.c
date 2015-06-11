@@ -1233,6 +1233,23 @@ DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node){
 
 
 /*
+
+*/
+DLL_EXPORT void setOutputToEachNode(struct chromosome *chromo){
+
+	int i;
+
+	if(chromo->numNodes != chromo->numOutputs){
+		printf("Error: number of nodes must equal the number of outputs. setOutputToEachNode.\n");
+
+		exit(0);
+	}
+
+	for(i=0; i<chromo->numNodes; i++)
+		chromo->outputNodes[i] = i + chromo->numInputs;
+}
+
+/*
 	Saves the given chromosome in a form which can be read in later
 */
 DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName){

@@ -59,8 +59,8 @@ int main(void){
 	struct chromosome* chromo = NULL;
 
 	int numInputs = 1;
-	int numNodes = 20;
-	int numOutputs = 1;
+	int numNodes = 10;
+	int numOutputs = 10;
 	int arity = 2;
 
 	double testInputs[1];
@@ -75,12 +75,16 @@ int main(void){
 	executeChromosome(chromo, testInputs);
 	printf("Generated output: %f\n", getChromosomeOutput(chromo, 0));
 
-	if(isNodeActive(chromo, 40))
+	if(isNodeActive(chromo, 5))
 		printf("\nYarp\n");
 
 	//setCustomFitnessFunction(params, meanSquareError, "MSE");
 
 	//printParameters(params);
+
+	printChromosome(chromo, 1);
+	setOutputToEachNode(chromo);
+	printChromosome(chromo, 1);
 
 	freeParameters(params);
 	freeChromosome(chromo);

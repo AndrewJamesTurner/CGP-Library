@@ -1027,6 +1027,17 @@
 
 
 	/*
+		Function: setOutputToEachNode
+			Sets it so each node is indexed by one output. With the first output indexing the first node etc.
+
+			This function is inteneded to be used by reservior CGPANN.
+
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+	*/
+	DLL_EXPORT void setOutputToEachNode(struct chromosome *chromo);
+
+	/*
 		Function: saveChromosome
 			Saves the given chromosome to a file which can used to initialise new chromosomes.
 			
