@@ -1000,6 +1000,21 @@
 
 
 	/*
+		Function: getChromosomeNodeValue
+			Gets the node value of the given chromosome and node *after* it has been executed using <executeChromosome>.
+
+			After a given chromosome has been executed using <executeChromosome> the chromosome node values are made available using <getChromosomeNodeValue>.
+
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+				output - The index of the node value to be retrieved
+								
+		See Also:
+				<executeChromosome>, <getChromosomeOutput>
+	*/
+	DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
+
+	/*
 		Function: saveChromosome
 			Saves the given chromosome to a file which can used to initialise new chromosomes.
 			

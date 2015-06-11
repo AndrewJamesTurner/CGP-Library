@@ -1,3 +1,5 @@
+// http://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
+
 #include <iostream>
 #include "../Eigen/Dense"
 #include "../Eigen/LU" 
@@ -33,16 +35,17 @@ int main(){
 	
 	cout << "\nTest states * Wout:\n" <<  states * Wout << endl;
 
-/*
-	MatrixXd R = states.transpose() * states;
-	MatrixXd P = states.transpose() * desiredOutputs;
-	MatrixXd Wout = (R.inverse() * P).transpose();
+	// error in the inversion 
+	double relative_error = (states*Wout - desiredOutputs).norm() / desiredOutputs.norm();
+	cout << "The relative error is:\n" << relative_error << endl;
 
 
-	std::cout <<  R << std::endl;
-	std::cout << "\n\n" << std::endl;
-	std::cout <<  R.inverse() << std::endl;
-*/
-	
+	// solve using least squares
+	Wout = states.jacobiSvd(ComputeThinU | ComputeThinV).solve(desiredOutputs);
+	cout << "\nThe solution (Wout) using least squares is:\n" << Wout << endl;
+
+	// error in the inversion 
+	relative_error = (states*Wout - desiredOutputs).norm() / desiredOutputs.norm();
+	cout << "The relative error is:\n" << relative_error << endl;
 
 }

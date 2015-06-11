@@ -160,11 +160,11 @@ static void mutateRandomParent(struct parameters *params, struct chromosome **pa
 static double supervisedLearning(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 
 /* node functions defines in CGP-Library */
-static double add(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double add(const int numInputs, const double *inputs, const double *connectionWeights);
 static double sub(const int numInputs, const double *inputs, const double *connectionWeights);
 static double mul(const int numInputs, const double *inputs, const double *connectionWeights);
 static double divide(const int numInputs, const double *inputs, const double *connectionWeights);
-static double and(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double and(const int numInputs, const double *inputs, const double *connectionWeights);
 static double absolute(const int numInputs, const double *inputs, const double *connectionWeights);
 static double squareRoot(const int numInputs, const double *inputs, const double *connectionWeights);
 static double square(const int numInputs, const double *inputs, const double *connectionWeights);
@@ -179,11 +179,11 @@ static double constOne(const int numInputs, const double *inputs, const double *
 static double constZero(const int numInputs, const double *inputs, const double *connectionWeights);
 static double constPI(const int numInputs, const double *inputs, const double *connectionWeights);
 static double nand(const int numInputs, const double *inputs, const double *connectionWeights);
-static double or(const int numInputs, const double *inputs, const double *connectionWeights);
-static double nor(const int numInputs, const double *inputs, const double *connectionWeights);
-static double xor(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double or(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double nor(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double xor(const int numInputs, const double *inputs, const double *connectionWeights);
 static double xnor(const int numInputs, const double *inputs, const double *connectionWeights);
-static double not(const int numInputs, const double *inputs, const double *connectionWeights);
+//static double not(const int numInputs, const double *inputs, const double *connectionWeights);
 static double wire(const int numInputs, const double *inputs, const double *connectionWeights);
 static double sigmoid(const int numInputs, const double *inputs, const double *connectionWeights);
 static double gaussian(const int numInputs, const double *inputs, const double *connectionWeights);
@@ -372,7 +372,9 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	/* Symbolic functions */
 	
 	if(strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, add, "add", -1);
+		//addCustomNodeFunction(params, add, "add", -1);
+		printf("\nError: add removed due to c++ issues.\n");
+		exit(0);
 	}
 	else if(strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, sub, "sub", -1);
@@ -427,25 +429,35 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char *functi
 	/* Boolean logic gates */
 
 	else if(strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, and, "and", -1);
+		//addCustomNodeFunction(params, and, "and", -1);
+		printf("\nError: and removed due to c++ issues.\n");
+		exit(0);
 	}
 	else if(strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, nand, "nand", -1);
 	}
 	else if(strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, or, "or", -1);
+		//addCustomNodeFunction(params, or, "or", -1);
+		printf("\nError: or removed due to c++ issues.\n");
+		exit(0);
 	}
 	else if(strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, nor, "nor", -1);
+		//addCustomNodeFunction(params, nor, "nor", -1);
+		printf("\nError: nor removed due to c++ issues.\n");
+		exit(0);
 	}
 	else if(strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, xor, "xor", -1);
+		//addCustomNodeFunction(params, xor, "xor", -1);
+		printf("\nError: xor removed due to c++ issues.\n");
+		exit(0);
 	}
 	else if(strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, xnor, "xnor", -1);
 	}
 	else if(strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, not, "not", -1);
+		//addCustomNodeFunction(params, not, "not", -1);
+		printf("\nError: not removed due to c++ issues.\n");
+		exit(0);
 	}
 		
 	/* Neuron functions */
@@ -1182,6 +1194,14 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 */
 DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output){
 	return chromo->outputValues[output];
+}
+
+/*
+	used to access the chromosome node values after executeChromosome
+	has been called
+*/
+DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node){
+	return chromo->nodes[node]->output;
 }
 
 
@@ -3479,6 +3499,7 @@ static double randFloat(const int numInputs, const double *inputs, const double 
 	Node function and. logical AND, returns '1' if all inputs are '1'
 	else, '0'
 */
+/*
 static double and(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
@@ -3492,7 +3513,7 @@ static double and(const int numInputs, const double *inputs, const double *conne
 
 	return 1;
 }
-
+*/
 
 /*
 	Node function and. logical NAND, returns '0' if all inputs are '1'
@@ -3517,6 +3538,7 @@ static double nand(const int numInputs, const double *inputs, const double *conn
 	Node function or. logical OR, returns '0' if all inputs are '0'
 	else, '1'
 */
+/*
 static double or(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
@@ -3530,7 +3552,7 @@ static double or(const int numInputs, const double *inputs, const double *connec
 
 	return 0;
 }
-
+*/
 
 /*
 	Node function nor. logical NOR, returns '1' if all inputs are '0'
@@ -3555,6 +3577,7 @@ static double nor(const int numInputs, const double *inputs, const double *conne
 	Node function xor. logical XOR, returns '1' iff one of the inputs is '1'
 	else, '0'. AKA 'one hot'.
 */
+/*
 static double xor(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	int i;
@@ -3581,6 +3604,7 @@ static double xor(const int numInputs, const double *inputs, const double *conne
 
 	return out;
 }
+*/
 
 /*
 	Node function xnor. logical XNOR, returns '0' iff one of the inputs is '1'
@@ -3616,6 +3640,7 @@ static double xnor(const int numInputs, const double *inputs, const double *conn
 /*
 	Node function not. logical NOT, returns '1' if first input is '0', else '1'
 */
+/*
 static double not(const int numInputs, const double *inputs, const double *connectionWeights){
 
 	double out;
@@ -3629,6 +3654,7 @@ static double not(const int numInputs, const double *inputs, const double *conne
 
 	return out;
 }
+*/
 
 /*
 	Node function wire. simply acts as a wire returning the first input

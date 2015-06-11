@@ -7,11 +7,13 @@ CC=gcc
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
 	# -pg			turns on profiling information (for gprof)
+	# -w			ignore warning 
+	# -fpermissive
 	
-CFLAGS= -pedantic -Wall -O3
+CFLAGS= -fpermissive -w  
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
-	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm 
 
 createDataSet: examples/createDataSet.c src/cgp.c src/cgp.h
 	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/cgp.h $(CFLAGS)  -lm
@@ -71,6 +73,11 @@ python: src/cgp.c src/cgp.h
 eigentest: src/testEigen.cpp
 	@g++ -o testEigen src/testEigen.cpp $(CFLAGS) -lm
 
+reservoirCGPANN: src/reservoirCGPANN.cpp src/cgp.c src/cgp.h
+	@g++ -o reservoirCGPANN src/reservoirCGPANN.cpp src/cgp.c src/cgp.h  $(CFLAGS) -lm 
+
+# @gcc -o reservoirCGPANN src/reservoirCGPANN.cpp -lcgp $(CFLAGS) -lm
+
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log tmp.pdf *.out 
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen reservoirCGPANN *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log tmp.pdf *.out 
 	@rm -rf obj/
