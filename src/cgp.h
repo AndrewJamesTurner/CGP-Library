@@ -1014,6 +1014,18 @@
 	*/
 	DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
 
+
+	/*
+		Function: isNodeActive
+			Returns whether the give node in the given chromosome is active.
+
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+				node - The index of the node
+	*/
+	DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node);
+
+
 	/*
 		Function: saveChromosome
 			Saves the given chromosome to a file which can used to initialise new chromosomes.

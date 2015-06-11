@@ -1193,17 +1193,43 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 	has been called
 */
 DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output){
+	
+	if(output < 0 || output > chromo->numOutputs){
+		printf("Error: output less than or greater than the number of chromosome outputs. Called from getChromosomeOutput.\n");
+		exit(0);
+	}
+
 	return chromo->outputValues[output];
 }
+
+
 
 /*
 	used to access the chromosome node values after executeChromosome
 	has been called
 */
 DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node){
+	if(node < 0 || node > chromo->numNodes){
+		printf("Error: node less than or greater than the number of nodes  in chromosome. Called from getChromosomeNodeValue.\n");
+		exit(0);
+	}
+
 	return chromo->nodes[node]->output;
 }
 
+
+/*
+	returns whether the specified node is active in the given chromosome
+*/
+DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node){
+	
+	if(node < 0 || node > chromo->numNodes){
+		printf("Error: node less than or greater than the number of nodes  in chromosome. Called from isNodeActive.\n");
+		exit(0);
+	}
+
+	return chromo->nodes[node]->active;
+}
 
 
 /*

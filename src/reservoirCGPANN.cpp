@@ -55,20 +55,35 @@ double meanSquareError(struct parameters *params, struct chromosome *chromo, str
 
 int main(void){
 
-	struct parameters *params = NULL;
+	struct parameters* params = NULL;
+	struct chromosome* chromo = NULL;
 
 	int numInputs = 1;
 	int numNodes = 20;
 	int numOutputs = 1;
 	int arity = 2;
 
+	double testInputs[1];
+	testInputs[0] = 1;
+
+	//getChromosomeNodeValue
+
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	addNodeFunction(params, "sig");
+	chromo = initialiseChromosome(params);
+	
+	executeChromosome(chromo, testInputs);
+	printf("Generated output: %f\n", getChromosomeOutput(chromo, 0));
 
-	setCustomFitnessFunction(params, meanSquareError, "MSE");
+	if(isNodeActive(chromo, 40))
+		printf("\nYarp\n");
 
-	printParameters(params);
+	//setCustomFitnessFunction(params, meanSquareError, "MSE");
+
+	//printParameters(params);
 
 	freeParameters(params);
+	freeChromosome(chromo);
 
 	return 0;
 }
