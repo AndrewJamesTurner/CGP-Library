@@ -55,6 +55,7 @@ struct parameters{
 	struct functionSet *funcSet;
 	double targetFitness;
 	int updateFrequency;
+	int shortcutConnections;
 	void (*mutationType)(struct parameters *params, struct chromosome *chromo);
 	char mutationTypeName[MUTATIONTYPENAMELENGTH];
 	double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *dat);
@@ -133,7 +134,7 @@ static void copyNode(struct node *nodeDest, struct node *nodeSrc);
 static double getRandomConnectionWeight(double weightRange);
 static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePosition, double recurrentConnectionProbability);
 static int getRandomFunction(int numFunctions);
-static int getRandomChromosomeOutput(int numInputs, int numNodes);
+static int getRandomChromosomeOutput(int numInputs, int numNodes, int shortcutConnections);
 
 /* function set functions */
 static int addPresetFuctionToFunctionSet(struct parameters *params, char *functionName);
@@ -225,6 +226,7 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 	params->mutationRate = 0.05;
 	params->recurrentConnectionProbability = 0.0;
 	params->connectionWeightRange = 1;
+	params->shortcutConnections = 0;	
 
 	params->targetFitness = 0;
 
@@ -294,6 +296,7 @@ DLL_EXPORT void printParameters(struct parameters *params){
 	printf("Mutation Type:\t\t\t\t%s\n", params->mutationTypeName);
 	printf("Mutation rate:\t\t\t\t%f\n", params->mutationRate);
 	printf("Recurrent Connection Probability:\t%f\n", params->recurrentConnectionProbability);
+	printf("Shortcut Connections:\t\t\t%d\n", params->shortcutConnections);
 	printf("Fitness Function:\t\t\t%s\n", params->fitnessFunctionName);
 	printf("Target Fitness:\t\t\t\t%f\n", params->targetFitness);
 	printf("Selection scheme:\t\t\t%s\n", params->selectionSchemeName);
@@ -640,6 +643,21 @@ DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, dou
 
 
 /*
+	Sets the whether shortcut connections are used. If an invalid
+	value is given a warning is displayed and the value is left	unchanged.
+*/
+DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutConnections){
+
+	if(shortcutConnections == 0 || shortcutConnections == 1){
+		params->shortcutConnections = shortcutConnections;
+	}
+	else{
+		printf("\nWarning: shortcut connection '%d' is invalid. The shortcut connections takes values 0 or 1. The shortcut connection has been left unchanged as '%d'.\n", shortcutConnections, params->shortcutConnections);
+	}
+}
+
+
+/*
 	Sets the connection weight range given in parameters.
 */
 DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange){
@@ -807,7 +825,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params){
 
 	/* set each of the chromosomes outputs */
 	for(i=0; i<params->numOutputs; i++){
-		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes);
+		chromo->outputNodes[i] = getRandomChromosomeOutput(params->numInputs, params->numNodes, params->shortcutConnections);
 	}
 
 	/* set the number of inputs, nodes and outputs */
@@ -2656,7 +2674,7 @@ static void pointMutation(struct parameters *params, struct chromosome *chromo){
 		/* mutate output gene */
 		else{
 			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes;
-			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes, params->shortcutConnections);
 		}
 	}
 }
@@ -2725,7 +2743,7 @@ static void pointMutationANN(struct parameters *params, struct chromosome *chrom
 		/* mutate output gene */
 		else{
 			nodeIndex = geneToMutate - numFunctionGenes - numInputGenes - numWeightGenes;
-			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes, params->shortcutConnections);
 		}
 	}
 }
@@ -2803,7 +2821,7 @@ static void singleMutation(struct parameters *params, struct chromosome *chromo)
 			
 			previousGeneValue = chromo->outputNodes[nodeIndex];
 			
-			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			chromo->outputNodes[nodeIndex] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes, params->shortcutConnections);
 			
 			newGeneValue = chromo->outputNodes[nodeIndex];
 			
@@ -2852,7 +2870,7 @@ static void probabilisticMutation(struct parameters *params, struct chromosome *
 
 		/* mutate the chromosome output */
 		if(randDecimal() <= params->mutationRate){
-			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes, params->shortcutConnections);
 		}
 	}
 }
@@ -2897,7 +2915,7 @@ static void probabilisticMutationOnlyActive(struct parameters *params, struct ch
 
 		/* mutate the chromosome output */
 		if(randDecimal() <= params->mutationRate){
-			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes);
+			chromo->outputNodes[i] = getRandomChromosomeOutput(chromo->numInputs, chromo->numNodes, params->shortcutConnections);
 		}
 	}
 }
@@ -3351,11 +3369,15 @@ static int getRandomNodeInput(int numChromoInputs, int numNodes, int nodePositio
 /*
 	returns a random chromosome output
 */
-static int getRandomChromosomeOutput(int numInputs, int numNodes){
+static int getRandomChromosomeOutput(int numInputs, int numNodes, int shortcutConnections){
 
 	int output;
 
-	output = randInt(numInputs + numNodes);
+	if( shortcutConnections == 1)
+		output = randInt(numInputs + numNodes);
+	else
+		output = randInt(numNodes) + numInputs;
+	
 
 	return output;
 }

@@ -83,6 +83,7 @@
 			> evolutionary strategy:			+
 			> mutation rate:					0.05
 			> Recurrent Connection Probability	0.00
+			> Shortcut Connections				1
 			> connection weight range:			1
 			> update frequency:					1
 			> mutation type:					probabilistic
@@ -553,6 +554,23 @@
 			recurrentConnectionProbability - The value of the recurrent connection probability to be set.
 	*/
 	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
+
+
+
+	/*
+		Function: setShortcutConnections
+
+		Sets whether shortcut connections are used in the given parameters.
+
+		Shortcut Connections specifies where a output can connect directly to an input.
+		Only Shortcut Connections of values 0 (no) and 1 (yes) are valid. If an invalid 		value is given warning is displayed and the Shortcut Connections value is 			left unchanged.
+
+		Parameters:
+			params - pointer to parameters structure.
+			shortcutConnections - whether shortcut connections are used
+	*/
+	DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutConnections);
+
 
 	/*
 		Function: setConnectionWeightRange

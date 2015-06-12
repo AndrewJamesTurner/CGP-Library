@@ -16,40 +16,69 @@
     along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
+#include <iostream>
+//#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "cgp.h" 
+#include "../Eigen/Dense"
+#include "../Eigen/LU" 
 
+using namespace Eigen;
+using namespace std;
 
-double meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
-	int i,j;
-	double squareError = 0;
+	int i,j,index;; 
 
-	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
-		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
-		printf("Terminating.\n");
-		exit(0);
-	}
+	int numActiveNodes = getNumChromosomeActiveNodes(chromo);
+	int numSamples = getNumDataSetSamples(data);
+	int numOutputs = getNumDataSetOutputs(data);
 
-	if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
-		printf("Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n");
-		printf("Terminating.\n");
-		exit(0);
-	}
-
-	for(i=0; i<getNumDataSetSamples(data); i++){
+	MatrixXd states(numSamples,numActiveNodes);
+	MatrixXd desiredOutputs(numSamples,numOutputs);
+	MatrixXd Wout;
+		
+	// set the reservoir state
+	for(i = 0; i<numSamples; i++){
 
 		executeChromosome(chromo, getDataSetSampleInputs(data, i));
 
-		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
+		index = 0;
 
-			squareError += pow(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
+		for(j=0; j<getNumChromosomeActiveNodes(chromo); j++){
+		
+			if(isNodeActive(chromo, j)){
+
+				states(i,j) = getChromosomeNodeValue(chromo, j);
+
+				index++;
+			}
 		}
 	}
 
-	return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
+	// set the desired outputs
+	for(i = 0; i < numSamples; i++){
+		for( j=0; j<numOutputs; j++){
+
+			desiredOutputs(i,j) = getDataSetSampleOutput(data, i, j);
+		}
+	}
+
+
+	cout << numActiveNodes << "\n\n";
+
+	// calculate the output weights
+	Wout = states.jacobiSvd(ComputeThinU | ComputeThinV).solve(desiredOutputs);
+
+
+	
+
+	cout << Wout << endl;
+
+
+	exit(0);
+	return 0;
 }
 
 
@@ -57,10 +86,11 @@ int main(void){
 
 	struct parameters* params = NULL;
 	struct chromosome* chromo = NULL;
+	struct dataSet* trainingData = NULL;
 
 	int numInputs = 1;
 	int numNodes = 10;
-	int numOutputs = 10;
+	int numOutputs = 1;
 	int arity = 2;
 
 	double testInputs[1];
@@ -72,20 +102,16 @@ int main(void){
 	addNodeFunction(params, "sig");
 	chromo = initialiseChromosome(params);
 	
-	executeChromosome(chromo, testInputs);
-	printf("Generated output: %f\n", getChromosomeOutput(chromo, 0));
+	trainingData = initialiseDataSetFromFile("src/sin2saw.csv");
 
-	if(isNodeActive(chromo, 5))
-		printf("\nYarp\n");
+	setCustomFitnessFunction(params, reservoirFitnesses, "reservoir");
+	setShortcutConnections(params, 0);
 
-	//setCustomFitnessFunction(params, meanSquareError, "MSE");
+	printParameters(params);
 
-	//printParameters(params);
-
-	printChromosome(chromo, 1);
-	setOutputToEachNode(chromo);
-	printChromosome(chromo, 1);
-
+	setChromosomeFitness(params, chromo, trainingData);
+	
+	freeDataSet(trainingData);
 	freeParameters(params);
 	freeChromosome(chromo);
 
