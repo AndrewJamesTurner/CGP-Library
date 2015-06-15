@@ -17,7 +17,7 @@
 */
 
 #include <iostream>
-//#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "cgp.h" 
@@ -46,11 +46,11 @@ double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, 
 
 		index = 0;
 
-		for(j=0; j<getNumChromosomeActiveNodes(chromo); j++){
+		for(j=0; j<getNumChromosomeNodes(chromo); j++){
 		
 			if(isNodeActive(chromo, j)){
 
-				states(i,j) = getChromosomeNodeValue(chromo, j);
+				states(i,index) = getChromosomeNodeValue(chromo, j);
 
 				index++;
 			}
@@ -66,20 +66,91 @@ double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, 
 	}
 
 
-	cout << numActiveNodes << "\n\n";
+	// calculate the output weights
+	Wout = states.colPivHouseholderQr().solve(desiredOutputs);
+	//Wout = states.jacobiSvd(ComputeThinU | ComputeThinV).solve(desiredOutputs);
+
+
+	// return the error
+	return (states*Wout - desiredOutputs).norm() / desiredOutputs.norm();
+}
+
+
+void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
+
+	int i,j,index;; 
+
+	FILE *fp;
+
+	int numActiveNodes = getNumChromosomeActiveNodes(chromo);
+	int numSamples = getNumDataSetSamples(data);
+	int numOutputs = getNumDataSetOutputs(data);
+	int numInputs = getNumDataSetInputs(data);
+
+	MatrixXd states(numSamples,numActiveNodes);
+	MatrixXd desiredOutputs(numSamples,numOutputs);
+	MatrixXd actualOutputs;
+	MatrixXd Wout;
+		
+	// set the reservoir state
+	for(i = 0; i<numSamples; i++){
+
+		executeChromosome(chromo, getDataSetSampleInputs(data, i));
+
+		index = 0;
+
+		for(j=0; j<getNumChromosomeNodes(chromo); j++){
+		
+			if(isNodeActive(chromo, j)){
+
+				states(i,index) = getChromosomeNodeValue(chromo, j);
+
+				index++;
+			}
+		}
+	}
+
+	// set the desired outputs
+	for(i = 0; i < numSamples; i++){
+		for( j=0; j<numOutputs; j++){
+			desiredOutputs(i,j) = getDataSetSampleOutput(data, i, j);
+		}
+	}
 
 	// calculate the output weights
+	//Wout = states.colPivHouseholderQr().solve(desiredOutputs);
 	Wout = states.jacobiSvd(ComputeThinU | ComputeThinV).solve(desiredOutputs);
 
+	// calculate the actual outputs
+	actualOutputs = states * Wout;
 
+	fp = fopen("tmp.csv", "w");
+	fprintf(fp, "inputs,DesiredOutputs,ActualOutputs,\n");
 	
+	for(i = 0; i<numSamples; i++){
+		
+		for(j=0; j<numInputs; j++){
+			fprintf(fp, "%f,", getDataSetSampleInput(data, i, j));
+		}
 
-	cout << Wout << endl;
+		for(j=0; j<numOutputs; j++){
+			fprintf(fp, "%f,", desiredOutputs(i,j));
+		}
+
+		for(j=0; j<numOutputs; j++){
+			fprintf(fp, "%f,", actualOutputs(i,j));
+		}
 
 
-	exit(0);
-	return 0;
+		fprintf(fp, "\n");
+	}
+	
+//	fprintf(fp, "Run,Fitness,Generations,Active Nodes\n");
+	fclose(fp);
+	
+	
 }
+
 
 
 int main(void){
@@ -89,28 +160,31 @@ int main(void){
 	struct dataSet* trainingData = NULL;
 
 	int numInputs = 1;
-	int numNodes = 10;
+	int numNodes = 100;
 	int numOutputs = 1;
-	int arity = 2;
+	int arity = 5;
 
-	double testInputs[1];
-	testInputs[0] = 1;
+	int numGens = 10;
 
-	//getChromosomeNodeValue
 
+	// set up parameters
 	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
-	addNodeFunction(params, "sig");
-	chromo = initialiseChromosome(params);
+	addNodeFunction(params, "sig"); // softsign
+	setConnectionWeightRange(params, 5);
+	setCustomFitnessFunction(params, reservoirFitnesses, "reservoir");
+	setRecurrentConnectionProbability(params, 0.5);
+	setMutationRate(params, 0.05);
+	setShortcutConnections(params, 0);
+	printParameters(params);
 	
+	// set up traning data
 	trainingData = initialiseDataSetFromFile("src/sin2saw.csv");
 
-	setCustomFitnessFunction(params, reservoirFitnesses, "reservoir");
-	setShortcutConnections(params, 0);
-
-	printParameters(params);
-
-	setChromosomeFitness(params, chromo, trainingData);
+	// run CGP
+	chromo = runCGP(params, trainingData, numGens);
 	
+	saveChromosomeBehaviour(chromo, trainingData);
+		
 	freeDataSet(trainingData);
 	freeParameters(params);
 	freeChromosome(chromo);
