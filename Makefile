@@ -54,7 +54,7 @@ so: src/cgp.c
 	@$(CC) -shared -o libcgp.so cgp.o -lm -O3
 
 docs: ./src/cgp.h ./naturaldocs/customFiles/*
-	@naturaldocs -i ./src -i ./naturaldocs/customFiles -o FramedHTML ./docs -p ./naturaldocs
+	@naturaldocs -i ./src -i ./naturaldocs/customFiles -o HTML ./docs -p ./naturaldocs
 
 profile: examples/averageBehaviour.c src/cgp.c src/cgp.h
 	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -pg -lm
