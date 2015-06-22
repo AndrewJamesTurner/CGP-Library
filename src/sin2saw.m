@@ -8,7 +8,7 @@ pkg load signal
 i = 1;
 saw = -1;
 
-for x = 0:0.01:100
+for x = 0:0.01:50
 
 	inputs(i) = i;
 	sinWave(i) = sin(x);
