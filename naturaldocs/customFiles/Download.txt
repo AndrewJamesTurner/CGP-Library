@@ -10,7 +10,7 @@ Version 2.2:
 		* Added functionality to query if a given chromosome node is active. See <isNodeActive>
 		* Additional data sets have been added to the default install including the majority of the Proben benchmarks; courtesy of Sam Pick. 
 
-	Date: XX/XX/XX
+	Date: 23/06/15
 
 	Download: <http://cgplibrary.co.uk/CGP-Library-V2.2.zip>
 
