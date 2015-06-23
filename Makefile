@@ -7,11 +7,14 @@ CC=gcc
 	# -O3			turns on all optimizations
 	# -g			turns on debugging information	
 	# -pg			turns on profiling information (for gprof)
+	# -w			ignore warning 
+	# -fpermissive
+	# -std=c++11		use c++ 2011 standard
 	
 CFLAGS= -pedantic -Wall -O3
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
-	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm 
 
 createDataSet: examples/createDataSet.c src/cgp.c src/cgp.h
 	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/cgp.h $(CFLAGS)  -lm
@@ -49,6 +52,9 @@ visualization: examples/visualization.c src/cgp.c src/cgp.h
 printChromoEqu: examples/printChromoEqu.c src/cgp.c src/cgp.h
 	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c src/cgp.h $(CFLAGS) -lm
 
+reservoirCGPANN: examples/reservoirCGPANN.cpp src/cgp.c src/cgp.h
+	@g++ -o reservoirCGPANN examples/reservoirCGPANN.cpp src/cgp.c src/cgp.h $(CFLAGS) -lm 
+
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
 	@$(CC) -shared -o libcgp.so cgp.o -lm -O3
@@ -67,6 +73,12 @@ python: src/cgp.c src/cgp.h
 	@ld -shared cgp.o cgp_wrap.o -o bindings/_cgp.so
 	@rm cgp.o cgp_wrap.o 
 	#@rm bindings/cgp_wrap.c
+
+
+
+
+# @gcc -o reservoirCGPANN src/reservoirCGPANN.cpp -lcgp $(CFLAGS) -lm
+
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log tmp.pdf *.out 
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen reservoirCGPANN *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log *.pdf *.out 
 	@rm -rf obj/

@@ -83,6 +83,7 @@
 			> evolutionary strategy:			+
 			> mutation rate:					0.05
 			> Recurrent Connection Probability	0.00
+			> Shortcut Connections				1
 			> connection weight range:			1
 			> update frequency:					1
 			> mutation type:					probabilistic
@@ -326,7 +327,7 @@
 		See Also:
 			<clearFunctionSet>, <addCustomNodeFunction>
 	*/
-	DLL_EXPORT void addNodeFunction(struct parameters *params, char *functionNames);
+	DLL_EXPORT void addNodeFunction(struct parameters *params, char const *functionNames);
 
 
 
@@ -380,7 +381,7 @@
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
 	*/
-	DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char *functionName, int maxNumInputs);
+	DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char const *functionName, int maxNumInputs);
 
 
 	/*
@@ -554,6 +555,23 @@
 	*/
 	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
 
+
+
+	/*
+		Function: setShortcutConnections
+
+		Sets whether shortcut connections are used in the given parameters.
+
+		Shortcut Connections specifies whether an output can connect directly to an input.
+		Only Shortcut Connections of values 0 (no) and 1 (yes) are valid. If an invalid value is given warning is displayed and the shortcut Connections value is left unchanged.
+
+		Parameters:
+			params - pointer to parameters structure.
+			shortcutConnections - whether shortcut connections are used
+	*/
+	DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutConnections);
+
+
 	/*
 		Function: setConnectionWeightRange
 
@@ -628,7 +646,7 @@
 		
 
 	*/
-	DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char *fitnessFunctionName);
+	DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char const *fitnessFunctionName);
 
 
 	/*
@@ -692,7 +710,7 @@
 		See Also:
 			<setCustomFitnessFunction>	
 	*/
-	DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char *selectionSchemeName);
+	DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char const *selectionSchemeName);
 
 
 	/*
@@ -741,7 +759,7 @@
 		
 	*/
 	DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void
-	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char *reproductionSchemeName);
+	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
 
 
 	
@@ -795,7 +813,7 @@
 				<setMutationRate>
 
 	*/
-	DLL_EXPORT void setMutationType(struct parameters *params, char *mutationType);
+	DLL_EXPORT void setMutationType(struct parameters *params, char const *mutationType);
 
 
 	/*
@@ -862,7 +880,7 @@
 		See Also:
 			<freeChromosome>, <initialiseChromosome>, <initialiseChromosomeFromChromosome>,
 	*/
-	DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char *file);
+	DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char const *file);
 
 	/*
 		Function: initialiseChromosomeFromChromosome
@@ -1000,6 +1018,34 @@
 
 
 	/*
+		Function: getChromosomeNodeValue
+			Gets the node value of the given chromosome and node *after* it has been executed using <executeChromosome>.
+
+			After a given chromosome has been executed using <executeChromosome> the chromosome node values are made available using <getChromosomeNodeValue>.
+
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+				output - The index of the node value to be retrieved
+								
+		See Also:
+				<executeChromosome>, <getChromosomeOutput>
+	*/
+	DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
+
+
+	/*
+		Function: isNodeActive
+			Returns whether the given node in the given chromosome is active. 1-active, 0-inactive
+
+			Parameters:
+				chromo - pointer to an initialised chromosome structure.
+				node - The index of the node
+	*/
+	DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node);
+
+
+	
+	/*
 		Function: saveChromosome
 			Saves the given chromosome to a file which can used to initialise new chromosomes.
 			
@@ -1015,7 +1061,7 @@
 		See Also:
 			<initialiseChromosomeFromFile>, <saveChromosomeDot> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char *fileName);
+	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char const *fileName);
 
 	/*
 		Function: saveChromosomeDot
@@ -1040,7 +1086,7 @@
 		See Also:
 			<saveChromosome> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char *fileName);
+	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char const *fileName);
 
 
 	/*
@@ -1072,7 +1118,7 @@
 		See Also:
 			<saveChromosome> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char *fileName);
+	DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char const *fileName);
 	
 
 	/*
@@ -1357,7 +1403,7 @@
 		See Also:
 			<freeDataSet>, <initialiseDataSetFromArrays>, <printDataSet>
 	*/
-	DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char *file);
+	DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char const *file);
 
 
 	/*
@@ -1399,7 +1445,7 @@
 		See Also:
 			<initialiseDataSetFromFile>, <freeDataSet>
 	*/
-	DLL_EXPORT void saveDataSet(struct dataSet *data, char *fileName);
+	DLL_EXPORT void saveDataSet(struct dataSet *data, char const *fileName);
 
 
 	/*
@@ -1548,7 +1594,7 @@
 			els - pointer to an initialised results structure.
 			fileName - char array giving the location of the <results> to be saved.
 	*/
-	DLL_EXPORT void saveResults(struct results *rels, char *fileName);
+	DLL_EXPORT void saveResults(struct results *rels, char const *fileName);
 
 
 	/*

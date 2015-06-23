@@ -146,10 +146,27 @@
 					<Add directory="/usr/include/python2.7" />
 				</Compiler>
 			</Target>
+			<Target title="reservoirCGPANN">
+				<Option output="reservoirCGPANN" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-DNO_DLL" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Eigen/Dense">
+			<Option target="reservoirCGPANN" />
+		</Unit>
+		<Unit filename="Eigen/LU">
+			<Option target="reservoirCGPANN" />
+		</Unit>
 		<Unit filename="bindings/cgp_wrap.c">
 			<Option compilerVar="CC" />
 			<Option target="pythonBindings" />
@@ -193,6 +210,9 @@
 		<Unit filename="examples/recurrentConnections.c">
 			<Option compilerVar="CC" />
 			<Option target="recurrentConnections" />
+		</Unit>
+		<Unit filename="examples/reservoirCGPANN.cpp">
+			<Option target="reservoirCGPANN" />
 		</Unit>
 		<Unit filename="examples/visualization.c">
 			<Option compilerVar="CC" />
