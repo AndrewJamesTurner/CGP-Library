@@ -226,7 +226,7 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 	params->mutationRate = 0.05;
 	params->recurrentConnectionProbability = 0.0;
 	params->connectionWeightRange = 1;
-	params->shortcutConnections = 0;	
+	params->shortcutConnections = 1;	
 
 	params->targetFitness = 0;
 
