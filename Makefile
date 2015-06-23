@@ -9,8 +9,9 @@ CC=gcc
 	# -pg			turns on profiling information (for gprof)
 	# -w			ignore warning 
 	# -fpermissive
+	# -std=c++11		use c++ 2011 standard
 	
-CFLAGS= -fpermissive -w  
+CFLAGS= -pedantic -Wall -O3
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm 
