@@ -2,17 +2,30 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
+Version 2.2:
+	Comments:
+		* *Now compiles with C++ compilers*
+		* Added CGP shortcut connections option. See <setShortcutConnections>
+		* Added functionality to get the current output value of chromosome nodes. See <getChromosomeNodeValue>
+		* Added functionality to query if a given chromosome node is active. See <isNodeActive>
+		* Additional data sets have been added to the default install including the majority of the Proben benchmarks; courtesy of Sam Pick. 
+
+	Date: XX/XX/XX
+
+	Download: <http://cgplibrary.co.uk/CGP-Library-V2.2.zip>
+
+
 Version 2.1:
 	Comments:
 		* *PERFORMANCE IMPROVEMENTS* 
 		* Added pi node function
 		* Added 1 node function
 		* Added 0 node function
-		* Reduced the precession of connection weight values displayed using saveChromosomeDot() to two decimal places. Improves readability. 
-		* Replaced setFitnessFunction() with setCustomFitnessFunction(). setFitnessFunction() is depreciated.
-		* Replaced setSelectionScheme() with setCustomSelectionScheme(). setSelectionScheme() is depreciated.
-		* Replaced setReproductionScheme() with setCustomReproductionScheme(). setReproductionScheme() is depreciated.
-		* Replaced addNodeFunctionCustom() with addCustomNodeFunction(). addNodeFunctionCustom() is depreciated.
+		* Reduced the precession of connection weight values displayed using <saveChromosomeDot> to two decimal places. Improves readability. 
+		* Replaced setFitnessFunction with <setCustomFitnessFunction>. setFitnessFunction is depreciated.
+		* Replaced setSelectionScheme with <setCustomSelectionScheme>. setSelectionScheme is depreciated.
+		* Replaced setReproductionScheme with <setCustomReproductionScheme>. setReproductionScheme is depreciated.
+		* Replaced addNodeFunctionCustom with <addCustomNodeFunction>. addNodeFunctionCustom is depreciated.
 		
 	
 	Date: 09/10/14
@@ -33,7 +46,7 @@ Version 2.0:
 
 Version 1.1: 
 	Comments:
-		* *FIXED SIGNIFICANT BUG* in runCGP (incorrect chromosome was returned if a perfect solution was not found)
+		* *FIXED SIGNIFICANT BUG* in <runCGP> (incorrect chromosome was returned if a perfect solution was not found)
 		* Added power function to function set.
 		* Made the.dot graphviz contain more detail; including node number and connection number.
 
