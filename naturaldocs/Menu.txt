@@ -4,7 +4,7 @@ Format: 1.51
 Title: CGP-Library
 SubTitle: Documentation
 
-Footer: Copyright (C) 2014 Andrew James Turner
+Footer: Copyright (C) 2015 Andrew James Turner
 
 # You can add a timestamp to your documentation like one of these:
 # Timestamp: Generated on month day, year

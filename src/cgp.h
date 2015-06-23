@@ -65,9 +65,9 @@
 	/*
 		variable: parameters
 
-		Stores general parameters used by the CGP-Library.
+		Stores general <parameters> used by the CGP-Library.
 
-		The parameters structure is used extensively by the CGP-Library
+		The <parameters> structure is used extensively by the CGP-Library
 		and controls every aspect of the evolutionary algorithm.  
 
 		The values stored in <parameters> are set to default values when
@@ -103,6 +103,11 @@
 			of a recurrent connection being created when a connection
 			gene is mutated. For regular acyclic feed-forward programs
 			leave as zero. For recrrent programs see <setRecurrentConnectionProbability>.
+
+			- The Shortcut Connections controls whether output genes 
+			can index program inputs. If set to 1 (yes) output genes can
+			index program inputs. If set to 0 (no) output genes cannot 
+			index program inputs. See <setShortcutConnections> 
 
 			- The connection weight range controls the range of values
 			which the connection weights can take. Connection weights
@@ -179,7 +184,7 @@
 	/*
 		Function: initialiseParameters
 
-		Initialises a parameters structure used throughout the CGP-Library. The arguments describe the structure of the chromosomes created when using <initialiseChromosome>, <runCGP> or <repeatCGP>.
+		Initialises a <parameters> structure used throughout the CGP-Library. The arguments describe the structure of the chromosomes created when using <initialiseChromosome>, <runCGP> or <repeatCGP>.
 
 		Parameters:
 			numInputs - the number of chromosome inputs required.
@@ -188,7 +193,7 @@
 			arity - the arity of each chromosome node required.
 
 		Returns:
-			A pointer to an initialised parameters structure.
+			A pointer to an initialised <parameters> structure.
 
 		Example:
 
@@ -213,10 +218,10 @@
 	/*
 		Function: freeParameters
 
-		Frees parameters structure instance.
+		Frees <parameters> structure instance.
 
 		Parameters:
-			params - pointer to initialised parameters structure.
+			params - pointer to initialised <parameters> structure.
 
 		See Also:
 			<initialiseParameters>
@@ -226,14 +231,14 @@
 	/*
 		Function: printParameters
 
-		Prints the given parameters to the screen in a human readable format.
+		Prints the given <parameters> to the screen in a human readable format.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			
 		Example:
 		
-			Typical parameters structure printed using <printParameters>.
+			Typical <parameters> structure printed using <printParameters>.
 			
 			(begin code)
 			---------------------------------------------------
@@ -261,14 +266,14 @@
 	/*
 		Function: addNodeFunction
 
-		Adds pre-defined node function(s) to the set of functions stored by a parameters structure. These are the node functions available when using <runCGP>, <repeatCGP> and <mutateChromosome>.
+		Adds pre-defined node function(s) to the set of functions stored by a <parameters> structure. These are the node functions available when using <runCGP>, <repeatCGP> and <mutateChromosome>.
 
 		If one function name is given that function is added to the function set. If multiple node function names are given then each must be separated by a ','.
 
 		If a node function name is given which is not recognised, a warning is given and that function is not added to the function set.
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to <parameters> structure
 			functionNames - the name(s) of the function(s) to be added to the function set
 
 		Node Functions:
@@ -334,7 +339,7 @@
 	/*
 		Function: addCustomNodeFunction
 
-		Adds custom node function to the set of functions stored by a parameters structure. See <addNodeFunction>.
+		Adds custom node function to the set of functions stored by a <parameters> structure. See <addNodeFunction>.
 
 		The custom fitness function prototype must take the form
 
@@ -345,7 +350,7 @@
 		where the user replaces 'nodeFunctionName' with their own function name.
 
 		Parameters:
-			params - pointer to an initialised parameters structure
+			params - pointer to an initialised <parameters> structure
 			function - the custom node function
 			functionName - the name of the added function
 			maxNumInputs - maximum number of inputs to function (-1 is unlimited)
@@ -387,10 +392,10 @@
 	/*
 		Function: clearFunctionSet
 
-		Resets the function set stored by a parameters structure to contain no functions.
+		Resets the function set stored by a <parameters> structure to contain no functions.
 
 		Parameters:
-			params - pointer to an initialised parameters structure
+			params - pointer to an initialised <parameters> structure
 
 		See Also:
 			<addNodeFunction>, <addCustomNodeFunction>
@@ -401,14 +406,14 @@
 	/*
 		Function: setNumInputs
 
-			Sets the number of chromosome inputs in the given parameters.
+			Sets the number of chromosome inputs in the given <parameters>.
 
 			The given number of chromosome inputs is also parsed to ensure a valid number of chromosome inputs.
 			A number of chromosome inputs <0 is invalid. If an invalid number of chromosome inputs is give an error is displayed
 			and CGP-Library terminates.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			numInputs - The number of chromosome inputs to be set.
 		
 		See Also:
@@ -421,14 +426,14 @@
 	/*
 		Function: setNumNodes
 
-			Sets the number of chromosome nodes in the given parameters.
+			Sets the number of chromosome nodes in the given <parameters>.
 
 			The given number of chromosome nodes is also parsed to ensure a valid number of chromosome nodes.
 			A number of chromosome nodes <0 is invalid. If an invalid number of chromosome nodes is give an error is displayed
 			and CGP-Library terminates.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			nodes - The number of chromosome nodes to be set.
 			
 		See Also:
@@ -439,14 +444,14 @@
 	/*
 		Function: setNumOutputs
 
-			Sets the number of chromosome outputs in the given parameters.
+			Sets the number of chromosome outputs in the given <parameters>.
 
 			The given number of chromosome outputs is also parsed to ensure a valid number of chromosome outputs.
 			A number of chromosome outputs <1 is invalid. If an invalid number of chromosome outputs is give an error is displayed
 			and CGP-Library terminates.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			numOutputs - The number of chromosome outputs to be set.
 			
 		See Also:
@@ -458,14 +463,14 @@
 	/*
 		Function: setArity
 
-			Sets the arity of the chromosome nodes in the given parameters.
+			Sets the arity of the chromosome nodes in the given <parameters>.
 
 			The given arity for each chromosome node is also parsed to ensure a valid chromosome node arity.
 			A chromosome node arity <1 is invalid. If an invalid chromosome node arity is give an error is displayed
 			and CGP-Library terminates.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			arity - The chromosome node arity to be set.
 			
 		See Also:
@@ -478,14 +483,14 @@
 	/*
 		Function: setMu
 
-		Sets the mu value in the given parameters.
+		Sets the mu value in the given <parameters>.
 
 		The given mu value is also parsed to ensure a valid mu value.
 		mu values <1 are invalid. If an invalid mu value is give a
 		warning is displayed and the mu value is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			mu - The value of mu to be set.
 	*/
 	DLL_EXPORT void setMu(struct parameters *params, int mu);
@@ -494,14 +499,14 @@
 	/*
 		Function: setLambda
 
-		Sets the lambda value in the given parameters.
+		Sets the lambda value in the given <parameters>.
 
 		The given lambda value is also parsed to ensure a valid lambda value.
 		lambda values <1 are invalid. If an invalid lambda value is give a
 		warning is displayed and the lambda value is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			lambda - The value of lambda to be set.
 	*/
 	DLL_EXPORT void setLambda(struct parameters *params, int lambda);
@@ -510,14 +515,14 @@
 	/*
 		Function: setEvolutionaryStrategy
 
-		Sets the evolutionary strategy in the given parameters.
+		Sets the evolutionary strategy in the given <parameters>.
 
 		The given evolutionary strategy is also parsed to ensure a valid evolutionary strategy.
 		Evolutionary strategies other than '+' and ',' are invalid. If an invalid evolutionary strategy is give a
 		warning is displayed and the evolutionary strategy is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			evolutionaryStrategy - The evolutionary strategy to be set.
 	*/
 	DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
@@ -526,14 +531,14 @@
 	/*
 		Function: setMutationRate
 
-		Sets the mutation rate in the given parameters.
+		Sets the mutation rate in the given <parameters>.
 
 		The given mutation rate is also parsed to ensure a valid mutation rate.
 		Mutation rate <0 or >1 are invalid. If an invalid mutation rate is give a
 		warning is displayed and the mutation rate is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			mutationRate - The value of the mutation rate to be set.
 	*/
 	DLL_EXPORT void setMutationRate(struct parameters *params, double mutationRate);
@@ -543,14 +548,14 @@
 	/*
 		Function: setRecurrentConnectionProbability
 
-		Sets the recurrent connection probability in the given parameters.
+		Sets the recurrent connection probability in the given <parameters>.
 
 		The recurrent connection probability specifies the probability that a mutation to a connection gene will create a recurrent connection; otherwise a standard feed forward connection is made. The given recurrent connection probability is also parsed to ensure a valid recurrent connection probability.
 		Recurrent connection probability <0 or >1 are invalid. If an invalid recurrent connection probability is give a
 		warning is displayed and the recurrent connection probability is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			recurrentConnectionProbability - The value of the recurrent connection probability to be set.
 	*/
 	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
@@ -560,13 +565,13 @@
 	/*
 		Function: setShortcutConnections
 
-		Sets whether shortcut connections are used in the given parameters.
+		Sets whether shortcut connections are used in the given <parameters>.
 
 		Shortcut Connections specifies whether an output can connect directly to an input.
-		Only Shortcut Connections of values 0 (no) and 1 (yes) are valid. If an invalid value is given warning is displayed and the shortcut Connections value is left unchanged.
+		Only Shortcut Connections of values 0 (no) and 1 (yes) are valid. If an invalid value is given, a warning is displayed and the shortcut connections value is left unchanged.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			shortcutConnections - whether shortcut connections are used
 	*/
 	DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutConnections);
@@ -575,10 +580,10 @@
 	/*
 		Function: setConnectionWeightRange
 
-		Sets the connection weight range in the given parameters. (only used by NeuroEvolution)
+		Sets the connection weight range in the given <parameters>. (only used by NeuroEvolution)
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			weightRange - The connection weight range to be set. (the range is +/- weightRange)
 	*/
 	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange);
@@ -597,7 +602,7 @@
 		(end)
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			fitnessFunction - the custom fitness function
 			fitnessFunctionName - name of custom fitness function
 			
@@ -664,7 +669,7 @@
 		
 		Parameters:
 		
-			params - pointer to parameters structure
+			params - pointer to <parameters> structure
 			selectionScheme - the custom selection scheme
 			selectionSchemeName - name of custom selection scheme
 		
@@ -771,7 +776,7 @@
 			In all cases lower fitness values are used to represent fitter chromosomes.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			targetFitness - The target fitness to be set.
 	*/
 	DLL_EXPORT void setTargetFitness(struct parameters *params, double targetFitness);
@@ -781,7 +786,7 @@
 
 			Sets the mutation method used when mutating chromosomes.
 
-			Used to set the mutation method used when running <runCGP> and <repeatCGP> or when mutating an individual chromosome using <mutateChromosome>. The type of mutation used is set the parameters structure.
+			Used to set the mutation method used when running <runCGP> and <repeatCGP> or when mutating an individual chromosome using <mutateChromosome>. The type of mutation used is set the <parameters> structure.
 
 			If an invalid mutation type is given a warning is displayed and the mutation type is left unchanged.
 
@@ -796,7 +801,7 @@
 				- "single". Keeps mutating randomly selected genes until an active gene is mutated to a new allele. Note: this is independent of the mutation rate set. Note: this does not mutate weight genes. 
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			mutationType - char array specifying the mutation type.
 			
 		Example:
@@ -827,7 +832,7 @@
 			A value of '0' is a special case which causes not updates to be shown.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			updateFrequency - update frequency in generations.
 	*/
 	DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency);
@@ -841,10 +846,10 @@
 
 	/*
 		Function: initialiseChromosome
-			Initialises a chromosome based on the given parameters.
+			Initialises a chromosome based on the given <parameters>.
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to <parameters> structure
 
 		Returns:
 			A pointer to an initialised chromosome structure.
@@ -1123,10 +1128,10 @@
 
 	/*
 		Function: mutateChromosome
-			Mutate the given chromosome using the mutation method described in the given parameters.
+			Mutate the given chromosome using the mutation method described in the given <parameters>.
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to <parameters> structure
 			chromo - pointer to chromosome structure.
 
 		Example:
@@ -1158,10 +1163,10 @@
 
 	/*
 		Function: setChromosomeFitness
-			Sets the fitness of the chromosome using the fitness function given in the parameters
+			Sets the fitness of the chromosome using the fitness function given in the <parameters>
 
 		Parameters:
-			params - pointer to parameters structure
+			params - pointer to <parameters> structure
 			chromo - pointer to chromosome structure.
 			data - pointer to the data used by the fitness function (NULL if not used)
 
@@ -1736,13 +1741,13 @@
 
 		Applies CGP to the given task.
 
-		Returns the best chromosome found after applying CGP to a given task using the specified parameters. Depending upon the update frequency given in parameters (<setUpdateFrequency>) the progress made by CGP will be displayed in the terminal.
+		Returns the best chromosome found after applying CGP to a given task using the specified <parameters>. Depending upon the update frequency given in <parameters> (<setUpdateFrequency>) the progress made by CGP will be displayed in the terminal.
 
 		Note:
 			As runCGP returns an initialised chromosome this should later be free'd using <freeChromosome>.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			data - pointer to dataSet structure.
 			gens - the number of allowed generations before terminating the search.
 
@@ -1786,7 +1791,7 @@
 			As repeatCGP returns an initialised results structure this should later be free'd using <freeResults>.
 
 		Parameters:
-			params - pointer to parameters structure.
+			params - pointer to <parameters> structure.
 			data - pointer to dataSet structure.
 			numGens - the number of allowed generations before terminating the search.
 			numRuns - the number of times CGP will be applied to the given task

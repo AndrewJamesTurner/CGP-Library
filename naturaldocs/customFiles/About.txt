@@ -23,7 +23,7 @@ For those familiar with the open source cross platform IDE Code::Blocks (<http:/
 
 Title: Author
 
-Andrew James Turner, Phd student at The University of York, 2014.
+Andrew James Turner, Phd student at The University of York, 2015.
 
 Homepage: <http://andrewjamesturner.co.uk/>
 
@@ -34,7 +34,7 @@ Title: Citations
 If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal letter. Emails informing of any publications which make reference to the CGP-Library would also be warmly received. 
 
 
-A. J. Turner and J. F. Miller. *Introducing A Cross Platform Open Source Cartesian Genetic Programming Library*. The Journal of Genetic Programming and Evolvable Machines, 2014.
+A. J. Turner and J. F. Miller. *Introducing A Cross Platform Open Source Cartesian Genetic Programming Library*. The Journal of Genetic Programming and Evolvable Machines, 16, 83-91, 2014.
 
 Title: Contact
 
