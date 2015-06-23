@@ -20,16 +20,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "cgp.h" 
+#include "../src/cgp.h"
 #include "../Eigen/Dense"
-#include "../Eigen/LU" 
+#include "../Eigen/LU"
 
 using namespace Eigen;
 using namespace std;
 
 double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
-	int i,j,index;; 
+	int i,j,index;;
 
 	int numActiveNodes = getNumChromosomeActiveNodes(chromo);
 	int numSamples = getNumDataSetSamples(data);
@@ -38,7 +38,7 @@ double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, 
 	MatrixXd states(numSamples,numActiveNodes);
 	MatrixXd desiredOutputs(numSamples,numOutputs);
 	MatrixXd Wout;
-		
+
 	// set the reservoir state
 	for(i = 0; i<numSamples; i++){
 
@@ -47,7 +47,7 @@ double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, 
 		index = 0;
 
 		for(j=0; j<getNumChromosomeNodes(chromo); j++){
-		
+
 			if(isNodeActive(chromo, j)){
 
 				states(i,index) = getChromosomeNodeValue(chromo, j);
@@ -78,7 +78,7 @@ double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, 
 
 void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 
-	int i,j,index;; 
+	int i,j,index;;
 
 	FILE *fp;
 
@@ -91,7 +91,7 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 	MatrixXd desiredOutputs(numSamples,numOutputs);
 	MatrixXd actualOutputs;
 	MatrixXd Wout;
-		
+
 	// set the reservoir state
 	for(i = 0; i<numSamples; i++){
 
@@ -100,7 +100,7 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 		index = 0;
 
 		for(j=0; j<getNumChromosomeNodes(chromo); j++){
-		
+
 			if(isNodeActive(chromo, j)){
 
 				states(i,index) = getChromosomeNodeValue(chromo, j);
@@ -126,9 +126,9 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 
 	fp = fopen("tmp.csv", "w");
 	fprintf(fp, "inputs,DesiredOutputs,ActualOutputs,\n");
-	
+
 	for(i = 0; i<numSamples; i++){
-		
+
 		for(j=0; j<numInputs; j++){
 			fprintf(fp, "%f,", getDataSetSampleInput(data, i, j));
 		}
@@ -144,11 +144,11 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 
 		fprintf(fp, "\n");
 	}
-	
+
 //	fprintf(fp, "Run,Fitness,Generations,Active Nodes\n");
 	fclose(fp);
-	
-	
+
+
 }
 
 
@@ -176,15 +176,15 @@ int main(void){
 	setMutationRate(params, 0.05);
 	setShortcutConnections(params, 0);
 	printParameters(params);
-	
+
 	// set up traning data
-	trainingData = initialiseDataSetFromFile("src/sin2saw.csv");
+	trainingData = initialiseDataSetFromFile("dataSets/sin2saw.data");
 
 	// run CGP
 	chromo = runCGP(params, trainingData, numGens);
-	
+
 	saveChromosomeBehaviour(chromo, trainingData);
-		
+
 	freeDataSet(trainingData);
 	freeParameters(params);
 	freeChromosome(chromo);
