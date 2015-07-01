@@ -413,18 +413,6 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 	else if(strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, _tangent, "tan", 1);
 	}
-	else if(strncmp(functionName, "rand", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, _randFloat, "rand", 0);
-	}
-	else if(strncmp(functionName, "1", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, _constOne, "1", 0);
-	}
-	else if(strncmp(functionName, "0", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, _constZero, "0", 0);
-	}
-	else if(strncmp(functionName, "pi", FUNCTIONNAMELENGTH) == 0){
-		addCustomNodeFunction(params, _constPI, "pi", 0);
-	}
 	
 	
 	/* Boolean logic gates */
@@ -471,6 +459,18 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 		
 	/* other */
 	
+	else if(strncmp(functionName, "rand", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, _randFloat, "rand", 0);
+	}
+	else if(strncmp(functionName, "1", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, _constOne, "1", 0);
+	}
+	else if(strncmp(functionName, "0", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, _constZero, "0", 0);
+	}
+	else if(strncmp(functionName, "pi", FUNCTIONNAMELENGTH) == 0){
+		addCustomNodeFunction(params, _constPI, "pi", 0);
+	}
 	else if(strncmp(functionName, "wire", FUNCTIONNAMELENGTH) == 0){
 		addCustomNodeFunction(params, _wire, "wire", 1);
 	}	

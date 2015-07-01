@@ -4,7 +4,7 @@ CGP-Library is an open source project intended to be useful for many application
 
 Title: CGP-Library
 
-Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
+Copyright (c) Andrew James Turner 2015, andrew.turner@york.ac.uk
 
 Licensed under the GNU Lesser General Public License, available at <https://www.gnu.org/licenses/lgpl.html>
 
@@ -12,7 +12,7 @@ Licensed under the GNU Lesser General Public License, available at <https://www.
 
 Title: CGP-Library Documentation 
 
-Copyright (c) Andrew James Turner 2014, andrew.turner@york.ac.uk
+Copyright (c) Andrew James Turner 2015, andrew.turner@york.ac.uk
 
 Licensed under the GNU Free Documentation License, available at <https://www.gnu.org/licenses/fdl.html>
 
