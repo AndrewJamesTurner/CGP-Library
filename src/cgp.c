@@ -121,7 +121,6 @@ struct results{
 static void setChromosomeActiveNodes(struct chromosome *chromo);
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
-static int cmpChromosome(const void *a, const void *b);
 static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo);
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
@@ -1951,31 +1950,24 @@ static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex){
 
 
 /*
-	Switches the first chromosome with the last and then sorts the population.
+	Sorts the given array of chromosomes by fitness, lowest to highest
+	uses insertion sort (quickish and stable)
 */
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos){
 
-	qsort(chromoArray, numChromos, sizeof(struct chromosome *), cmpChromosome);
-}
+	int i,j;
+	struct chromosome *chromoTmp;
 
+	for(i=0; i<numChromos; i++){
+		for(j=i; j<numChromos; j++){
 
-/*
-	used by qsort in sortChromosomeArray
-*/
-static int cmpChromosome(const void *a, const void *b){
-   
-   const struct chromosome *chromoA = (* (struct chromosome **) a);
-   const struct chromosome *chromoB = (* (struct chromosome **) b);
-        
-   if(chromoA->fitness < chromoB->fitness){
-	   return -1;
-   }    
-   else if(chromoA->fitness == chromoB->fitness){
-	   return 0;
-   }
-   else{
-	   return 1;
-   }  
+			if(chromoArray[i]->fitness > chromoArray[j]->fitness){
+				chromoTmp = chromoArray[i];
+				chromoArray[i] = chromoArray[j];
+				chromoArray[j] = chromoTmp;
+			}
+		}
+	}
 }
 
 
@@ -3226,7 +3218,13 @@ static void mutateRandomParent(struct parameters *params, struct chromosome **pa
 
 /*
 	Selection scheme which selects the fittest members of the population
-	to be the parents.
+	to be the parents. 
+
+	The candidateChromos contains the current children followed by the
+ 	current parents. This means that using a stable sort to order
+	candidateChromos results in children being selected over parents if 
+	their fitnesses are equal. A desirable property in CGP to facilitate 
+	neutral genetic drift. 
 */
 static void selectFittest(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos ){
 

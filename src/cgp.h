@@ -666,6 +666,9 @@
 			(begin code)
 			void selectionSchemeNmes(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos);
 			(end)
+
+		Note:
+			The ordering of the candidateChromos is children followed by parents.
 		
 		Parameters:
 		
