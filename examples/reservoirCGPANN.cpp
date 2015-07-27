@@ -27,6 +27,50 @@
 using namespace Eigen;
 using namespace std;
 
+double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data);
+
+
+int main(void){
+
+	struct parameters* params = NULL;
+	struct chromosome* chromo = NULL;
+	struct dataSet* trainingData = NULL;
+
+	int numInputs = 1;
+	int numNodes = 100;
+	int numOutputs = 1;
+	int arity = 5;
+
+	int numGens = 10;
+
+	// set up parameters
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	addNodeFunction(params, "sig"); // softsign
+	setConnectionWeightRange(params, 5);
+	setCustomFitnessFunction(params, reservoirFitnesses, "reservoir");
+	setRecurrentConnectionProbability(params, 0.5);
+	setMutationRate(params, 0.05);
+	setShortcutConnections(params, 0);
+	printParameters(params);
+
+	// set up traning data
+	trainingData = initialiseDataSetFromFile("dataSets/sin2saw.data");
+
+	// run CGP
+	chromo = runCGP(params, trainingData, numGens);
+
+	saveChromosomeBehaviour(chromo, trainingData);
+
+	freeDataSet(trainingData);
+	freeParameters(params);
+	freeChromosome(chromo);
+
+	return 0;
+}
+
+
+
 double reservoirFitnesses(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
 
 	int i,j,index;;
@@ -124,7 +168,7 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 	// calculate the actual outputs
 	actualOutputs = states * Wout;
 
-	fp = fopen("tmp.csv", "w");
+	fp = fopen("reservoirResults.csv", "w");
 	fprintf(fp, "inputs,DesiredOutputs,ActualOutputs,\n");
 
 	for(i = 0; i<numSamples; i++){
@@ -145,58 +189,8 @@ void saveChromosomeBehaviour(struct chromosome *chromo, struct dataSet *data){
 		fprintf(fp, "\n");
 	}
 
-//	fprintf(fp, "Run,Fitness,Generations,Active Nodes\n");
 	fclose(fp);
-
-
 }
-
-
-
-int main(void){
-
-	struct parameters* params = NULL;
-	struct chromosome* chromo = NULL;
-	struct dataSet* trainingData = NULL;
-
-	int numInputs = 1;
-	int numNodes = 100;
-	int numOutputs = 1;
-	int arity = 5;
-
-	int numGens = 10;
-
-
-	// set up parameters
-	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
-	addNodeFunction(params, "sig"); // softsign
-	setConnectionWeightRange(params, 5);
-	setCustomFitnessFunction(params, reservoirFitnesses, "reservoir");
-	setRecurrentConnectionProbability(params, 0.5);
-	setMutationRate(params, 0.05);
-	setShortcutConnections(params, 0);
-	printParameters(params);
-
-	// set up traning data
-	trainingData = initialiseDataSetFromFile("dataSets/sin2saw.data");
-
-	// run CGP
-	chromo = runCGP(params, trainingData, numGens);
-
-	saveChromosomeBehaviour(chromo, trainingData);
-
-	freeDataSet(trainingData);
-	freeParameters(params);
-	freeChromosome(chromo);
-
-	return 0;
-}
-
-
-
-
-
-
 
 
 
