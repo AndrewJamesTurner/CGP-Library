@@ -56,7 +56,7 @@ int main(void){
 	printChromosome(chromoA, 0);
 
 	printf("chromoB without inactive nodes.\n");
-	printChromosome(chromoB, 1);
+	printChromosome(chromoB, 0);
 
 	saveChromosome(chromoB, "chromoB.chromo");
 
