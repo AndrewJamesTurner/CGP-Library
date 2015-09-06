@@ -1126,8 +1126,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 	const int numInputs = chromo->numInputs;
 	const int numActiveNodes = chromo->numActiveNodes;
 	const int numOutputs = chromo->numOutputs;
-	const int arity = chromo->arity;
-
+	
 	/* error checking */
 	if(chromo == NULL){
 		printf("Error: cannot execute uninitialised chromosome.\n Terminating CGP-Library.\n");
