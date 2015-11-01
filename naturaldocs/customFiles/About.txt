@@ -11,7 +11,7 @@ Information relating to Cartesian Genetic Programming is maintained at <http://w
 
 Title: News
 
-*CGP-Lirary 2.2 has been released!* Grab this latest version from the <Downloads> page. This update brings compatibility with C++ compliers and adds the CGP shortcut connections parameter.
+*CGP-Lirary 2.3 has been released!* Grab this latest version from the <Downloads> page. This update fixes a number of minor bugs.
 
 Title: Tutorials
 

@@ -2,8 +2,18 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
+Version: 2.3:
+
+		* Fixed bug where the number of inputs passed into a given node was always set to the max arity.
+		* Fixed bug where it was possible (although unlikely) for a parent to be selected over a child even if they have equal fitness (due to using an unstable sort).
+		* The index of nodes displayed using <printChromosomes> now match those displayed using <saveChromosomeDot>.
+
+	Date 01/09/15
+
+	Download: <http://cgplibrary.co.uk/CGP-Library-V2.3.zip>
+
 Version 2.2:
-	Comments:
+	
 		* *Now compiles with C++ compilers*
 		* Added CGP shortcut connections option. See <setShortcutConnections>
 		* Added functionality to get the current output value of chromosome nodes. See <getChromosomeNodeValue>
@@ -16,7 +26,7 @@ Version 2.2:
 
 
 Version 2.1:
-	Comments:
+	
 		* *PERFORMANCE IMPROVEMENTS* 
 		* Added pi node function
 		* Added 1 node function
@@ -33,7 +43,7 @@ Version 2.1:
 	Download: <http://cgplibrary.co.uk/CGP-Library-V2.1.zip>
 
 Version 2.0:
-	Comments:
+	
 			* *API CHANGE* all float variables have been replaced by double for the extra position.
 			* *NEW FEATURE* Recurrent Cartesian Genetic Programming (RCGP). CGP-Library is now capable of creating programs/circuits/equations/neural networks which contain recurrent connections or feedback. 
 			* Fixed bug in sin function (it was calling cos... my bad)
@@ -45,7 +55,7 @@ Version 2.0:
 	Download: <http://cgplibrary.co.uk/CGP-Library-V2.0.zip>
 
 Version 1.1: 
-	Comments:
+	
 		* *FIXED SIGNIFICANT BUG* in <runCGP> (incorrect chromosome was returned if a perfect solution was not found)
 		* Added power function to function set.
 		* Made the.dot graphviz contain more detail; including node number and connection number.
@@ -55,8 +65,8 @@ Version 1.1:
 	Download: <http://cgplibrary.co.uk/CGP-Library-V1.1.zip>
 	
 Version 1.0:
-	Comment: 
-		* Initial release.
+	
+		* Initial non-beta release.
 	
 	Date: 18/06/2014
 	
@@ -64,7 +74,7 @@ Version 1.0:
 
 
 Version 0.0 (beta):
-	Comment: 
+
 		* Initial beta release of CGP-Library.
 	
 	Date: 29/04/2014
