@@ -25,26 +25,6 @@
 #ifndef CGPLIB
 #define CGPLIB
 
-/*
-	Under windows NO_DLL must be #defined at compile time when compiling cgp_library
-	with other source files.
-	
-	Under windows BUILD_DLL must be #defined at compile time when compiling CGP-Library.dll to allow DLL_EXPORT to define functions as library functions.
-	
-	Under windows when using the compiled library no #defines are required.
-	
-	Under Linux no #defines are required.
-*/
-#if defined(_WIN32) && defined(NO_DLL)
-	#define DLL_EXPORT
-#elif  defined(_WIN32) && defined(BUILD_DLL)
-    #define DLL_EXPORT __declspec(dllexport)
-#elif defined(_WIN32) && !defined(BUILD_DLL)
-    #define DLL_EXPORT __declspec(dllimport)
-#else
-    #define DLL_EXPORT
-#endif
-
 
 /*
 	Function Aliases
@@ -213,7 +193,7 @@
 		See Also:
 			<freeParameters>, <printParameters>
 	*/
-	DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
+	struct parameters *initialiseParameters(const int numInputs, const int numNodes, const int numOutputs, const int arity);
 
 	/*
 		Function: freeParameters
@@ -226,7 +206,7 @@
 		See Also:
 			<initialiseParameters>
 	*/
-	DLL_EXPORT void freeParameters(struct parameters *params);
+	void freeParameters(struct parameters *params);
 
 	/*
 		Function: printParameters
@@ -261,7 +241,7 @@
 			---------------------------------------------------
 			(end)
 	*/
-	DLL_EXPORT void printParameters(struct parameters *params);
+	void printParameters(struct parameters *params);
 	
 	/*
 		Function: addNodeFunction
@@ -332,7 +312,7 @@
 		See Also:
 			<clearFunctionSet>, <addCustomNodeFunction>
 	*/
-	DLL_EXPORT void addNodeFunction(struct parameters *params, char const *functionNames);
+	void addNodeFunction(struct parameters *params, char const *functionNames);
 
 
 
@@ -386,7 +366,7 @@
 		See Also:
 			<clearFunctionSet>, <addNodeFunction>
 	*/
-	DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char const *functionName, int maxNumInputs);
+	void addCustomNodeFunction(struct parameters *params, double (*function)(const int numInputs, const double *inputs, const double *weights), char const *functionName, int maxNumInputs);
 
 
 	/*
@@ -400,7 +380,7 @@
 		See Also:
 			<addNodeFunction>, <addCustomNodeFunction>
 	*/
-	DLL_EXPORT void clearFunctionSet(struct parameters *params);
+	void clearFunctionSet(struct parameters *params);
 
 
 	/*
@@ -420,7 +400,7 @@
 			<setNumNodes>, <setNumOutputs>, <setArity>
 			
 	*/
-	DLL_EXPORT void setNumInputs(struct parameters *params, int numInputs);
+	void setNumInputs(struct parameters *params, int numInputs);
 
 
 	/*
@@ -439,7 +419,7 @@
 		See Also:
 			<setNumInputs>, <setNumOutputs>, <setArity>
 	*/
-	DLL_EXPORT void setNumNodes(struct parameters *params, int numNodes);
+	void setNumNodes(struct parameters *params, int numNodes);
 
 	/*
 		Function: setNumOutputs
@@ -457,7 +437,7 @@
 		See Also:
 			<setNumInputs>, <setNumNodes>, <setArity>
 	*/
-	DLL_EXPORT void setNumOutputs(struct parameters *params, int numOutputs);
+	void setNumOutputs(struct parameters *params, int numOutputs);
 
 
 	/*
@@ -476,7 +456,7 @@
 		See Also:
 			<setNumInputs>, <setNumNodes>, <setNumOutputs>
 	*/
-	DLL_EXPORT void setArity(struct parameters *params, int arity);
+	void setArity(struct parameters *params, int arity);
 
 
 
@@ -493,7 +473,7 @@
 			params - pointer to <parameters> structure.
 			mu - The value of mu to be set.
 	*/
-	DLL_EXPORT void setMu(struct parameters *params, int mu);
+	void setMu(struct parameters *params, int mu);
 
 
 	/*
@@ -509,7 +489,7 @@
 			params - pointer to <parameters> structure.
 			lambda - The value of lambda to be set.
 	*/
-	DLL_EXPORT void setLambda(struct parameters *params, int lambda);
+	void setLambda(struct parameters *params, int lambda);
 
 
 	/*
@@ -525,7 +505,7 @@
 			params - pointer to <parameters> structure.
 			evolutionaryStrategy - The evolutionary strategy to be set.
 	*/
-	DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
+	void setEvolutionaryStrategy(struct parameters *params, char evolutionaryStrategy);
 
 
 	/*
@@ -541,7 +521,7 @@
 			params - pointer to <parameters> structure.
 			mutationRate - The value of the mutation rate to be set.
 	*/
-	DLL_EXPORT void setMutationRate(struct parameters *params, double mutationRate);
+	void setMutationRate(struct parameters *params, double mutationRate);
 
 
 
@@ -558,7 +538,7 @@
 			params - pointer to <parameters> structure.
 			recurrentConnectionProbability - The value of the recurrent connection probability to be set.
 	*/
-	DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
+	void setRecurrentConnectionProbability(struct parameters *params, double recurrentConnectionProbability);
 
 
 
@@ -574,7 +554,7 @@
 			params - pointer to <parameters> structure.
 			shortcutConnections - whether shortcut connections are used
 	*/
-	DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutConnections);
+	void setShortcutConnections(struct parameters *params, int shortcutConnections);
 
 
 	/*
@@ -586,7 +566,7 @@
 			params - pointer to <parameters> structure.
 			weightRange - The connection weight range to be set. (the range is +/- weightRange)
 	*/
-	DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weightRange);
+	void setConnectionWeightRange(struct parameters *params, double weightRange);
 
 	/*
 		Function: setCustomFitnessFunction
@@ -651,7 +631,7 @@
 		
 
 	*/
-	DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char const *fitnessFunctionName);
+	void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char const *fitnessFunctionName);
 
 
 	/*
@@ -718,7 +698,7 @@
 		See Also:
 			<setCustomFitnessFunction>	
 	*/
-	DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char const *selectionSchemeName);
+	void setCustomSelectionScheme(struct parameters *params, void (*selectionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **candidateChromos, int numParents, int numCandidateChromos), char const *selectionSchemeName);
 
 
 	/*
@@ -766,7 +746,7 @@
 			<setCustomFitnessFunction>, <setCustomSelectionScheme>				
 		
 	*/
-	DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void
+	void setCustomReproductionScheme(struct parameters *params, void
 	(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
 
 
@@ -782,7 +762,7 @@
 			params - pointer to <parameters> structure.
 			targetFitness - The target fitness to be set.
 	*/
-	DLL_EXPORT void setTargetFitness(struct parameters *params, double targetFitness);
+	void setTargetFitness(struct parameters *params, double targetFitness);
 
 	/*
 		Function: setMutationType
@@ -821,7 +801,7 @@
 				<setMutationRate>
 
 	*/
-	DLL_EXPORT void setMutationType(struct parameters *params, char const *mutationType);
+	void setMutationType(struct parameters *params, char const *mutationType);
 
 
 	/*
@@ -838,7 +818,7 @@
 			params - pointer to <parameters> structure.
 			updateFrequency - update frequency in generations.
 	*/
-	DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequency);
+	void setUpdateFrequency(struct parameters *params, int updateFrequency);
 
 
 /*
@@ -860,7 +840,7 @@
 		See Also:
 			<freeChromosome>, <initialiseChromosomeFromFile>, <initialiseChromosomeFromChromosome>
 	*/
-	DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params);
+	struct chromosome *initialiseChromosome(struct parameters *params);
 
 
 	/*
@@ -888,7 +868,7 @@
 		See Also:
 			<freeChromosome>, <initialiseChromosome>, <initialiseChromosomeFromChromosome>,
 	*/
-	DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char const *file);
+	struct chromosome* initialiseChromosomeFromFile(char const *file);
 
 	/*
 		Function: initialiseChromosomeFromChromosome
@@ -906,7 +886,7 @@
 		See Also:
 			<freeChromosome>, <initialiseChromosome>, <initialiseChromosomeFromFile>
 	*/
-	DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromosome *chromo);
+	struct chromosome *initialiseChromosomeFromChromosome(struct chromosome *chromo);
 
 	/*
 		Function: freeChromosome
@@ -919,7 +899,7 @@
 		See Also:
 			<initialiseChromosome>, <initialiseChromosomeFromFile>
 	*/
-	DLL_EXPORT void freeChromosome(struct chromosome *chromo);
+	void freeChromosome(struct chromosome *chromo);
 
 
 	/*
@@ -956,7 +936,7 @@
 			outputs: 8 
 			(end)
 	*/
-	DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights);
+	void printChromosome(struct chromosome *chromo, int weights);
 
 
 	/*
@@ -1001,7 +981,7 @@
 				<getChromosomeOutput>
 
 	*/
-	DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *inputs);
+	void executeChromosome(struct chromosome *chromo, const double *inputs);
 
 
 
@@ -1021,7 +1001,7 @@
 		See Also:
 				<executeChromosome>
 	*/
-	DLL_EXPORT double getChromosomeOutput(struct chromosome *chromo, int output);
+	double getChromosomeOutput(struct chromosome *chromo, int output);
 
 
 
@@ -1038,7 +1018,7 @@
 		See Also:
 				<executeChromosome>, <getChromosomeOutput>
 	*/
-	DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
+	double getChromosomeNodeValue(struct chromosome *chromo, int node);
 
 
 	/*
@@ -1049,7 +1029,7 @@
 				chromo - pointer to an initialised chromosome structure.
 				node - The index of the node
 	*/
-	DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node);
+	int isNodeActive(struct chromosome *chromo, int node);
 
 
 	
@@ -1069,7 +1049,7 @@
 		See Also:
 			<initialiseChromosomeFromFile>, <saveChromosomeDot> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosome(struct chromosome *chromo, char const *fileName);
+	void saveChromosome(struct chromosome *chromo, char const *fileName);
 
 	/*
 		Function: saveChromosomeDot
@@ -1094,7 +1074,7 @@
 		See Also:
 			<saveChromosome> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char const *fileName);
+	void saveChromosomeDot(struct chromosome *chromo, int weights, char const *fileName);
 
 
 	/*
@@ -1126,7 +1106,7 @@
 		See Also:
 			<saveChromosome> <saveChromosomeLatex>
 	*/
-	DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char const *fileName);
+	void saveChromosomeLatex(struct chromosome *chromo, int weights, char const *fileName);
 	
 
 	/*
@@ -1149,7 +1129,7 @@
 			mutateChromosome(params, chromo);
 			(end)
 	*/
-	DLL_EXPORT void mutateChromosome(struct parameters *params, struct chromosome *chromo);
+	void mutateChromosome(struct parameters *params, struct chromosome *chromo);
 
 
 	/*
@@ -1162,7 +1142,7 @@
 		Parameters:
 			chromo - pointer to chromosome structure.
 	*/
-	DLL_EXPORT void removeInactiveNodes(struct chromosome *chromo);
+	void removeInactiveNodes(struct chromosome *chromo);
 
 	/*
 		Function: setChromosomeFitness
@@ -1176,7 +1156,7 @@
 		See Also:
 			<getChromosomeFitness>
 	*/
-	DLL_EXPORT void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
+	void setChromosomeFitness(struct parameters *params, struct chromosome *chromo, struct dataSet *data);
 
 
 
@@ -1187,7 +1167,7 @@
 		Note:
 			This is useful when using recurrent connections where you do not want the output to be a function of the current state of the chromosome.  
 	*/
-	DLL_EXPORT void resetChromosome(struct chromosome *chromo);
+	void resetChromosome(struct chromosome *chromo);
 
 
 	/*
@@ -1205,7 +1185,7 @@
 			<initialiseChromosome>
 
 	*/
-	DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
+	void copyChromosome(struct chromosome *chromoDest, struct chromosome *chromoSrc);
 
 
 	/*
@@ -1221,7 +1201,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getNumChromosomeInputs(struct chromosome *chromo);
+	int getNumChromosomeInputs(struct chromosome *chromo);
 
 
 
@@ -1238,7 +1218,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getNumChromosomeNodes(struct chromosome *chromo);
+	int getNumChromosomeNodes(struct chromosome *chromo);
 
 	/*
 		Function: getNumChromosomeActiveNodes
@@ -1253,7 +1233,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getNumChromosomeActiveNodes(struct chromosome *chromo);
+	int getNumChromosomeActiveNodes(struct chromosome *chromo);
 
 
 	/*
@@ -1269,7 +1249,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getNumChromosomeOutputs(struct chromosome *chromo);
+	int getNumChromosomeOutputs(struct chromosome *chromo);
 
 
 	/*
@@ -1286,7 +1266,7 @@
 		See Also:
 			<initialiseChromosome>
 	*/
-	DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index);
+	int getChromosomeNodeArity(struct chromosome *chromo, int index);
 
 
 	/*
@@ -1302,7 +1282,7 @@
 		See Also:
 			<setChromosomeFitness> <getChromosomeGenerations> <getNumChromosomeActiveNodes>
 	*/
-	DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
+	double getChromosomeFitness(struct chromosome *chromo);
 
 
 	/*
@@ -1320,7 +1300,7 @@
 		See Also:
 			<getChromosomeFitness> <getNumChromosomeActiveNodes>
 	*/
-	DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo);
+	int getChromosomeGenerations(struct chromosome *chromo);
 
 
 /*
@@ -1374,7 +1354,7 @@
 		See Also:
 			<freeDataSet>, <initialiseDataSetFromFile>, <printDataSet>
 	*/
-	DLL_EXPORT struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, double *inputs, double *outputs);
+	struct dataSet *initialiseDataSetFromArrays(int numInputs, int numOutputs, int numSamples, double *inputs, double *outputs);
 
 
 	/*
@@ -1411,7 +1391,7 @@
 		See Also:
 			<freeDataSet>, <initialiseDataSetFromArrays>, <printDataSet>
 	*/
-	DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char const *file);
+	struct dataSet *initialiseDataSetFromFile(char const *file);
 
 
 	/*
@@ -1425,7 +1405,7 @@
 		See Also:
 			<initialiseDataSetFromArrays>, <initialiseDataSetFromFile>
 	*/
-	DLL_EXPORT void freeDataSet(struct dataSet *data);
+	void freeDataSet(struct dataSet *data);
 
 	/*
 		Function: printDataSet
@@ -1438,7 +1418,7 @@
 		See Also:
 			<initialiseDataSetFromArrays>, <initialiseDataSetFromFile>, <freeDataSet>
 	*/
-	DLL_EXPORT void printDataSet(struct dataSet *data);
+	void printDataSet(struct dataSet *data);
 
 
 	/*
@@ -1453,7 +1433,7 @@
 		See Also:
 			<initialiseDataSetFromFile>, <freeDataSet>
 	*/
-	DLL_EXPORT void saveDataSet(struct dataSet *data, char const *fileName);
+	void saveDataSet(struct dataSet *data, char const *fileName);
 
 
 	/*
@@ -1469,7 +1449,7 @@
 		See Also:
 			<getNumDataSetOutputs>, <getNumDataSetSamples>
 	*/
-	DLL_EXPORT int getNumDataSetInputs(struct dataSet *data);
+	int getNumDataSetInputs(struct dataSet *data);
 
 
 
@@ -1486,7 +1466,7 @@
 		See Also:
 			<getNumDataSetInputs>, <getNumDataSetSamples>
 	*/
-	DLL_EXPORT int getNumDataSetOutputs(struct dataSet *data);
+	int getNumDataSetOutputs(struct dataSet *data);
 
 
 	/*
@@ -1502,7 +1482,7 @@
 		See Also:
 			<getNumDataSetInputs>, <getNumDataSetOutputs>
 	*/
-	DLL_EXPORT int getNumDataSetSamples(struct dataSet *data);
+	int getNumDataSetSamples(struct dataSet *data);
 
 
 	/*
@@ -1519,7 +1499,7 @@
 		See Also:
 			<getDataSetSampleInput>, <getDataSetSampleOutputs>, <getDataSetSampleOutput>
 	*/
-	DLL_EXPORT double *getDataSetSampleInputs(struct dataSet *data, int sample);
+	double *getDataSetSampleInputs(struct dataSet *data, int sample);
 
 
 	/*
@@ -1537,7 +1517,7 @@
 		See Also:
 			<getDataSetSampleInputs>, <getDataSetSampleOutput>, <getDataSetSampleOutputs>
 	*/
-	DLL_EXPORT double getDataSetSampleInput(struct dataSet *data, int sample, int input);
+	double getDataSetSampleInput(struct dataSet *data, int sample, int input);
 
 
 	/*
@@ -1554,7 +1534,7 @@
 		See Also:
 			<getDataSetSampleOutput>, <getDataSetSampleInputs>, <getDataSetSampleInput>
 	*/
-	DLL_EXPORT double *getDataSetSampleOutputs(struct dataSet *data, int sample);
+	double *getDataSetSampleOutputs(struct dataSet *data, int sample);
 
 	/*
 		Function: getDataSetSampleOutput
@@ -1571,7 +1551,7 @@
 		See Also:
 			<getDataSetSampleOutputs>, <getDataSetSampleInput>, <getDataSetSampleInputs>
 	*/
-	DLL_EXPORT double getDataSetSampleOutput(struct dataSet *data, int sample, int output);
+	double getDataSetSampleOutput(struct dataSet *data, int sample, int output);
 
 
 /*
@@ -1591,7 +1571,7 @@
 		See Also:
 			<repeatCGP>
 	*/
-	DLL_EXPORT void freeResults(struct results *rels);
+	void freeResults(struct results *rels);
 
 	/*
 		Function: saveResults
@@ -1602,7 +1582,7 @@
 			els - pointer to an initialised results structure.
 			fileName - char array giving the location of the <results> to be saved.
 	*/
-	DLL_EXPORT void saveResults(struct results *rels, char const *fileName);
+	void saveResults(struct results *rels, char const *fileName);
 
 
 	/*
@@ -1619,7 +1599,7 @@
 		See Also:
 			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
-	DLL_EXPORT struct chromosome* getChromosome(struct results *rels, int run);
+	struct chromosome* getChromosome(struct results *rels, int run);
 	
 	/*
 		Function: getNumChromosomes
@@ -1634,7 +1614,7 @@
 		See Also:
 			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
-	DLL_EXPORT int getNumChromosomes(struct results *rels);
+	int getNumChromosomes(struct results *rels);
 
 	/*
 		Function: getAverageFitness
@@ -1649,7 +1629,7 @@
 		See Also:
 			<repeatCGP>, <getAverageActiveNodes>, <getAverageGenerations>
 	*/
-	DLL_EXPORT double getAverageFitness(struct results *rels);
+	double getAverageFitness(struct results *rels);
 
 
 	/*
@@ -1665,7 +1645,7 @@
 		See Also:
 			<repeatCGP>, <getMedianActiveNodes>, <getMedianGenerations>
 	*/
-	DLL_EXPORT double getMedianFitness(struct results *rels);
+	double getMedianFitness(struct results *rels);
 
 
 	/*
@@ -1682,7 +1662,7 @@
 			<repeatCGP>, <getAverageFitness>, <getAverageGenerations>
 
 	*/
-	DLL_EXPORT double getAverageActiveNodes(struct results *rels);
+	double getAverageActiveNodes(struct results *rels);
 
 	/*
 		Function: getMedianActiveNodes
@@ -1698,7 +1678,7 @@
 			<repeatCGP>, <getMedianFitness>, <getMedianGenerations>
 
 	*/
-	DLL_EXPORT double getMedianActiveNodes(struct results *rels);
+	double getMedianActiveNodes(struct results *rels);
 
 
 	/*
@@ -1715,7 +1695,7 @@
 			<repeatCGP>, <getAverageFitness>, <getAverageActiveNodes>
 
 	*/
-	DLL_EXPORT double getAverageGenerations(struct results *rels);
+	double getAverageGenerations(struct results *rels);
 	
 	
 	/*
@@ -1732,7 +1712,7 @@
 			<repeatCGP>, <getMedianFitness>, <getMedianActiveNodes>
 
 	*/
-	DLL_EXPORT double getMedianGenerations(struct results *rels);
+	double getMedianGenerations(struct results *rels);
 
 
 /*
@@ -1780,7 +1760,7 @@
 		See Also:
 			<repeatCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeChromosome>
 	*/
-	DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int numGens);
+	struct chromosome* runCGP(struct parameters *params, struct dataSet *data, int numGens);
 
 
 	/*
@@ -1825,7 +1805,7 @@
 		See Also:
 			<runCGP>, <initialiseParameters>, <initialiseDataSetFromFile>, <freeResults>
 	*/
-	DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
+	struct results* repeatCGP(struct parameters *params, struct dataSet *data, int numGens, int numRuns);
 
 
 /*
@@ -1847,6 +1827,6 @@
 		See Also:
 			<initialiseParameters>
 	*/
-	DLL_EXPORT void setRandomNumberSeed(unsigned int seed);
+	void setRandomNumberSeed(unsigned int seed);
 
 #endif

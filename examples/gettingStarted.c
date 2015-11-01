@@ -17,7 +17,7 @@
 */
 
 #include <stdio.h>
-#include "../src/cgp.h"
+#include "../src/cgp.h" 
 
 int main(void){
 
@@ -49,6 +49,8 @@ int main(void){
 	chromo = runCGP(params, trainingData, numGens);
 
 	printChromosome(chromo, 0);
+
+	//printf("%d\n", chromo.numInputs);
 
 	freeDataSet(trainingData);
 	freeChromosome(chromo);
