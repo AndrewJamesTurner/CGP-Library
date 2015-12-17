@@ -11,49 +11,52 @@ CC=gcc
 	# -fpermissive
 	# -std=c++11		use c++ 2011 standard
 	
-CFLAGS= -pedantic -Wall -O3 -fopenmp
+CFLAGS= -pedantic -Wall -O3 -fopenmp -lm
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
-	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm 
+	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c $(CFLAGS)  
 
 createDataSet: examples/createDataSet.c src/cgp.c src/cgp.h
-	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c src/cgp.h $(CFLAGS)  -lm
+	@$(CC) -o createDataSet examples/createDataSet.c src/cgp.c $(CFLAGS)
 
 manipulatingChromosomes: examples/manipulatingChromosomes.c src/cgp.c src/cgp.h
-	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o manipulatingChromosomes examples/manipulatingChromosomes.c src/cgp.c $(CFLAGS)
 
 customNodeFunction: examples/customNodeFunction.c src/cgp.c src/cgp.h
-	@$(CC) -o customNodeFunction examples/customNodeFunction.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o customNodeFunction examples/customNodeFunction.c src/cgp.c $(CFLAGS) 
 
 customFitnessFunction: examples/customFitnessFunction.c src/cgp.c src/cgp.h
-	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o customFitnessFunction examples/customFitnessFunction.c src/cgp.c $(CFLAGS)
 
 customSelectionScheme: examples/customSelectionScheme.c src/cgp.c src/cgp.h
-	@$(CC) -o customSelectionScheme examples/customSelectionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o customSelectionScheme examples/customSelectionScheme.c src/cgp.c $(CFLAGS)
 
 customReproductionScheme:  examples/customReproductionScheme.c src/cgp.c src/cgp.h
-	@$(CC) -o customReproductionScheme examples/customReproductionScheme.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o customReproductionScheme examples/customReproductionScheme.c src/cgp.c $(CFLAGS)
 
 averageBehaviour: examples/averageBehaviour.c src/cgp.c src/cgp.h
-	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c $(CFLAGS)
 
 neuroEvolution: examples/neuroEvolution.c src/cgp.c src/cgp.h
-	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o neuroEvolution examples/neuroEvolution.c src/cgp.c $(CFLAGS)
 	
 recurrentConnections: examples/recurrentConnections.c src/cgp.c src/cgp.h
-	@$(CC) -o recurrentConnections examples/recurrentConnections.c src/cgp.c src/cgp.h $(CFLAGS) -lm	
+	@$(CC) -o recurrentConnections examples/recurrentConnections.c src/cgp.c $(CFLAGS)
 
 customES: examples/customES.c src/cgp.c src/cgp.h
-	@$(CC) -o customES examples/customES.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o customES examples/customES.c src/cgp.c $(CFLAGS)
 
 visualization: examples/visualization.c src/cgp.c src/cgp.h
-	@$(CC) -o visualization examples/visualization.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o visualization examples/visualization.c src/cgp.c $(CFLAGS)
 	
 printChromoEqu: examples/printChromoEqu.c src/cgp.c src/cgp.h
-	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c src/cgp.h $(CFLAGS) -lm
+	@$(CC) -o printChromoEqu examples/printChromoEqu.c src/cgp.c $(CFLAGS)
+
+multipleThreads: examples/multipleThreads.c src/cgp.c src/cgp.h
+	@$(CC) -o multipleThreads examples/multipleThreads.c src/cgp.c $(CFLAGS)
 
 reservoirCGPANN: examples/reservoirCGPANN.cpp src/cgp.c src/cgp.h
-	@g++ -o reservoirCGPANN examples/reservoirCGPANN.cpp src/cgp.c src/cgp.h $(CFLAGS) -lm 
+	@g++ -o reservoirCGPANN examples/reservoirCGPANN.cpp src/cgp.c $(CFLAGS)
 
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
@@ -63,7 +66,7 @@ docs: ./src/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./src -i ./naturaldocs/customFiles -o HTML ./docs -p ./naturaldocs
 
 profile: examples/averageBehaviour.c src/cgp.c src/cgp.h
-	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c src/cgp.h $(CFLAGS) -pg -lm
+	@$(CC) -o averageBehaviour examples/averageBehaviour.c src/cgp.c $(CFLAGS) -pg 
 	./averageBehaviour
 	gprof averageBehaviour | ./gprof2dot.py | dot -Tsvg -o profile.svg
 
@@ -74,11 +77,6 @@ python: src/cgp.c src/cgp.h
 	@rm cgp.o cgp_wrap.o 
 	#@rm bindings/cgp_wrap.c
 
-
-
-
-# @gcc -o reservoirCGPANN src/reservoirCGPANN.cpp -lcgp $(CFLAGS) -lm
-
 clean:
-	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen reservoirCGPANN *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log *.pdf *.out 
+	@rm -f cgp.o libcgp.so cgp.dll test gettingStarted createDataSet manipulatingChromosomes customNodeFunction customFitnessFunction customSelectionScheme customReproductionScheme manipluatingChromosomes averageBehaviour neuroEvolution printChromoEqu customES visualization recurrentConnections testEigen reservoirCGPANN multipleThreads *.data *.chromo *.depend *.layout *.exe *.layout *.out *.dot *.svg *.csv tmp.aux tmp.log *.pdf *.out 
 	@rm -rf obj/
