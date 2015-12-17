@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include "../src/cgp.h"
 
-int main(void){
+int main(void) {
 
 	struct parameters *params = NULL;
 	struct dataSet *trainingData = NULL;

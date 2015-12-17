@@ -22,51 +22,43 @@
 #include "../src/cgp.h"
 
 
-double meanSquareError(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double fitnessFunction(struct parameters *params, struct chromosome *chromo, struct dataSet *data) {
 
-	int i,j;
-	double squareError = 0;
+	int i;
+	double inputs[1] = {0.5};
+	int numExec = 10000;
 
-	if(getNumChromosomeInputs(chromo) !=getNumDataSetInputs(data)){
-		printf("Error: the number of chromosome inputs must match the number of inputs specified in the dataSet.\n");
-		printf("Terminating.\n");
-		exit(0);
+	for (i = 0; i < numExec; i++) {
+		executeChromosome(chromo, inputs);
 	}
 
-	if(getNumChromosomeOutputs(chromo) != getNumDataSetOutputs(data)){
-		printf("Error: the number of chromosome outputs must match the number of outputs specified in the dataSet.\n");
-		printf("Terminating.\n");
-		exit(0);
-	}
-
-	for(i=0; i<getNumDataSetSamples(data); i++){
-
-		executeChromosome(chromo, getDataSetSampleInputs(data, i));
-
-		for(j=0; j<getNumChromosomeOutputs(chromo); j++){
-
-			squareError += pow(getDataSetSampleOutput(data,i,j) - getChromosomeOutput(chromo,j), 2);
-		}
-	}
-
-	return squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));
+	return 10; /*(double)(rand() % 10000); squareError / (getNumDataSetSamples(data) * getNumDataSetOutputs(data));*/
 }
 
 
-int main(void){
+int main(void) {
 
 	struct parameters *params = NULL;
 
 	int numInputs = 1;
-	int numNodes = 20;
+	int numNodes = 100;
 	int numOutputs = 1;
 	int arity = 2;
 
-	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	int gens = 100;
+	int runs = 100;
 
-	setCustomFitnessFunction(params, meanSquareError, "MSE");
+	params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+	setRandomNumberSeed(123456789);
+	addNodeFunction(params, "add,sub,mul,div,sin");
+	setMutationRate(params, 1.0);
+	setCustomFitnessFunction(params, fitnessFunction, "FF");
+	setNumThreads(params, 4);
 
 	printParameters(params);
+
+	repeatCGP(params, NULL, gens, runs);
+	/*runCGP(params, NULL, gens);*/
 
 	freeParameters(params);
 

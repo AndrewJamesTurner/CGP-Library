@@ -20,7 +20,7 @@
 #include <math.h>
 #include "../src/cgp.h"
 
-double sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data){
+double sinWave(struct parameters *params, struct chromosome *chromo, struct dataSet *data) {
 
 	double i;
 
@@ -30,7 +30,7 @@ double sinWave(struct parameters *params, struct chromosome *chromo, struct data
 
 	double inputs[1];
 
-	for(i=0; i<range; i += stepSize){
+	for (i = 0; i < range; i += stepSize) {
 
 		inputs[0] = i;
 
@@ -43,7 +43,7 @@ double sinWave(struct parameters *params, struct chromosome *chromo, struct data
 }
 
 
-int main(void){
+int main(void) {
 
 	struct parameters *params = NULL;
 	struct chromosome *chromo = NULL;
@@ -60,6 +60,8 @@ int main(void){
 	double weightRange = 5;
 
 	params = initialiseParameters(numInputs, numNodes, numOutputs, nodeArity);
+
+	setRandomNumberSeed(123456789);
 
 	setTargetFitness(params, targetFitness);
 

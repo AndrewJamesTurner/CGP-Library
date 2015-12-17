@@ -23,6 +23,7 @@
 #include <math.h>
 #include <float.h>
 
+
 #include "cgp.h"
 
 /*
@@ -64,6 +65,7 @@ struct parameters {
 	char selectionSchemeName[SELECTIONSCHEMENAMELENGTH];
 	void (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren);
 	char reproductionSchemeName[REPRODUCTIONSCHEMENAMELENGTH];
+	int numThreads;
 };
 
 struct chromosome {
@@ -251,6 +253,8 @@ DLL_EXPORT struct parameters *initialiseParameters(const int numInputs, const in
 	params->reproductionScheme = mutateRandomParent;
 	strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
 
+	params->numThreads = 1;
+
 	/* Seed the random number generator */
 	srand(time(NULL));
 
@@ -301,6 +305,7 @@ DLL_EXPORT void printParameters(struct parameters *params) {
 	printf("Selection scheme:\t\t\t%s\n", params->selectionSchemeName);
 	printf("Reproduction scheme:\t\t\t%s\n", params->reproductionSchemeName);
 	printf("Update frequency:\t\t\t%d\n", params->updateFrequency);
+	printf("Threads:\t\t\t%d\n", params->numThreads);
 	printFunctionSet(params);
 	printf("-----------------------------------------------------------\n\n");
 }
@@ -733,6 +738,21 @@ DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequenc
 	}
 }
 
+
+
+
+/*
+	sets num chromosome inputs in parameters
+*/
+DLL_EXPORT void setNumThreads(struct parameters *params, int numThreads) {
+
+	/* error checking */
+	if (numThreads <= 0) {
+		printf("Error: number threads cannot be less than one; %d is invalid. The number threads is left unchanged as %d.\n", numThreads, numThreads);
+	}
+
+	params->numThreads = numThreads;
+}
 
 
 /*
@@ -2860,6 +2880,7 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 	printf("Run\tFitness\t\tGenerations\tActive Nodes\n");
 
 	/* for each run */
+	#pragma omp parallel for default(none), shared(numRuns,rels,params,data,numGens), schedule(dynamic), num_threads(params->numThreads)
 	for (i = 0; i < numRuns; i++) {
 
 		/* run cgp */
@@ -2963,6 +2984,7 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	for (gen = 0; gen < numGens; gen++) {
 
 		/* set fitness of the children of the population */
+		#pragma omp parallel for default(none), shared(params, childrenChromos,data), schedule(dynamic), num_threads(params->numThreads)
 		for (i = 0; i < params->lambda; i++) {
 			setChromosomeFitness(params, childrenChromos[i], data);
 		}
@@ -3092,30 +3114,6 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 		funcSetDest->functions[i] = funcSetSrc->functions[i];
 		funcSetDest->maxNumInputs[i] = funcSetSrc->maxNumInputs[i];
 	}
-}
-
-
-/*
-	returns mu value currently set in given parameters.
-*/
-DLL_EXPORT int getMu(struct parameters *params) {
-	return params->mu;
-}
-
-
-/*
-	get the number of chromosome inputs set in params
-*/
-DLL_EXPORT int getNumInputs(struct parameters *params) {
-	return params->numInputs;
-}
-
-
-/*
-	get the number of chromosome outputs set in params
-*/
-DLL_EXPORT int getNumOutputs(struct parameters *params) {
-	return params->numOutputs;
 }
 
 

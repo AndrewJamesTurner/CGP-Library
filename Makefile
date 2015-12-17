@@ -11,7 +11,7 @@ CC=gcc
 	# -fpermissive
 	# -std=c++11		use c++ 2011 standard
 	
-CFLAGS= -pedantic -Wall -O3
+CFLAGS= -pedantic -Wall -O3 -fopenmp
 
 gettingStarted: examples/gettingStarted.c src/cgp.c src/cgp.h
 	@$(CC) -o gettingStarted examples/gettingStarted.c src/cgp.c src/cgp.h $(CFLAGS) -lm 
