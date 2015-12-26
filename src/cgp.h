@@ -1,6 +1,6 @@
 /*
 	This file is part of CGP-Library
-	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
+	Copyright (c) Andrew James Turner 2014, 2015 (andrew.turner@york.ac.uk)
 
     CGP-Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -26,10 +26,12 @@
 #define CGPLIB
 
 /*
-	Under windows NO_DLL must be #defined at compile time when compiling cgp_library
-	with other source files.
+	Under windows NO_DLL must be #defined at compile time when compiling
+	cgp_library with other source files.
 
-	Under windows BUILD_DLL must be #defined at compile time when compiling CGP-Library.dll to allow DLL_EXPORT to define functions as library functions.
+	Under windows BUILD_DLL must be #defined at compile time when compiling
+	CGP-Library.dll to allow DLL_EXPORT to define functions as library
+	functions.
 
 	Under windows when using the compiled library no #defines are required.
 
@@ -71,8 +73,8 @@
 	and controls every aspect of the evolutionary algorithm.
 
 	The values stored in <parameters> are set to default values when
-	initialised using <initialiseParameters> and can be altered
-	using various setter functions.
+	initialised using <initialiseParameters>. These default values can then be
+	altered using provided setter functions.
 
 	Defaults:
 
@@ -97,13 +99,14 @@
 		<setMu>, <setLambda> and <setEvolutionaryStrategy>.
 
 		- The mutation rate controls the percentage of the
-		chromosomes genes which are set to new random value when the
+		chromosome's genes which are set to a random value when the
 		chromosome is mutated. See <setMutationRate>.
 
 		- The recurrent connection probability gives the probability
 		of a recurrent connection being created when a connection
 		gene is mutated. For regular acyclic feed-forward programs
-		leave as zero. For recurrent programs see <setRecurrentConnectionProbability>.
+		leave as zero. For recurrent programs see
+		<setRecurrentConnectionProbability>.
 
 		- The Shortcut Connections controls whether output genes
 		can index program inputs. If set to 1 (yes) output genes can
@@ -112,7 +115,7 @@
 
 		- The connection weight range controls the range of values
 		which the connection weights can take. Connection weights
-		are only considered when CGP-Library is used to evolve
+		are only considered when the CGP-Library is used to evolve
 		neural networks. See <setConnectionWeightRange>.
 
 		- The update frequency controls the frequency of updates to
@@ -123,15 +126,14 @@
 		mutating chromosomes. See <setMutationType>.
 
 		- The fitness function stores the fitness function used when
-		assigning a fitness to the chromosomes. See
-		<setCustomFitnessFunction>.
+		assigning a fitness to the chromosomes. See <setCustomFitnessFunction>.
 
 		- The selection scheme stores the selection scheme used when
 		selecting the parents from the candidate chromosomes. See
 		<setCustomSelectionScheme>.
 
-		- The reproduction scheme stores how the children
-		chromosomes are created from the parents. see
+		- The reproduction scheme stores how children
+		chromosomes are created from their parents. See
 		<setCustomReproductionScheme>.
 
 		- The number of threads defines how many threads the CGP library
@@ -856,7 +858,12 @@ DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequenc
 	warning is displayed and the value is left unchanged.
 
 	Note:
+		In order for the CGP-Library to use multiple threads it must be compiled
+		with openMP flag set (-fopenmp for gcc/mingw).
 
+	Note:
+		The CGP-Library ignores the OMP_NUM_THREADS environment variable. The
+		only method for setting the number of threads is using <setNumThreads>.
 
 	Parameters:
 		params - pointer to <parameters> structure.
@@ -1076,7 +1083,6 @@ DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
 			node - The index of the node
 */
 DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node);
-
 
 
 /*
