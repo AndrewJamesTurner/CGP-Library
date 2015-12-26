@@ -12,8 +12,12 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-fopenmp" />
 					<Add option="-DBUILD_DLL" />
 				</Compiler>
+				<Linker>
+					<Add library="openMP" />
+				</Linker>
 			</Target>
 			<Target title="gettingStarted">
 				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
@@ -22,6 +26,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -32,6 +37,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
@@ -45,6 +51,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
@@ -58,6 +65,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
@@ -71,6 +79,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 				</Compiler>
 				<Linker>
 					<Add library="./CGP-Library.dll" />
@@ -82,6 +91,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -92,6 +102,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -102,6 +113,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -112,6 +124,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -122,6 +135,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -132,45 +146,28 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
-			<Target title="pythonBindings">
-				<Option output="bindings/_cgp" prefix_auto="0" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-					<Add option="-DBUILD_DLL" />
-					<Add directory="/usr/include/python2.7" />
-				</Compiler>
-			</Target>
-			<Target title="reservoirCGPANN">
-				<Option output="reservoirCGPANN" prefix_auto="1" extension_auto="1" />
+			<Target title="multipleThreads">
+				<Option output="multipleThreads" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
+				<Linker>
+					<Add option="-lgomp -pthread" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Eigen/Dense">
-			<Option target="reservoirCGPANN" />
-		</Unit>
-		<Unit filename="Eigen/LU">
-			<Option target="reservoirCGPANN" />
-		</Unit>
-		<Unit filename="bindings/cgp_wrap.c">
-			<Option compilerVar="CC" />
-			<Option target="pythonBindings" />
-		</Unit>
 		<Unit filename="examples/averageBehaviour.c">
 			<Option compilerVar="CC" />
 			<Option target="averageBehaviour" />
@@ -203,6 +200,10 @@
 			<Option compilerVar="CC" />
 			<Option target="manipulatingChromosomes" />
 		</Unit>
+		<Unit filename="examples/multipleThreads.c">
+			<Option compilerVar="CC" />
+			<Option target="multipleThreads" />
+		</Unit>
 		<Unit filename="examples/neuroEvolution.c">
 			<Option compilerVar="CC" />
 			<Option target="neuroEvolution" />
@@ -210,9 +211,6 @@
 		<Unit filename="examples/recurrentConnections.c">
 			<Option compilerVar="CC" />
 			<Option target="recurrentConnections" />
-		</Unit>
-		<Unit filename="examples/reservoirCGPANN.cpp">
-			<Option target="reservoirCGPANN" />
 		</Unit>
 		<Unit filename="examples/visualization.c">
 			<Option compilerVar="CC" />

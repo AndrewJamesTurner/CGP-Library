@@ -1,21 +1,14 @@
-/*
-	This file is part of CGP-Library
-	Copyright (c) Andrew James Turner 2014 (andrew.turner@york.ac.uk)
+Title: Multiple Threads   
 
-    CGP-Library is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This tutorial introduces and steps through a simple program which instructs the CGP-Library to use multiple threads.
 
-    CGP-Library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Lesser General Public License for more details.
+One of the advantages of evolutionary algorithms is that they are "embarrassingly parallel". For instance the fitness of each member of a population can be calculated in parallel. Additionally when conducing multiple runs to assess <Average Behaviour> each individual run can be conducted in parallel. 
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with CGP-Library.  If not, see <http://www.gnu.org/licenses/>.
-*/
+Title: The Program
 
+A simple program which demonstrates using multiple threads with the CGP-Library. The program is also provided in the CGP-Library download within /examples/MultipleThreads.c and is included in the code::blocks project.
+
+(start code)
 #include <stdio.h>
 #include <time.h>
 #include "../src/cgp.h"
@@ -81,3 +74,19 @@ int main(void) {
 
 	return 0;
 }
+(end)
+
+
+Title: Stepping Through the Code
+
+A close look at each line of the example code. First a number of header files are included including cgp.h for the CGP-Library and time.h so we can measure the speed up. 
+
+(begin code)
+#include <stdio.h>
+#include <time.h>
+#include "../src/cgp.h"
+(end)
+
+
+
+And that's it, 

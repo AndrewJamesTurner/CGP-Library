@@ -67,6 +67,7 @@ Group: Tutorials  {
    File: Custom Reproduction Scheme  (no auto-title, /home/at568/Desktop/CGP-Library/naturaldocs/customFiles/customReproductionScheme.txt)
    File: NeuroEvolution  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/NeuroEvolution.txt)
    File: Manipulating Chromosomes  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/ManipulatingChromosomes.txt)
+   File: Multiple Threads  (/home/at568/Desktop/CGP-Library/naturaldocs/customFiles/MultipleThreads.txt)
    }  # Group: Tutorials
 
 Group: Index  {
