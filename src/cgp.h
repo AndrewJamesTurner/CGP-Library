@@ -1069,6 +1069,8 @@ DLL_EXPORT double getChromosomeNodeValue(struct chromosome *chromo, int node);
 	Function: isNodeActive
 		Returns whether the given node in the given chromosome is active. 1-active, 0-inactive
 
+		If the given node index is less than zero or greater then the number of nodes in the given chromosome and error message is displayed and the program will terminate.
+
 		Parameters:
 			chromo - pointer to an initialised chromosome structure.
 			node - The index of the node
