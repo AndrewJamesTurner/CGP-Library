@@ -55,9 +55,6 @@ printChromoEqu: examples/printChromoEqu.c src/cgp.c src/cgp.h
 multipleThreads: examples/multipleThreads.c src/cgp.c src/cgp.h
 	@$(CC) -o multipleThreads examples/multipleThreads.c src/cgp.c $(CFLAGS)
 
-reservoirCGPANN: examples/reservoirCGPANN.cpp src/cgp.c src/cgp.h
-	@g++ -o reservoirCGPANN examples/reservoirCGPANN.cpp src/cgp.c $(CFLAGS)
-
 so: src/cgp.c 
 	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
 	@$(CC) -shared -o libcgp.so cgp.o -lm -O3
