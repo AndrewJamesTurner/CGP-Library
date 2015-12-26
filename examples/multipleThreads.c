@@ -41,8 +41,9 @@ double fitnessFunction(struct parameters *params, struct chromosome *chromo, str
 
 int main(void) {
 
-	double timeStart, timeEnd;
+	time_t timeStart, timeEnd;
 	double singleThreadTime, multipleThreadTime;
+	double seedUp;
 
 	struct parameters *params = NULL;
 
@@ -61,20 +62,23 @@ int main(void) {
 	setCustomFitnessFunction(params, fitnessFunction, "FF");
 	
 	setNumThreads(params, 1);
-	timeStart = (double) clock();
+	timeStart = time(NULL);
 	repeatCGP(params, NULL, gens, runs);
-	timeEnd = (double) clock();
-	singleThreadTime = (timeEnd - timeStart) / CLOCKS_PER_SEC;
+	timeEnd = time(NULL);
+	singleThreadTime = difftime(timeEnd, timeStart);
 
 	setNumThreads(params, 4);
-	timeStart = (double) clock();
+	timeStart = time(NULL);
 	repeatCGP(params, NULL, gens, runs);
-	timeEnd = (double) clock();
-	multipleThreadTime = (timeEnd - timeStart) / CLOCKS_PER_SEC;
+	timeEnd = time(NULL);
+	multipleThreadTime = difftime(timeEnd, timeStart);
 
+	seedUp = 100 * (singleThreadTime - multipleThreadTime) / multipleThreadTime;
+	
 
-	printf("Single thread time: %f\n", singleThreadTime);
-	printf("Multiple thread time: %f\n", multipleThreadTime);
+	printf("Single thread time: %.f seconds\n", singleThreadTime);
+	printf("Multiple thread time: %.f seconds\n", multipleThreadTime);
+	printf("Speed up = %.f%%\n", seedUp);
 
 	freeParameters(params);
 
