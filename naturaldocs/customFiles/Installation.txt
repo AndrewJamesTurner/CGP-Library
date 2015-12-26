@@ -3,20 +3,22 @@ Title: Installation
 First download the latest CGP-Library from <Download> and unzip the file.
 
 Simplest:
+The simplest method of using the CGP-Library is to include cgp.c and cgp.h to your build path and compile them along with your own files. For instance #include "cgp.h" in your own program and then compile your program similar to
 
-The simplest method of using the CGP-Library is to include cgp.c and cgp.h to your build path and compile them along with your own files. On windows the macro NO_DLL must also be #defined at compile time.
+	>$ gcc yourFiles.c cgp.c cgp.h
 
-For instance #include "cgp.h" and then compile your program similar to
+On *windows operating systems* the macro NO_DLL must also be #defined at compile time
 
-    >$ gcc yourFiles.c cgp.c cgp.h -D NO_DLL
+    >$ gcc yourFiles.c cgp.c cgp.h -D NO_DLL 
 
+If you intend to make us of the support for multiple threads you must also set the openMP compiler flag
+
+	>$ gcc yourFiles.c cgp.c cgp.h -fopenmp
 
 Standard:
-
 The standard method of using dynamic libraries is to link against the compiled library.
 
 Ubuntu:
-
 To compile the shared object (.so) open a terminal in the CGP-Library directory and run
 
     >$ make so
