@@ -123,7 +123,7 @@ struct results {
 static void setChromosomeActiveNodes(struct chromosome *chromo);
 static void recursivelySetActiveNodes(struct chromosome *chromo, int nodeIndex);
 static void sortChromosomeArray(struct chromosome **chromoArray, int numChromos);
-static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo);
+static void getBestChromosome(struct chromosome **parents, struct chromosome **children, int numParents, int numChildren, struct chromosome *best);
 static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, FILE *fp);
 
 /* node functions */
@@ -380,29 +380,41 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 
 	if (strncmp(functionName, "add", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _add, "add", -1);
-	} else if (strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "sub", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _sub, "sub", -1);
-	} else if (strncmp(functionName, "mul", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "mul", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _mul, "mul", -1);
-	} else if (strncmp(functionName, "div", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "div", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _divide, "div", -1);
-	} else if (strncmp(functionName, "abs", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "abs", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _absolute, "abs", 1);
-	} else if (strncmp(functionName, "sqrt", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "sqrt", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _squareRoot, "sqrt", 1);
-	} else if (strncmp(functionName, "sq", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "sq", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _square, "sq", 1);
-	} else if (strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "cube", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _cube, "cube", 1);
-	} else if (strncmp(functionName, "pow", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "pow", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _power, "pow", 2);
-	} else if (strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "exp", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _exponential, "exp", 1);
-	} else if (strncmp(functionName, "sin", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "sin", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _sine, "sin", 1);
-	} else if (strncmp(functionName, "cos", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "cos", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _cosine, "cos", 1);
-	} else if (strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "tan", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _tangent, "tan", 1);
 	}
 
@@ -411,17 +423,23 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 
 	else if (strncmp(functionName, "and", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _and, "and", -1);
-	} else if (strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "nand", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _nand, "nand", -1);
-	} else if (strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "or", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _or, "or", -1);
-	} else if (strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "nor", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _nor, "nor", -1);
-	} else if (strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "xor", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _xor, "xor", -1);
-	} else if (strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "xnor", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _xnor, "xnor", -1);
-	} else if (strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "not", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _not, "not", 1);
 	}
 
@@ -429,13 +447,17 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 
 	else if (strncmp(functionName, "sig", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _sigmoid, "sig", -1);
-	} else if (strncmp(functionName, "gauss", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "gauss", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _gaussian, "gauss", -1);
-	} else if (strncmp(functionName, "step", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "step", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _step, "step", -1);
-	} else if (strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "softsign", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _softsign, "soft", -1);
-	} else if (strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "tanh", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _hyperbolicTangent, "tanh", -1);
 	}
 
@@ -443,13 +465,17 @@ static int addPresetFuctionToFunctionSet(struct parameters *params, char const *
 
 	else if (strncmp(functionName, "rand", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _randFloat, "rand", 0);
-	} else if (strncmp(functionName, "1", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "1", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _constOne, "1", 0);
-	} else if (strncmp(functionName, "0", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "0", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _constZero, "0", 0);
-	} else if (strncmp(functionName, "pi", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "pi", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _constPI, "pi", 0);
-	} else if (strncmp(functionName, "wire", FUNCTIONNAMELENGTH) == 0) {
+	}
+	else if (strncmp(functionName, "wire", FUNCTIONNAMELENGTH) == 0) {
 		addCustomNodeFunction(params, _wire, "wire", 1);
 	}
 
@@ -538,7 +564,8 @@ DLL_EXPORT void setMu(struct parameters *params, int mu) {
 
 	if (mu > 0) {
 		params->mu = mu;
-	} else {
+	}
+	else {
 		printf("\nWarning: mu value '%d' is invalid. Mu value must have a value of one or greater. Mu value left unchanged as '%d'.\n", mu, params->mu);
 	}
 }
@@ -553,7 +580,8 @@ DLL_EXPORT void setLambda(struct parameters *params, int lambda) {
 
 	if (lambda > 0) {
 		params->lambda = lambda;
-	} else {
+	}
+	else {
 		printf("\nWarning: lambda value '%d' is invalid. Lambda value must have a value of one or greater. Lambda value left unchanged as '%d'.\n", lambda, params->lambda);
 	}
 }
@@ -568,7 +596,8 @@ DLL_EXPORT void setEvolutionaryStrategy(struct parameters *params, char evolutio
 
 	if (evolutionaryStrategy == '+' || evolutionaryStrategy == ',') {
 		params->evolutionaryStrategy = evolutionaryStrategy;
-	} else {
+	}
+	else {
 		printf("\nWarning: the evolutionary strategy '%c' is invalid. The evolutionary strategy must be '+' or ','. The evolutionary strategy has been left unchanged as '%c'.\n", evolutionaryStrategy, params->evolutionaryStrategy);
 	}
 }
@@ -583,7 +612,8 @@ DLL_EXPORT void setMutationRate(struct parameters *params, double mutationRate) 
 
 	if (mutationRate >= 0 && mutationRate <= 1) {
 		params->mutationRate = mutationRate;
-	} else {
+	}
+	else {
 		printf("\nWarning: mutation rate '%f' is invalid. The mutation rate must be in the range [0,1]. The mutation rate has been left unchanged as '%f'.\n", mutationRate, params->mutationRate);
 	}
 }
@@ -597,7 +627,8 @@ DLL_EXPORT void setRecurrentConnectionProbability(struct parameters *params, dou
 
 	if (recurrentConnectionProbability >= 0 && recurrentConnectionProbability <= 1) {
 		params->recurrentConnectionProbability = recurrentConnectionProbability;
-	} else {
+	}
+	else {
 		printf("\nWarning: recurrent connection probability '%f' is invalid. The recurrent connection probability must be in the range [0,1]. The recurrent connection probability has been left unchanged as '%f'.\n", recurrentConnectionProbability, params->recurrentConnectionProbability);
 	}
 }
@@ -611,7 +642,8 @@ DLL_EXPORT void setShortcutConnections(struct parameters *params, int shortcutCo
 
 	if (shortcutConnections == 0 || shortcutConnections == 1) {
 		params->shortcutConnections = shortcutConnections;
-	} else {
+	}
+	else {
 		printf("\nWarning: shortcut connection '%d' is invalid. The shortcut connections takes values 0 or 1. The shortcut connection has been left unchanged as '%d'.\n", shortcutConnections, params->shortcutConnections);
 	}
 }
@@ -635,7 +667,8 @@ DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fit
 	if (fitnessFunction == NULL) {
 		params->fitnessFunction = supervisedLearning;
 		strncpy(params->fitnessFunctionName, "supervisedLearning", FITNESSFUNCTIONNAMELENGTH);
-	} else {
+	}
+	else {
 		params->fitnessFunction = fitnessFunction;
 		strncpy(params->fitnessFunctionName, fitnessFunctionName, FITNESSFUNCTIONNAMELENGTH);
 	}
@@ -652,7 +685,8 @@ DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selec
 	if (selectionScheme == NULL) {
 		params->selectionScheme = selectFittest;
 		strncpy(params->selectionSchemeName, "selectFittest", SELECTIONSCHEMENAMELENGTH);
-	} else {
+	}
+	else {
 		params->selectionScheme = selectionScheme;
 		strncpy(params->selectionSchemeName, selectionSchemeName, SELECTIONSCHEMENAMELENGTH);
 	}
@@ -669,7 +703,8 @@ DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void (*re
 	if (reproductionScheme == NULL) {
 		params->reproductionScheme = mutateRandomParent;
 		strncpy(params->reproductionSchemeName, "mutateRandomParent", REPRODUCTIONSCHEMENAMELENGTH);
-	} else {
+	}
+	else {
 		params->reproductionScheme = reproductionScheme;
 		strncpy(params->reproductionSchemeName, reproductionSchemeName, REPRODUCTIONSCHEMENAMELENGTH);
 	}
@@ -733,7 +768,8 @@ DLL_EXPORT void setUpdateFrequency(struct parameters *params, int updateFrequenc
 
 	if (updateFrequency < 0) {
 		printf("Warning: update frequency of %d is invalid. Update frequency must be >= 0. Update frequency is left unchanged as %d.\n", updateFrequency, params->updateFrequency);
-	} else {
+	}
+	else {
 		params->updateFrequency = updateFrequency;
 	}
 }
@@ -1069,7 +1105,8 @@ DLL_EXPORT void printChromosome(struct chromosome *chromo, int weights) {
 			/* print the node input information */
 			if (weights == 1) {
 				printf("%d,%+.1f\t", chromo->nodes[i]->inputs[j], chromo->nodes[i]->weights[j]);
-			} else {
+			}
+			else {
 				printf("%d ", chromo->nodes[i]->inputs[j]);
 			}
 		}
@@ -1133,7 +1170,8 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 
 			if (nodeInputLocation < numInputs) {
 				chromo->nodeInputsHold[j] = inputs[nodeInputLocation];
-			} else {
+			}
+			else {
 				chromo->nodeInputsHold[j] = chromo->nodes[nodeInputLocation - numInputs]->output;
 			}
 		}
@@ -1155,7 +1193,8 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 
 			if (chromo->nodes[currentActiveNode]->output > 0) {
 				chromo->nodes[currentActiveNode]->output = DBL_MAX;
-			} else {
+			}
+			else {
 				chromo->nodes[currentActiveNode]->output = DBL_MIN;
 			}
 		}
@@ -1166,7 +1205,8 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 
 		if (chromo->outputNodes[i] < numInputs) {
 			chromo->outputValues[i] = inputs[chromo->outputNodes[i]];
-		} else {
+		}
+		else {
 			chromo->outputValues[i] = chromo->nodes[chromo->outputNodes[i] - numInputs]->output;
 		}
 	}
@@ -1301,7 +1341,8 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char c
 
 		if (chromo->nodes[i]->active == 1) {
 			strncpy(colour, "black", 20);
-		} else {
+		}
+		else {
 			strncpy(colour, "lightgrey", 20);
 		}
 
@@ -1312,7 +1353,8 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char c
 
 			if (weights == 1) {
 				snprintf(weight, 20, "%.2f", chromo->nodes[i]->weights[j]);
-			} else {
+			}
+			else {
 				snprintf(weight, 20, " (%d)", j);
 			}
 
@@ -1383,7 +1425,8 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 		/* function inputs */
 		if (chromo->numInputs == 0) {
 			fprintf(fp, "f()=");
-		} else {
+		}
+		else {
 
 			fprintf(fp, "f_%d(x_0", output);
 
@@ -1476,7 +1519,8 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 
 		if (getChromosomeNodeArity(chromo, index - chromo->numInputs) == 1) {
 			saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[0], fp);
-		} else {
+		}
+		else {
 
 			for (i = 0; i < getChromosomeNodeArity(chromo, index - chromo->numInputs); i++) {
 
@@ -1484,10 +1528,12 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 					fprintf(fp, "\\frac{");
 					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 					fprintf(fp, "}{");
-				} else if (i + 1 == getChromosomeNodeArity(chromo, index - chromo->numInputs) && getChromosomeNodeArity(chromo, index - chromo->numInputs) > 2) {
+				}
+				else if (i + 1 == getChromosomeNodeArity(chromo, index - chromo->numInputs) && getChromosomeNodeArity(chromo, index - chromo->numInputs) > 2) {
 					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 					fprintf(fp, "}}");
-				} else {
+				}
+				else {
 					saveChromosomeLatexRecursive(chromo, chromo->nodes[index - chromo->numInputs]->inputs[i], fp);
 					fprintf(fp, "}");
 				}
@@ -1828,9 +1874,11 @@ DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index) {
 
 	if (maxArity == -1) {
 		return chromoArity;
-	} else if (maxArity < chromoArity) {
+	}
+	else if (maxArity < chromoArity) {
 		return maxArity;
-	} else {
+	}
+	else {
 		return chromoArity;
 	}
 }
@@ -2955,9 +3003,11 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 	/* determine the size of the Candidate Chromos based on the evolutionary Strategy */
 	if (params->evolutionaryStrategy == '+') {
 		numCandidateChromos = params->mu + params->lambda;
-	} else if (params->evolutionaryStrategy == ',') {
+	}
+	else if (params->evolutionaryStrategy == ',') {
 		numCandidateChromos = params->lambda;
-	} else {
+	}
+	else {
 		printf("Error: the evolutionary strategy '%c' is not known.\nTerminating CGP-Library.\n", params->evolutionaryStrategy);
 		exit(0);
 	}
@@ -3024,11 +3074,13 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 				if (i < params->lambda) {
 					copyChromosome(candidateChromos[i], childrenChromos[i] );
-				} else {
+				}
+				else {
 					copyChromosome(candidateChromos[i], parentChromos[i - params->lambda] );
 				}
 			}
-		} else if (params->evolutionaryStrategy == ',') {
+		}
+		else if (params->evolutionaryStrategy == ',') {
 
 			for (i = 0; i < numCandidateChromos; i++) {
 				copyChromosome(candidateChromos[i], childrenChromos[i] );
@@ -3074,29 +3126,31 @@ DLL_EXPORT struct chromosome* runCGP(struct parameters *params, struct dataSet *
 
 /*
 	returns a pointer to the fittest chromosome in the two arrays of chromosomes
+
+	loops through parents and then the children in order for the children to always be selected over the parents
 */
-static void getBestChromosome(struct chromosome **chromoArrayA, struct chromosome **chromoArrayB, int numChromosA, int numChromosB, struct chromosome *bestChromo) {
+static void getBestChromosome(struct chromosome **parents, struct chromosome **children, int numParents, int numChildren, struct chromosome *best) {
 
 	int i;
 	struct chromosome *bestChromoSoFar;
 
-	bestChromoSoFar = chromoArrayA[0];
+	bestChromoSoFar = parents[0];
 
-	for (i = 1; i < numChromosA; i++) {
+	for (i = 1; i < numParents; i++) {
 
-		if (chromoArrayA[i]->fitness <= bestChromoSoFar->fitness) {
-			bestChromoSoFar = chromoArrayA[i];
+		if (parents[i]->fitness <= bestChromoSoFar->fitness) {
+			bestChromoSoFar = parents[i];
 		}
 	}
 
-	for (i = 0; i < numChromosB; i++) {
+	for (i = 0; i < numChildren; i++) {
 
-		if (chromoArrayB[i]->fitness <= bestChromoSoFar->fitness) {
-			bestChromoSoFar = chromoArrayB[i];
+		if (children[i]->fitness <= bestChromoSoFar->fitness) {
+			bestChromoSoFar = children[i];
 		}
 	}
 
-	copyChromosome(bestChromo, bestChromoSoFar);
+	copyChromosome(best, bestChromoSoFar);
 }
 
 
@@ -3571,7 +3625,8 @@ static double _xor(const int numInputs, const double *inputs, const double *conn
 
 	if (numOnes == 1) {
 		out = 1;
-	} else {
+	}
+	else {
 		out = 0;
 	}
 
@@ -3601,7 +3656,8 @@ static double _xnor(const int numInputs, const double *inputs, const double *con
 
 	if (numOnes == 1) {
 		out = 0;
-	} else {
+	}
+	else {
 		out = 1;
 	}
 
@@ -3617,7 +3673,8 @@ static double _not(const int numInputs, const double *inputs, const double *conn
 
 	if (inputs[0] == 0) {
 		out = 1;
-	} else {
+	}
+	else {
 		out = 0;
 	}
 
@@ -3688,7 +3745,8 @@ static double _step(const int numInputs, const double *inputs, const double *con
 
 	if (weightedInputSum < 0) {
 		out = 0;
-	} else {
+	}
+	else {
 		out = 1;
 	}
 
@@ -3829,7 +3887,8 @@ static int cmpDouble(const void * a, const void * b) {
 	}
 	if ( *(double*)a == *(double*)b ) {
 		return 0;
-	} else {
+	}
+	else {
 		return 1;
 	}
 }
@@ -3873,7 +3932,8 @@ static int randInt(int n) {
 
 	do {
 		x = rand();
-	} while (x > randLimit);
+	}
+	while (x > randLimit);
 
 	return x % n;
 }
