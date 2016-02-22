@@ -56,8 +56,8 @@ multipleThreads: examples/multipleThreads.c src/cgp.c src/cgp.h
 	@$(CC) -o multipleThreads examples/multipleThreads.c src/cgp.c $(CFLAGS)
 
 so: src/cgp.c 
-	@$(CC) -c -fpic src/cgp.c $(CFLAGS) -O3
-	@$(CC) -shared -o libcgp.so cgp.o -lm -O3
+	@$(CC) -c -fpic src/cgp.c $(CFLAGS)
+	@$(CC) -shared -o libcgp.so cgp.o -lm -fopenmp
 
 docs: ./src/cgp.h ./naturaldocs/customFiles/*
 	@naturaldocs -i ./src -i ./naturaldocs/customFiles -o HTML ./docs -p ./naturaldocs

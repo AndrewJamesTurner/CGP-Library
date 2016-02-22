@@ -1891,6 +1891,17 @@ DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo) {
 }
 
 /*
+	Gets the chromosome complexity
+*/
+DLL_EXPORT int getChromosomeComplexity(struct chromosome *chromo){
+	int i;
+	int complexity = 0;
+	for(i=0;i< chromo->numActiveNodes;i++)
+	  complexity+= chromo->nodes[chromo->activeNodes[i]]->actArity;
+	return complexity;
+}
+
+/*
 	Gets the number of generations required to find the given chromosome
 */
 DLL_EXPORT int getChromosomeGenerations(struct chromosome *chromo) {
@@ -3454,7 +3465,7 @@ static double _cube(const int numInputs, const double *inputs, const double *con
 */
 static double _power(const int numInputs, const double *inputs, const double *connectionWeights) {
 
-	return pow(inputs[0], inputs[2]);
+	return pow(inputs[0], inputs[1]);
 }
 
 /*

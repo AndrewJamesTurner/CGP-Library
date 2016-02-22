@@ -1336,6 +1336,20 @@ DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index);
 */
 DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
 
+/*
+	Function: getChromosomeComplexity
+		Gets the complexity of the given chromosome
+
+	Parameters:
+		chromo - pointer to initialised chromosome structure.
+
+	Returns:
+		The complexity of the given chromosome
+
+	See Also:
+		<initialiseChromosome>
+*/
+DLL_EXPORT int getChromosomeComplexity(struct chromosome *chromo);
 
 /*
 	Function: getChromosomeGenerations
