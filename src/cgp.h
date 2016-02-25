@@ -170,7 +170,7 @@ struct dataSet;
 /*
 	variable: results
 
-	Stores the the best chromosome found on each run when using <repeatCGP>
+	Stores the best chromosome found on each run when using <repeatCGP>
 
 	See Also:
 
