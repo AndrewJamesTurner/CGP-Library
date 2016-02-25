@@ -1338,7 +1338,7 @@ DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
 
 /*
 	Function: getChromosomeComplexity
-		Gets the complexity of the given chromosome
+		Gets the complexity of the given chromosome (the number of active connections)
 
 	Parameters:
 		chromo - pointer to initialised chromosome structure.
@@ -1347,7 +1347,7 @@ DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
 		The complexity of the given chromosome
 
 	See Also:
-		<initialiseChromosome>
+		<getNumChromosomeActiveNodes> 
 */
 DLL_EXPORT int getChromosomeComplexity(struct chromosome *chromo);
 
