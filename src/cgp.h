@@ -57,6 +57,13 @@
 #define setReproductionScheme setCustomReproductionScheme
 #define addNodeFunctionCustom addCustomNodeFunction
 
+/*
+	Deal with c++ compilers 
+*/
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /*
 	Title: Structures
@@ -1894,5 +1901,12 @@ DLL_EXPORT struct results* repeatCGP(struct parameters *params, struct dataSet *
 		<initialiseParameters>
 */
 DLL_EXPORT void setRandomNumberSeed(unsigned int seed);
+
+/*
+	End of extern "C"
+*/
+#ifdef __cplusplus
+}
+#endif
 
 #endif
