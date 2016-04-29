@@ -12,12 +12,8 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-fopenmp" />
 					<Add option="-DBUILD_DLL" />
 				</Compiler>
-				<Linker>
-					<Add library="openMP" />
-				</Linker>
 			</Target>
 			<Target title="gettingStarted">
 				<Option output="gettingStarted" prefix_auto="1" extension_auto="1" />
@@ -26,7 +22,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -37,11 +32,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customFitnessFunction">
@@ -51,11 +45,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="customNodeFunction">
@@ -65,11 +58,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="manipulatingChromosomes">
@@ -79,10 +71,9 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 				</Compiler>
 				<Linker>
-					<Add library="./CGP-Library.dll" />
+					<Add library=".\CGP-Library.dll" />
 				</Linker>
 			</Target>
 			<Target title="averageBehaviour">
@@ -91,7 +82,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -102,7 +92,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -113,7 +102,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -124,7 +112,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -135,7 +122,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -146,7 +132,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
 			</Target>
@@ -157,12 +142,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-fopenmp" />
 					<Add option="-DNO_DLL" />
 				</Compiler>
-				<Linker>
-					<Add option="-lgomp -pthread" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
