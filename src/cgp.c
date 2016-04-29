@@ -1891,14 +1891,14 @@ DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo) {
 }
 
 /*
-	Gets the chromosome complexity
+	Gets the number of active connections in the given chromosome
 */
-DLL_EXPORT int getChromosomeComplexity(struct chromosome *chromo){
+DLL_EXPORT int getNumChromosomeActiveConnections(struct chromosome *chromo) {
 
 	int i;
 	int complexity = 0;
 
-	for(i=0;i< chromo->numActiveNodes;i++) {
+	for (i = 0; i < chromo->numActiveNodes; i++) {
 		complexity += chromo->nodes[chromo->activeNodes[i]]->actArity;
 	}
 

@@ -58,7 +58,7 @@
 #define addNodeFunctionCustom addCustomNodeFunction
 
 /*
-	Deal with c++ compilers 
+	Deal with c++ compilers
 */
 #ifdef __cplusplus
 extern "C" {
@@ -1344,19 +1344,19 @@ DLL_EXPORT int getChromosomeNodeArity(struct chromosome *chromo, int index);
 DLL_EXPORT double getChromosomeFitness(struct chromosome *chromo);
 
 /*
-	Function: getChromosomeComplexity
-		Gets the complexity of the given chromosome (the number of active connections)
+	Function: getNumChromosomeActiveConnections
+		Gets the number of active connections in the given chromosome
 
 	Parameters:
 		chromo - pointer to initialised chromosome structure.
 
 	Returns:
-		The complexity of the given chromosome
+		The number of active connections
 
 	See Also:
-		<getNumChromosomeActiveNodes> 
+		<getNumChromosomeActiveNodes>
 */
-DLL_EXPORT int getChromosomeComplexity(struct chromosome *chromo);
+DLL_EXPORT int getNumChromosomeActiveConnections(struct chromosome *chromo);
 
 /*
 	Function: getChromosomeGenerations

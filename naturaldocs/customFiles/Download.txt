@@ -5,7 +5,9 @@ The current and previous versions of CGP-Library will be available here for down
 Version: 2.4:
 	
 		* *Added multiple thread support via openMP*
-
+		* Added <getNumChromosomeActiveConnections>
+		* Fixed bug in the pow function
+		* Wrapped cgp.h in an extern "C" for compatibility with c++ compilers 
 Version: 2.3:
 
 		* Fixed bug where the number of inputs passed into a given node was always set to the max arity.
