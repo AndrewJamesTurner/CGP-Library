@@ -3,7 +3,7 @@ Title: Installation
 First download the latest CGP-Library from <Download> and unzip the file.
 
 Simplest:
-The simplest method of using the CGP-Library is to include cgp.c and cgp.h to your build path and compile them along with your own files. For instance #include "cgp.h" in your own program and then compile your program similar to
+The simplest method of using the CGP-Library is to include cgp.c and cgp.h in your build path and compile them along with your own files. For instance #include "cgp.h" in your own program and then compile your program similar to
 
 	>$ gcc yourFiles.c cgp.c cgp.h
 

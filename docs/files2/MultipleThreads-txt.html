@@ -13,7 +13,7 @@ if (browserType) {document.write("<div class=" + browserType + ">");if (browserV
 
 <div id=Content><div class="CSection"><div class=CTopic id=MainTopic><h1 class=CTitle><a name="Multiple_Threads"></a>Multiple Threads</h1><div class=CBody><p>This tutorial introduces and steps through a simple program which instructs the CGP-Library to use multiple threads.</p><p>One of the advantages of evolutionary algorithms is that they are &ldquo;embarrassingly parallel&rdquo;.&nbsp; For instance the fitness of each member of a population can be calculated in parallel.&nbsp; Additionally when conducing multiple runs to assess <a href="AverageBehaviour-txt.html#Average_Behaviour" class=LSection id=link1 onMouseOver="ShowTip(event, 'tt1', 'link1')" onMouseOut="HideTip('tt1')">Average Behaviour</a> each individual run can be conducted in parallel.</p><!--START_ND_SUMMARY--><div class=Summary><div class=STitle>Summary</div><div class=SBorder><table border=0 cellspacing=0 cellpadding=0 class=STable><tr class="SMain"><td class=SEntry><a href="#Multiple_Threads" >Multiple Threads</a></td><td class=SDescription>This tutorial introduces and steps through a simple program which instructs the CGP-Library to use multiple threads.</td></tr><tr class="SSection"><td class=SEntry><a href="#The_Program" >The Program</a></td><td class=SDescription>A simple program which demonstrates using multiple threads with the CGP-Library. </td></tr><tr class="SSection"><td class=SEntry><a href="#Stepping_Through_the_Code" >Stepping Through the Code</a></td><td class=SDescription>A close look at each line of the example code. </td></tr></table></div></div><!--END_ND_SUMMARY--></div></div></div>
 
-<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><p>A simple program which demonstrates using multiple threads with the CGP-Library.&nbsp; The program is also provided in the CGP-Library download within /examples/MultipleThreads.c and is included in the code::blocks project.</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="The_Program"></a>The Program</h2><div class=CBody><p>A simple program which demonstrates using multiple threads with the CGP-Library.&nbsp; The program is also provided in the CGP-Library download within /examples/MultipleThreads.c and is included in the code::blocks project.</p><p><b>Note:</b> on windows in order to use the CGP library with multiple threads  you must link against openMP.&nbsp; To enable this in code::blocks see the following video <a href="https://www.youtube.com/watch?v=p0woqF2XCeg" class=LURL target=_top>https://www.youtube.com/watch?v=p0woqF2XCeg</a>.&nbsp; If you want to enable multiple threads using the compiled CGP-Library.dll you must first recompile the .dll whilst linking against openMP.&nbsp; To recompile the CGP .dll select the compile dll build target from within code:blocks and press compile; again code::blocks must be set up to link against openMP.&nbsp; Under linux &lsquo;make so&rsquo; automatically links against openMP.&nbsp; If you want to compile cgp.c and cgp.h yourself and use multiple threads link against openMP by adding the &lsquo;-fopenmp&rsquo; flag to gcc.</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
 #include &lt;time.h&gt;
 #include &quot;../src/cgp.h&quot;
 
@@ -79,9 +79,50 @@ int main(void) {
     return 0;
 }</pre></blockquote></div></div></div>
 
-<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.&nbsp; First a number of header files are included including cgp.h for the CGP-Library and time.h so we can measure the speed up.</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
+<div class="CSection"><div class=CTopic><h2 class=CTitle><a name="Stepping_Through_the_Code"></a>Stepping Through the Code</h2><div class=CBody><p>A close look at each line of the example code.&nbsp; First a number of header files are included including cgp.h for the CGP-Library and time.h so the the speed up of using multiple threads can be measured.</p><blockquote><pre class="prettyprint">#include &lt;stdio.h&gt;
 #include &lt;time.h&gt;
-#include &quot;../src/cgp.h&quot;</pre></blockquote><p>And that&rsquo;s it,</p></div></div></div>
+#include &quot;../src/cgp.h&quot;</pre></blockquote><p>A fitness function is also defined which executes the given chromosomes 10,000 times in order to simulate a typical computationally intensive fitness evaluation.</p><blockquote><pre class="prettyprint">double fitnessFunction(struct parameters *params, struct chromosome *chromo, struct dataSet *data) {
+
+    int i;
+    double inputs[1] = {0.5};
+    int numExec = 10000;
+
+    for (i = 0; i &lt; numExec; i++) {
+        executeChromosome(chromo, inputs);
+    }
+
+    return 10;
+}</pre></blockquote><p>In the main function a number of variables are declared and initialised including setting up a CGP parameters structure which is configured to use the custom fitness function.</p><blockquote><pre class="prettyprint">time_t timeStart, timeEnd;
+double singleThreadTime, multipleThreadTime;
+double seedUp;
+
+struct parameters *params = NULL;
+
+int numInputs = 1;
+int numNodes = 100;
+int numOutputs = 1;
+int arity = 2;
+
+int gens = 100;
+int runs = 10;
+
+params = initialiseParameters(numInputs, numNodes, numOutputs, arity);
+setRandomNumberSeed(123456789);
+addNodeFunction(params, &quot;add,sub,mul,div,sin&quot;);
+setMutationRate(params, 1.0);
+setCustomFitnessFunction(params, fitnessFunction, &quot;FF&quot;);</pre></blockquote><p>Next the number of threads used by the CGP-Library is set as one (which is also the default).&nbsp; This is done using the <a href="../files/cgp-h.html#setNumThreads" class=LFunction id=link2 onMouseOver="ShowTip(event, 'tt2', 'link2')" onMouseOut="HideTip('tt2')">setNumThreads</a> function.</p><p>Once the number of threads has been set as one the time it takes to run CGP 10 times via a call to <a href="../files/cgp-h.html#repeatCGP" class=LFunction id=link3 onMouseOver="ShowTip(event, 'tt3', 'link3')" onMouseOut="HideTip('tt3')">repeatCGP</a> is recorded in the singleThreadTime variable.</p><blockquote><pre class="prettyprint">setNumThreads(params, 1);
+timeStart = time(NULL);
+repeatCGP(params, NULL, gens, runs);
+timeEnd = time(NULL);
+singleThreadTime = difftime(timeEnd, timeStart);</pre></blockquote><p>Next the number of threads is increased to four and the time taken to run CGP 10 times is once again recorded in the multipleThreadTime variable.</p><blockquote><pre class="prettyprint">setNumThreads(params, 4);
+timeStart = time(NULL);
+repeatCGP(params, NULL, gens, runs);
+timeEnd = time(NULL);
+multipleThreadTime = difftime(timeEnd, timeStart);</pre></blockquote><p>The speed up in run time due to utilising the number threads is then calculated and displayed.&nbsp; When this was ran on a CrayPat/X super computer there was a &gt;250% speed up in run time.&nbsp; However typical improvements are around 100% i.e. twice as fast.</p><p><b>Note:</b> Simply using more threads does not always improve runtime.&nbsp; A general rule of thumb is to use as many threads as you have logical CPU cores i.e. two on a dual core processor or four on a quad core processor.</p><blockquote><pre class="prettyprint">seedUp = 100 * (singleThreadTime - multipleThreadTime) / multipleThreadTime;
+
+printf(&quot;Single thread time: %.f seconds\n&quot;, singleThreadTime);
+printf(&quot;Multiple thread time: %.f seconds\n&quot;, multipleThreadTime);
+printf(&quot;Speed up = %.f%%\n&quot;, seedUp);</pre></blockquote><p>Finally the memory allocated to the parameters structure is freed and the program ends.</p><blockquote><pre class="prettyprint">freeParameters(params);</pre></blockquote><p>And that&rsquo;s it, By simply setting the number of threads via a call to <a href="../files/cgp-h.html#setNumThreads" class=LFunction id=link4 onMouseOver="ShowTip(event, 'tt2', 'link4')" onMouseOut="HideTip('tt2')">setNumThreads</a> the performance of the CGP-Library can be significantly increased.</p></div></div></div>
 
 </div><!--Content-->
 
@@ -96,7 +137,7 @@ var searchPanel = new SearchPanel("searchPanel", "HTML", "../search");
 
 
 <!--START_ND_TOOLTIPS-->
-<div class=CToolTip id="tt1"><div class=CSection>This tutorial introduces the use of repeatCGP to assess the average behaviour of CGP towards a given application rather than a one-off instance.</div></div><!--END_ND_TOOLTIPS-->
+<div class=CToolTip id="tt1"><div class=CSection>This tutorial introduces the use of repeatCGP to assess the average behaviour of CGP towards a given application rather than a one-off instance.</div></div><div class=CToolTip id="tt2"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>DLL_EXPORT void setNumThreads(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>int&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap>numThreads</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Sets the number of threads in the given parameters.</div></div><div class=CToolTip id="tt3"><div class=CFunction><blockquote><table border=0 cellspacing=0 cellpadding=0 class="Prototype"><tr><td><table border=0 cellspacing=0 cellpadding=0><tr><td class="PBeforeParameters  prettyprint "nowrap>DLL_EXPORT struct results* repeatCGP(</td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>parameters&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>params,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap>struct&nbsp;</td><td class="PType  prettyprint " nowrap>dataSet&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap>*</td><td class="PParameter  prettyprint " nowrap>data,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>int&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap>numGens,</td></tr><tr><td></td><td class="PTypePrefix  prettyprint " nowrap></td><td class="PType  prettyprint " nowrap>int&nbsp;</td><td class="PParameterPrefix  prettyprint " nowrap></td><td class="PParameter  prettyprint " nowrap>numRuns</td><td class="PAfterParameters  prettyprint "nowrap>)</td></tr></table></td></tr></table></blockquote>Repeatedly applies CGP to the given task.</div></div><!--END_ND_TOOLTIPS-->
 
 
 

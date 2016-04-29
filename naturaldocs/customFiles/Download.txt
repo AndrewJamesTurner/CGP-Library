@@ -2,6 +2,10 @@ Title: Download
 
 The current and previous versions of CGP-Library will be available here for download.
 
+Version: 2.4:
+	
+		* *Added multiple thread support via openMP*
+
 Version: 2.3:
 
 		* Fixed bug where the number of inputs passed into a given node was always set to the max arity.
