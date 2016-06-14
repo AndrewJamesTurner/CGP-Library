@@ -3187,7 +3187,7 @@ static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *
 
 
 /*
-	copys the contents for the src node into dest node.
+	copys the contents from the src node into dest node.
 */
 static void copyNode(struct node *nodeDest, struct node *nodeSrc) {
 

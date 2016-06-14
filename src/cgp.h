@@ -27,7 +27,7 @@
 
 /*
 	Under windows NO_DLL must be #defined at compile time when compiling
-	cgp_library with other source files.
+	the cgp_library with other source files.
 
 	Under windows BUILD_DLL must be #defined at compile time when compiling
 	CGP-Library.dll to allow DLL_EXPORT to define functions as library
@@ -35,7 +35,7 @@
 
 	Under windows when using the compiled library no #defines are required.
 
-	Under Linux no #defines are required.
+	Under Linux no #defines are required ;)
 */
 #if defined(_WIN32) && defined(NO_DLL)
 #define DLL_EXPORT
@@ -50,7 +50,8 @@
 
 /*
 	Function Aliases
-		old versions are depreciated
+		handles depreciated functions
+		should be removed in the next major revision
 */
 #define setFitnessFunction setCustomFitnessFunction
 #define setSelectionScheme setCustomSelectionScheme
@@ -74,10 +75,10 @@ extern "C" {
 /*
 	variable: parameters
 
-	Stores general <parameters> used by the CGP-Library.
+	Stores general evolutionary and chromosome <parameters> used by the CGP-Library.
 
 	The <parameters> structure is used extensively by the CGP-Library
-	and controls every aspect of the evolutionary algorithm.
+	and controls every aspect of the evolutionary algorithm and solution structure.
 
 	The values stored in <parameters> are set to default values when
 	initialised using <initialiseParameters>. These default values can then be
@@ -105,31 +106,28 @@ extern "C" {
 		parameter values of the evolutionary strategy used. See
 		<setMu>, <setLambda> and <setEvolutionaryStrategy>.
 
-		- The mutation rate controls the percentage of the
-		chromosome's genes which are set to a random value when the
-		chromosome is mutated. See <setMutationRate>.
+		- The mutation rate controls the level of mutation when
+		creating a child solution from a parent. See <setMutationRate>.
 
-		- The recurrent connection probability gives the probability
-		of a recurrent connection being created when a connection
-		gene is mutated. For regular acyclic feed-forward programs
-		leave as zero. For recurrent programs see
-		<setRecurrentConnectionProbability>.
+		- The recurrent connection probability controls the probability
+		of connections being made recurrent when mutating connection
+		genes. For regular acyclic feed-forward programs leave as zero.
+		For recurrent programs see <setRecurrentConnectionProbability>.
 
-		- The Shortcut Connections controls whether output genes
-		can index program inputs. If set to 1 (yes) output genes can
-		index program inputs. If set to 0 (no) output genes cannot
-		index program inputs. See <setShortcutConnections>
+		- The shortcut connections controls whether program outputs can
+		connect directly to program inputs. 1 (yes) and 0 (no).
+		See <setShortcutConnections>
 
 		- The connection weight range controls the range of values
 		which the connection weights can take. Connection weights
 		are only considered when the CGP-Library is used to evolve
-		neural networks. See <setConnectionWeightRange>.
+		artificial neural networks. See <setConnectionWeightRange>.
 
 		- The update frequency controls the frequency of updates to
 		the terminal when using <runCGP>. The value is the number
 		of generations between updates. See <setUpdateFrequency>.
 
-		- The mutation type stores the type of mutation used when
+		- The mutation type stores the mutation method used when
 		mutating chromosomes. See <setMutationType>.
 
 		- The fitness function stores the fitness function used when
@@ -154,7 +152,7 @@ struct parameters;
 /*
 	variable: chromosome
 
-	Stores CGP chromosome instances used by the CGP-Library.
+	Stores a CGP chromosome instances used by the CGP-Library.
 
 	See Also:
 		<initialiseChromosome>, <initialiseChromosomeFromFile> <freeChromosome>, <printChromosome>, <executeChromosome>, <mutateChromosome>
@@ -165,9 +163,9 @@ struct chromosome;
 /*
 	variable: dataSet
 
-	Stores a data set which can be used by the fitness function when calculating a chromosomes fitness.
+	Stores a data set which can be used by fitness functions when calculating a chromosomes fitness.
 
-	Typically contains input output pairs of data used when applying CGP to supervised learning.
+	Typically contains input output pairs of data used when applying CGP to supervised learning tasks.
 
 	See Also:
 		<initialiseDataSetFromFile>, <initialiseDataSetFromArrays>, <freeDataSet>, <printDataSet>
@@ -780,7 +778,7 @@ DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selec
 
 */
 DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void
-		(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
+        (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
 
 
 
