@@ -1,11 +1,11 @@
-Title: About  
- 
-CGP-Library is a cross platform Cartesian Genetic Programming library designed to be simple to use whilst being highly extendible. The library is written in C and is compatible with Linux, Windows and Mac OS. 
-The CGP-Library is capable of the following:
+Title: About
+
+CGP-Library is a cross platform Cartesian Genetic Programming implementation designed to be simple to use whilst being highly extendable. The library is written in C and is compatible with Linux, Windows and Mac OS.
+The CGP-Library implements the following:
 	* Cartesian Genetic Programming
 	* Recurrent Cartesian Genetic Programming
-	* Cartesian Genetic Programming of Artificial Neural Networks 
-	* Recurrent Cartesian Genetic Programming of Artificial Neural Networks 
+	* Cartesian Genetic Programming of Artificial Neural Networks
+	* Recurrent Cartesian Genetic Programming of Artificial Neural Networks
 
 Information relating to Cartesian Genetic Programming is maintained at <http://www.cartesiangp.co.uk/> which includes a ten slide introduction <http://www.cartesiangp.co.uk/cgp-in-nutshell.pdf>. This documentation also includes a short introduction to CGP in <Cartesian Genetic Programming>.
 
@@ -15,23 +15,23 @@ Title: News
 
 Title: Tutorials
 
-A number of tutorials are provided to introduce users to the CGP-Library and many of its features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials. 
+A number of tutorials are provided to introduce users to the CGP-Library and many of its features. New users should download the CGP-Library from <Downloads> and then follow the <Installation> and <Getting Started> tutorials.
 
-For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a code::blocks project file is also provided which contains all of the tutorial source files (under Ubuntu you may also need to also install xterm for code::blocks to run the programs in its default terminal). 
+For those familiar with the open source cross platform IDE Code::Blocks (<http://www.codeblocks.org/>), a Code::Blocks project file is also provided which contains all of the tutorial source files (under Ubuntu you may also need to also install xterm for code::blocks to run the programs in its default terminal).
 
 
 
 Title: Author
 
-Andrew James Turner, Phd student at The University of York, 2015.
+Andrew James Turner
 
-Homepage: <http://andrewjamesturner.co.uk/>
+<http://andrewjamesturner.co.uk/>
 
-Email: andrew.turner@york.ac.uk
+andrew.turner@york.ac.uk
 
 Title: Citations
 
-If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal letter. Emails informing of any publications which make reference to the CGP-Library would also be warmly received. 
+If the CGP-Library is ever used in published work it would be greatly appreciated if a citation were made to the following journal letter. Emails informing of any publications which make reference to the CGP-Library would also be warmly received.
 
 
 A. J. Turner and J. F. Miller. *Introducing A Cross Platform Open Source Cartesian Genetic Programming Library*. The Journal of Genetic Programming and Evolvable Machines, 16, 83-91, 2014.
@@ -57,7 +57,7 @@ Much of the CGP-Library is based on published peer reviewed academic research. F
 	* Miller, J.F., Thomson, P.: Cartesian genetic programming. In: EuroGP'00. vol.1820, pp.121-132 (2000)
 
 	* Miller, J.F.: Cartesian Genetic Programming. Springer (2011)
-	
+
 
 *Cartesian Genetic Programming of Artificial Neural Networks*
 

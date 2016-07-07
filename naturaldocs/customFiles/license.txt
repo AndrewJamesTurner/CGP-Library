@@ -1,18 +1,18 @@
-Title: Licenses 
+Title: Licenses
 
-CGP-Library is an open source project intended to be useful for many applications. The GNU Lesser General Public License is used so as the CGP-Library can be used in commercial, as well as non-commercial applications, provided the library is used unchanged. However the GNU Lesser General Public License stipulates that any commercial application which uses an altered version of the CGP-Library must also be released as open source under the terms of the licence. 
+CGP-Library is an open source project intended to be useful for many applications. The GNU Lesser General Public License is used so as the CGP-Library can be used in commercial, as well as non-commercial applications, provided the library is used unchanged. However the GNU Lesser General Public License stipulates that any commercial application which uses an altered version of the CGP-Library must also be released as open source under the terms of the licence.
 
 Title: CGP-Library
 
-Copyright (c) Andrew James Turner 2015, andrew.turner@york.ac.uk
+Copyright (c) Andrew James Turner 2016, andrew.turner@york.ac.uk
 
 Licensed under the GNU Lesser General Public License, available at <https://www.gnu.org/licenses/lgpl.html>
 
-(see lgplv3-147x51.png) 
+(see lgplv3-147x51.png)
 
-Title: CGP-Library Documentation 
+Title: CGP-Library Documentation
 
-Copyright (c) Andrew James Turner 2015, andrew.turner@york.ac.uk
+Copyright (c) Andrew James Turner 2016, andrew.turner@york.ac.uk
 
 Licensed under the GNU Free Documentation License, available at <https://www.gnu.org/licenses/fdl.html>
 
