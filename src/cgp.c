@@ -138,8 +138,8 @@ static int getRandomFunction(int numFunctions);
 static int getRandomChromosomeOutput(int numInputs, int numNodes, int shortcutConnections);
 
 /* function set functions */
-static int addPresetFuctionToFunctionSet(struct parameters *params, char const *functionName);
-static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
+static int addPresetFunctionToFunctionSet(struct parameters *params, char const *functionName);
+static void copyFunctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc);
 static void printFunctionSet(struct parameters *params);
 
 /* results functions */
@@ -331,7 +331,7 @@ DLL_EXPORT void addNodeFunction(struct parameters *params, char const *functionN
 	while (pch != NULL) {
 
 		/* add the named function to the function set */
-		addPresetFuctionToFunctionSet(params, pch);
+		addPresetFunctionToFunctionSet(params, pch);
 
 		/* get the next function name */
 		pch = strtok(NULL, ", ");
@@ -372,7 +372,7 @@ DLL_EXPORT void addCustomNodeFunction(struct parameters *params, double (*functi
 	used as an interface to adding pre-set node functions.
 	returns one if successful, zero otherwise.
 */
-static int addPresetFuctionToFunctionSet(struct parameters *params, char const *functionName) {
+static int addPresetFunctionToFunctionSet(struct parameters *params, char const *functionName) {
 
 	int successfullyAdded = 1;
 
@@ -659,7 +659,7 @@ DLL_EXPORT void setConnectionWeightRange(struct parameters *params, double weigh
 
 
 /*
-	sets the fitness function to the fitnessFuction passed. If the fitnessFuction is NULL
+	sets the fitness function to the fitnessFunction passed. If the fitnessFunction is NULL
 	then the default supervisedLearning fitness function is used.
 */
 DLL_EXPORT void setCustomFitnessFunction(struct parameters *params, double (*fitnessFunction)(struct parameters *params, struct chromosome *chromo, struct dataSet *data), char const *fitnessFunctionName) {
@@ -849,7 +849,7 @@ DLL_EXPORT struct chromosome *initialiseChromosome(struct parameters *params) {
 
 	/* copy the function set from the parameters to the chromosome */
 	chromo->funcSet = (struct functionSet*)malloc(sizeof(struct functionSet));
-	copyFuctionSet(chromo->funcSet, params->funcSet);
+	copyFunctionSet(chromo->funcSet, params->funcSet);
 
 	/* set the active nodes in the newly generated chromosome */
 	setChromosomeActiveNodes(chromo);
@@ -930,7 +930,7 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char const *file) {
 		strncpy(funcName, record, FUNCTIONNAMELENGTH);
 
 		/* can only load functions defined within CGP-Library */
-		if (addPresetFuctionToFunctionSet(params, funcName) == 0) {
+		if (addPresetFunctionToFunctionSet(params, funcName) == 0) {
 			printf("Error: cannot load chromosome which contains custom node functions.\n");
 			printf("Terminating CGP-Library.\n");
 			freeParameters(params);
@@ -1032,7 +1032,7 @@ DLL_EXPORT struct chromosome *initialiseChromosomeFromChromosome(struct chromoso
 
 	/* copy over the functionset */
 	chromoNew->funcSet = (struct functionSet*)malloc(sizeof(struct functionSet));
-	copyFuctionSet(chromoNew->funcSet, chromo->funcSet);
+	copyFunctionSet(chromoNew->funcSet, chromo->funcSet);
 
 	/* set the active nodes in the newly generated chromosome */
 	setChromosomeActiveNodes(chromoNew);
@@ -1140,7 +1140,7 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 	int i, j;
 	int nodeInputLocation;
 	int currentActiveNode;
-	int currentActiveNodeFuction;
+	int currentActiveNodeFunction;
 	int nodeArity;
 
 	const int numInputs = chromo->numInputs;
@@ -1177,10 +1177,10 @@ DLL_EXPORT void executeChromosome(struct chromosome *chromo, const double *input
 		}
 
 		/* get the functionality of the active node under evaluation */
-		currentActiveNodeFuction = chromo->nodes[currentActiveNode]->function;
+		currentActiveNodeFunction = chromo->nodes[currentActiveNode]->function;
 
 		/* calculate the output of the active node under evaluation */
-		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFuction](nodeArity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
+		chromo->nodes[currentActiveNode]->output = chromo->funcSet->functions[currentActiveNodeFunction](nodeArity, chromo->nodeInputsHold, chromo->nodes[currentActiveNode]->weights);
 
 
 		/* deal with doubles becoming NAN */
@@ -1279,7 +1279,7 @@ DLL_EXPORT void saveChromosome(struct chromosome *chromo, char const *fileName) 
 	fprintf(fp, "numOutputs,%d\n", chromo->numOutputs);
 	fprintf(fp, "arity,%d\n", chromo->arity);
 
-	fprintf(fp, "fuctionSet");
+	fprintf(fp, "functionSet");
 
 	for (i = 0; i < chromo->funcSet->numFunctions; i++) {
 		fprintf(fp, ",%s", chromo->funcSet->functionNames[i]);
@@ -1818,8 +1818,8 @@ DLL_EXPORT void copyChromosome(struct chromosome *chromoDest, struct chromosome 
 		chromoDest->activeNodes[i] = chromoSrc->activeNodes[i];
 	}
 
-	/* copy fuctionset */
-	copyFuctionSet(chromoDest->funcSet, chromoSrc->funcSet);
+	/* copy functionset */
+	copyFunctionSet(chromoDest->funcSet, chromoSrc->funcSet);
 
 	/* copy each of the chromosomes outputs */
 	for (i = 0; i < chromoSrc->numOutputs; i++) {
@@ -3172,7 +3172,7 @@ static void getBestChromosome(struct chromosome **parents, struct chromosome **c
 /*
 	copies the contents of funcSetSrc to funcSetDest
 */
-static void copyFuctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc) {
+static void copyFunctionSet(struct functionSet *funcSetDest, struct functionSet *funcSetSrc) {
 
 	int i;
 
@@ -3321,7 +3321,7 @@ static int getRandomFunction(int numFunctions) {
 
 	/* check that funcSet contains functions */
 	if (numFunctions < 1) {
-		printf("Error: cannot assign the function gene a value as the Fuction Set is empty.\nTerminating CGP-Library.\n");
+		printf("Error: cannot assign the function gene a value as the Function Set is empty.\nTerminating CGP-Library.\n");
 		exit(0);
 	}
 
