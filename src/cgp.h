@@ -1167,6 +1167,45 @@ DLL_EXPORT void saveChromosomeLatex(struct chromosome *chromo, int weights, char
 
 
 /*
+	Function: compareChromosomes
+		Compares the two given chromosomes.
+
+	Parameters:
+		chromoA - pointer to <chromosome> structure.
+		chromoB - pointer to <chromosome> structure.
+
+	Returns:
+		Whether or not the two chromosomes are the same: 0 no, 1 yes.
+
+	Note:
+		This function does *not* compare connections weight. For this use <compareChromosomesANN>.
+
+*/
+DLL_EXPORT int compareChromosomes(struct chromosome *chromoA, struct chromosome *chromoB);
+
+
+/*
+	Function: compareChromosomesANN
+		Compares the two given chromosomes.
+
+	Parameters:
+		chromoA - pointer to <chromosome> structure.
+		chromoB - pointer to <chromosome> structure.
+
+	Returns:
+		Whether or not the two chromosomes are the same: 0 no, 1 yes.
+
+	Note:
+		This function compares connections weight.
+
+	See Also:
+		<compareChromosomes>
+
+*/
+DLL_EXPORT int compareChromosomesANN(struct chromosome *chromoA, struct chromosome *chromoB);
+
+
+/*
 	Function: mutateChromosome
 		Mutate the given chromosome using the mutation method described in the given <parameters>.
 

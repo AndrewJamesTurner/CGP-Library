@@ -26,7 +26,7 @@
 #define NUMOUTPUTS 1
 #define ARITY 2
 
-int main(void){
+int main(void) {
 
 	struct parameters *params = NULL;
 	struct chromosome *chromoA = NULL;
@@ -46,7 +46,7 @@ int main(void){
 
 	setChromosomeFitness(params, chromoA, trainingData);
 
-	mutateChromosome(params,chromoA);
+	mutateChromosome(params, chromoA);
 
 	copyChromosome(chromoB, chromoA);
 

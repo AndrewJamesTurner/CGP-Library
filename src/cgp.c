@@ -1672,6 +1672,125 @@ static void saveChromosomeLatexRecursive(struct chromosome *chromo, int index, F
 
 }
 
+DLL_EXPORT int compareChromosomes(struct chromosome *chromoA, struct chromosome *chromoB) {
+
+	int i, j;
+
+	/* ensure that the chromosomes don't point to NULL */
+	if (chromoA == NULL || chromoB == NULL) {
+		return 0;
+	}
+
+	/* Check the high level parameters */
+	if (chromoA->numInputs != chromoB->numInputs) {
+		return 0;
+	}
+
+	if (chromoA->numNodes != chromoB->numNodes) {
+		return 0;
+	}
+
+	if (chromoA->numOutputs != chromoB->numOutputs) {
+		return 0;
+	}
+
+	if (chromoA->arity != chromoB->arity) {
+		return 0;
+	}
+
+	/* for each node*/
+	for (i = 0; i < chromoA->numNodes; i++) {
+
+		/* Check the function genes */
+		if (chromoA->nodes[i]->function != chromoB->nodes[i]->function) {
+			return 0;
+		}
+
+		/* for each node input */
+		for (j = 0; j < chromoA->arity; j++) {
+
+			/* Check the node inputs */
+			if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
+				return 0;
+			}
+		}
+	}
+
+	/* for all of the outputs */
+	for (i = 0; i < chromoA->numOutputs; i++) {
+
+		/* Check the outputs */
+		if (chromoA->outputNodes[i] != chromoB->outputNodes[i] ) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
+DLL_EXPORT int compareChromosomesANN(struct chromosome *chromoA, struct chromosome *chromoB) {
+
+	int i, j;
+
+	/* ensure that the chromosomes don't point to NULL */
+	if (chromoA == NULL || chromoB == NULL) {
+		return 0;
+	}
+
+	/* Check the high level parameters */
+	if (chromoA->numInputs != chromoB->numInputs) {
+		return 0;
+	}
+
+	if (chromoA->numNodes != chromoB->numNodes) {
+		return 0;
+	}
+
+	if (chromoA->numOutputs != chromoB->numOutputs) {
+		return 0;
+	}
+
+	if (chromoA->arity != chromoB->arity) {
+		return 0;
+	}
+
+	/* for each node*/
+	for (i = 0; i < chromoA->numNodes; i++) {
+
+		/* Check the function genes */
+		if (chromoA->nodes[i]->function != chromoB->nodes[i]->function) {
+			return 0;
+		}
+
+		/* for each node input */
+		for (j = 0; j < chromoA->arity; j++) {
+
+			/* Check the node inputs */
+			if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
+				return 0;
+			}
+
+			/* Check the connection weights inputs */
+			if (chromoA->nodes[i]->weights[j] != chromoB->nodes[i]->weights[j]) {
+				return 0;
+			}
+		}
+	}
+
+	/* for all of the outputs */
+	for (i = 0; i < chromoA->numOutputs; i++) {
+
+		/* Check the outputs */
+		if (chromoA->outputNodes[i] != chromoB->outputNodes[i] ) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
 
 /*
 	Mutates the given chromosome using the mutation method described in parameters
