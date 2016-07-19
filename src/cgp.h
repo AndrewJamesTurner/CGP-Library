@@ -1206,6 +1206,46 @@ DLL_EXPORT int compareChromosomesANN(struct chromosome *chromoA, struct chromoso
 
 
 /*
+	Function: compareChromosomesActiveNodes
+		Compares the active genes of the two given chromosomes.
+
+	Parameters:
+		chromoA - pointer to <chromosome> structure.
+		chromoB - pointer to <chromosome> structure.
+
+	Returns:
+		Whether or not the two chromosomes active nodes are the same: 0 no, 1 yes.
+
+	Note:
+		This function does *not* compare connections weight. For this use <compareChromosomesActiveNodesANN>.
+
+*/
+DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct chromosome *chromoB);
+
+
+/*
+	Function: compareChromosomesActiveNodesANN
+		Compares the active genes of the two given chromosomes.
+
+	Parameters:
+		chromoA - pointer to <chromosome> structure.
+		chromoB - pointer to <chromosome> structure.
+
+	Returns:
+		Whether or not the two chromosomes active nodes are the same: 0 no, 1 yes.
+
+	Note:
+		This function compares connections weight.
+
+	See Also:
+		<compareChromosomes>
+
+*/
+DLL_EXPORT int compareChromosomesActiveNodesANN(struct chromosome *chromoA, struct chromosome *chromoB);
+
+
+
+/*
 	Function: mutateChromosome
 		Mutate the given chromosome using the mutation method described in the given <parameters>.
 

@@ -1792,6 +1792,156 @@ DLL_EXPORT int compareChromosomesANN(struct chromosome *chromoA, struct chromoso
 
 
 
+
+
+
+DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct chromosome *chromoB) {
+
+	int i, j;
+
+	/* ensure that the chromosomes don't point to NULL */
+	if (chromoA == NULL || chromoB == NULL) {
+		return 0;
+	}
+
+	/* Check the high level parameters */
+	if (chromoA->numInputs != chromoB->numInputs) {
+		return 0;
+	}
+
+	if (chromoA->numNodes != chromoB->numNodes) {
+		return 0;
+	}
+
+	if (chromoA->numOutputs != chromoB->numOutputs) {
+		return 0;
+	}
+
+	if (chromoA->arity != chromoB->arity) {
+		return 0;
+	}
+
+	/* for each node*/
+	for (i = 0; i < chromoA->numNodes; i++) {
+
+		/* if the node is active in both chromosomes */
+		if (chromoA->nodes[i]->active == 1 && chromoB->nodes[i]->active == 1) {
+
+			/* Check the function genes */
+			if (chromoA->nodes[i]->function != chromoB->nodes[i]->function) {
+				return 0;
+			}
+
+			/* for each node input */
+			for (j = 0; j < chromoA->arity; j++) {
+
+				/* Check the node inputs */
+				if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
+					return 0;
+				}
+
+				/* Check the connection weights inputs */
+				if (chromoA->nodes[i]->weights[j] != chromoB->nodes[i]->weights[j]) {
+					return 0;
+				}
+			}
+		}
+		/* if the node is active in one chromosome */
+		else if (chromoA->nodes[i]->active != chromoB->nodes[i]->active ) {
+			return 0;
+		}
+
+		/* The node is inactive in both chromosomes */
+		else {
+			/* do nothing */
+		}
+	}
+
+	/* for all of the outputs */
+	for (i = 0; i < chromoA->numOutputs; i++) {
+
+		/* Check the outputs */
+		if (chromoA->outputNodes[i] != chromoB->outputNodes[i] ) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
+DLL_EXPORT int compareChromosomesActiveNodesANN(struct chromosome *chromoA, struct chromosome *chromoB) {
+
+	int i, j;
+
+	/* ensure that the chromosomes don't point to NULL */
+	if (chromoA == NULL || chromoB == NULL) {
+		return 0;
+	}
+
+	/* Check the high level parameters */
+	if (chromoA->numInputs != chromoB->numInputs) {
+		return 0;
+	}
+
+	if (chromoA->numNodes != chromoB->numNodes) {
+		return 0;
+	}
+
+	if (chromoA->numOutputs != chromoB->numOutputs) {
+		return 0;
+	}
+
+	if (chromoA->arity != chromoB->arity) {
+		return 0;
+	}
+
+	/* for each node*/
+	for (i = 0; i < chromoA->numNodes; i++) {
+
+		/* if the node is active in both chromosomes */
+		if (chromoA->nodes[i]->active == 1 && chromoB->nodes[i]->active == 1) {
+
+			/* Check the function genes */
+			if (chromoA->nodes[i]->function != chromoB->nodes[i]->function) {
+				return 0;
+			}
+
+			/* for each node input */
+			for (j = 0; j < chromoA->arity; j++) {
+
+				/* Check the node inputs */
+				if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
+					return 0;
+				}
+			}
+		}
+		/* if the node is active in one chromosome */
+		else if (chromoA->nodes[i]->active != chromoB->nodes[i]->active ) {
+			return 0;
+		}
+
+		/* The node is inactive in both chromosomes */
+		else {
+			/* do nothing */
+		}
+	}
+
+	/* for all of the outputs */
+	for (i = 0; i < chromoA->numOutputs; i++) {
+
+		/* Check the outputs */
+		if (chromoA->outputNodes[i] != chromoB->outputNodes[i] ) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
+
+
 /*
 	Mutates the given chromosome using the mutation method described in parameters
 */
