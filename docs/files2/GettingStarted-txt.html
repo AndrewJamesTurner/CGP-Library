@@ -41,6 +41,7 @@ int main(void){
 
     printParameters(params);
 
+    // Note: you may need to check this path such that it is relative to your executable
     trainingData = initialiseDataSetFromFile(&quot;./dataSets/symbolic.data&quot;);
 
     chromo = runCGP(params, trainingData, numGens);
