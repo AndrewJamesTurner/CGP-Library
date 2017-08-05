@@ -778,7 +778,7 @@ DLL_EXPORT void setCustomSelectionScheme(struct parameters *params, void (*selec
 
 */
 DLL_EXPORT void setCustomReproductionScheme(struct parameters *params, void
-        (*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
+		(*reproductionScheme)(struct parameters *params, struct chromosome **parents, struct chromosome **children, int numParents, int numChildren), char const *reproductionSchemeName);
 
 
 
@@ -1096,7 +1096,7 @@ DLL_EXPORT int isNodeActive(struct chromosome *chromo, int node);
 
 		New chromosomes can be initialised using the saved chromosomes by calling <initialiseChromosomeFromFile>.
 
-	Node:
+	Note:
 		Only chromosome which use node functions defined by the CGP-library can be loaded. Chromosomes which use custom node functions cannot be loaded.
 
 	Parameters:
@@ -1154,6 +1154,10 @@ DLL_EXPORT void saveChromosomeDot(struct chromosome *chromo, int weights, char c
 		(begin code)
 		pdflatex chromosome.tex
 		(end)
+
+	Note:
+		This function is only compatible with feed-forward networks.
+
 
 	Parameters:
 		chromo - pointer to chromosome structure.
