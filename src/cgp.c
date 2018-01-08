@@ -1838,12 +1838,7 @@ DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct 
 				/* Check the node inputs */
 				if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
 					return 0;
-				}
-
-				/* Check the connection weights inputs */
-				if (chromoA->nodes[i]->weights[j] != chromoB->nodes[i]->weights[j]) {
-					return 0;
-				}
+				}				
 			}
 		}
 		/* if the node is active in one chromosome */
@@ -1912,6 +1907,11 @@ DLL_EXPORT int compareChromosomesActiveNodesANN(struct chromosome *chromoA, stru
 
 				/* Check the node inputs */
 				if (chromoA->nodes[i]->inputs[j] != chromoB->nodes[i]->inputs[j]) {
+					return 0;
+				}
+				
+				/* Check the connection weights inputs */
+				if (chromoA->nodes[i]->weights[j] != chromoB->nodes[i]->weights[j]) {
 					return 0;
 				}
 			}
