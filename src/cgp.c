@@ -1795,7 +1795,7 @@ DLL_EXPORT int compareChromosomesANN(struct chromosome *chromoA, struct chromoso
 
 
 
-DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct chromosome *chromoB) {
+DLL_EXPORT int compareChromosomesActiveNodesANN(struct chromosome *chromoA, struct chromosome *chromoB) {
 
 	int i, j;
 
@@ -1870,7 +1870,7 @@ DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct 
 }
 
 
-DLL_EXPORT int compareChromosomesActiveNodesANN(struct chromosome *chromoA, struct chromosome *chromoB) {
+DLL_EXPORT int compareChromosomesActiveNodes(struct chromosome *chromoA, struct chromosome *chromoB) {
 
 	int i, j;
 
@@ -3783,14 +3783,14 @@ static double _constOne(const int numInputs, const double *inputs, const double 
 }
 
 /*
-	Node function one.  Always returns 0
+	Node function zero.  Always returns 0
 */
 static double _constZero(const int numInputs, const double *inputs, const double *connectionWeights) {
 	return 0;
 }
 
 /*
-	Node function one.  Always returns PI
+	Node function pi.  Always returns PI
 */
 static double _constPI(const int numInputs, const double *inputs, const double *connectionWeights) {
 	return M_PI;
@@ -3830,7 +3830,7 @@ static double _and(const int numInputs, const double *inputs, const double *conn
 }
 
 /*
-	Node function and. logical NAND, returns '0' if all inputs are '1'
+	Node function nand. logical NAND, returns '0' if all inputs are '1'
 	else, '1'
 */
 static double _nand(const int numInputs, const double *inputs, const double *connectionWeights) {
@@ -4039,7 +4039,7 @@ static double _step(const int numInputs, const double *inputs, const double *con
 
 
 /*
-	Node function step. returns the step function of the sum of weighted inputs.
+	Node function softsign. returns the softsign function of the sum of weighted inputs.
 	range: [-1,1]
 */
 static double _softsign(const int numInputs, const double *inputs, const double *connectionWeights) {
