@@ -874,7 +874,7 @@ DLL_EXPORT struct chromosome* initialiseChromosomeFromFile(char const *file) {
 
 	char *line, *record;
 	char funcName[FUNCTIONNAMELENGTH];
-	char buffer[1024];
+	char buffer[8192];
 
 	int numInputs, numNodes, numOutputs, arity;
 
@@ -2328,7 +2328,7 @@ DLL_EXPORT struct dataSet *initialiseDataSetFromFile(char const *file) {
 	struct dataSet *data;
 	FILE *fp;
 	char *line, *record;
-	char buffer[1024];
+	char buffer[8192];
 	int lineNum = -1;
 	int col;
 
